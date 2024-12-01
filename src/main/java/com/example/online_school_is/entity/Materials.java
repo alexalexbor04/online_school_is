@@ -11,9 +11,9 @@ public class Materials {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", referencedColumnName = "id")
-    Courses course_id;
-    String title;
-    String file_path;
+    private Courses course_id;
+    private String title;
+    private String file_path;
 
     public Materials() {}
 

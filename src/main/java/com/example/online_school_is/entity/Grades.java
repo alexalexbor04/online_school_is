@@ -7,19 +7,19 @@ import jakarta.persistence.*;
 public class Grades {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", referencedColumnName = "id")
-    Users student_id;
+    private Users student_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", referencedColumnName = "id")
-    Courses course_id;
+    private Courses course_id;
 
-    Double grade;
-    String comment;
-    String date;
+    private Double grade;
+    private String comment;
+    private String date;
 
     public Grades() {}
 

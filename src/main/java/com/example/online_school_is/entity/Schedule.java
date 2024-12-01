@@ -7,14 +7,14 @@ import jakarta.persistence.*;
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", referencedColumnName = "id")
-    Courses course_id;
-    String date;
-    String start_time;
-    String end_time;
-    String room;
+    private Courses course_id;
+    private String date;
+    private String start_time;
+    private String end_time;
+    private String room;
 
     public Schedule() {}
 

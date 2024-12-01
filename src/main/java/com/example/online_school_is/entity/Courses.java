@@ -7,14 +7,14 @@ import jakarta.persistence.*;
 public class Courses {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    String course_name;
-    String description;
+    private String course_name;
+    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
-    Users teacher_id;
+    private Users teacher_id;
 
     public Courses() {}
 

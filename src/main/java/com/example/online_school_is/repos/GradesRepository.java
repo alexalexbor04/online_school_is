@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface GradesRepository extends JpaRepository<Grades, Integer> {
+public interface GradesRepository extends JpaRepository<Grades, Long> {
 
     @Query("select p from users p where concat(p.id, '', p.student_id, '', p.course_id, '', " +
             "p.grade, '', p.comment, '', p.date) like %?1%")
