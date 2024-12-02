@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import com.example.online_school_is.entity.Roles;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,9 +20,13 @@ public class Users implements UserDetails {
     private Long id;
     private String username;
     private String password;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private Roles role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name="users_roles",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="role_id")
+    )
+    private Set<Roles> roles;
     private String full_name;
     private String email;
     private String phone;
@@ -47,6 +52,10 @@ public class Users implements UserDetails {
     public String getPhone() { return phone; }
 
     public void setPhone(String phone) { this.phone = phone; }
+
+    public Set<Roles> getRoles() { return roles; }
+
+    public void setRoles(Set<Roles> roles) { this.roles = roles; }
 
     @Override
     public String getUsername() {
@@ -80,7 +89,10 @@ public class Users implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getRole_name()));
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getRole_name()))
+                .toList();
     }
+
 }
 

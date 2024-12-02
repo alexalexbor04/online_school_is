@@ -1,28 +1,32 @@
 package com.example.online_school_is.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
 public class Roles implements GrantedAuthority {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String role_name;
+
+    @ManyToMany(mappedBy = "roles")
+    private Set<Users> users;
 
     //-------конструкторы------
     public Roles() {}
 
-    public Roles(Long id) {
-        this.id = id;
+    public Roles(String role_name) {
+        this.role_name = role_name;
     }
 
-    public Roles(String role_name) {
+    public Roles(Long id, String role_name) {
+        this.id = id;
         this.role_name = role_name;
     }
 
@@ -37,6 +41,6 @@ public class Roles implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return getRole_name();
+        return role_name;
     }
 }

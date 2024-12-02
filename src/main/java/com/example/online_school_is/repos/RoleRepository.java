@@ -1,10 +1,10 @@
 package com.example.online_school_is.repos;
 
+import com.example.online_school_is.entity.Roles;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.management.relation.Role;
 import java.util.Optional;
 
-public interface RoleRepository extends JpaRepository<Role, Long> {
-    Optional<Role> findByUsername(String username);
+public interface RoleRepository extends JpaRepository<Roles, Long> {
+    Optional<Roles> findByName(String username);
 }
