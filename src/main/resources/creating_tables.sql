@@ -1,6 +1,6 @@
 create table roles (
                        id int(15) not null auto_increment,
-                       role_name varchar(50) not null unique,
+                       name varchar(50) not null unique,
                        primary key (id));
 
 create table users (

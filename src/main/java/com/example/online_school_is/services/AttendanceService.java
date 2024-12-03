@@ -20,12 +20,13 @@ public class AttendanceService {
         return repoAtt.findAll();
     }
 
-    public void save(Attendance attendance) {
+    public Attendance save(Attendance attendance) {
         repoAtt.save(attendance);
+        return attendance;
     }
 
-    public void delete(Attendance attendance) {
-        repoAtt.save(attendance);
+    public void delete(Long id) {
+        repoAtt.deleteById(id);
     }
 
     public Attendance get(Long id) {

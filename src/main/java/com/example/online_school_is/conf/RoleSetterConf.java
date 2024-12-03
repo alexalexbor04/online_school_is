@@ -28,19 +28,23 @@ public class RoleSetterConf implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Roles userRole = repoRole.findByName("USER").orElseGet(() -> {
             Roles role = new Roles();
-            role.setRole_name("USER");
+            role.setName("USER");
             return repoRole.save(role);
         });
 
         Roles admRole = repoRole.findByName("ADMIN").orElseGet(() -> {
             Roles role = new Roles();
-            role.setRole_name("ADMIN");
+            role.setName("ADMIN");
             return repoRole.save(role);
         });
 
         if (!repoUser.findByUsername("admin_s").isPresent()) {
             Users admin = new Users();
+//            Set<Roles> set = new HashSet<>();
             admin.setUsername("admin_s");
+            admin.setEmail("admin@email.com");
+            admin.setFull_name("bbb");
+            admin.setPhone("123456789");
             admin.setPassword(passEnc.encode("1234"));
             Set<Roles> roles = new HashSet<>();
             roles.add(admRole);

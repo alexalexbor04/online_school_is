@@ -4,13 +4,9 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.example.online_school_is.entity.Roles;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
-
-import static org.apache.catalina.realm.UserDatabaseRealm.getRoles;
 
 @Entity
 @Table(name = "users")
@@ -90,7 +86,7 @@ public class Users implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getRole_name()))
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .toList();
     }
 
