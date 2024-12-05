@@ -26,9 +26,15 @@ public class RoleSetterConf implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Roles userRole = repoRole.findByName("USER").orElseGet(() -> {
+        Roles studentRole = repoRole.findByName("STUDENT").orElseGet(() -> {
             Roles role = new Roles();
-            role.setName("USER");
+            role.setName("STUDENT");
+            return repoRole.save(role);
+        });
+
+        Roles teacherRole = repoRole.findByName("TEACHER").orElseGet(() -> {
+            Roles role = new Roles();
+            role.setName("TEACHER");
             return repoRole.save(role);
         });
 
@@ -48,7 +54,7 @@ public class RoleSetterConf implements CommandLineRunner {
             admin.setPassword(passEnc.encode("1234"));
             Set<Roles> roles = new HashSet<>();
             roles.add(admRole);
-            roles.add(userRole);
+            roles.add(teacherRole);
             admin.setRoles(roles);
             repoUser.save(admin);
         }

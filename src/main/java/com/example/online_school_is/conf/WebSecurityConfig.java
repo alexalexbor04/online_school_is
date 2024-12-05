@@ -25,25 +25,29 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        // Разрешить доступ к статическим ресурсам, странице входа, регистрации и ошибкам
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/login", "/register", "/error/**").permitAll()
-                        // Разрешить доступ к административным URL только пользователям с ролью ADMIN
+                        // Разрешить регистрацию и доступ к открытым API
+                        .requestMatchers("/auth/register", "/auth/login").permitAll()
+                        // Ограничить доступ для административных маршрутов
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        // Все остальные запросы требуют аутентификации
+//                        .requestMatchers("/teacher/**").hasRole("TAECHER")
+                        // Остальные запросы требуют аутентификации
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
+                        .loginPage("/auth/login") // Укажите маршрут для страницы логина
+                        .defaultSuccessUrl("/attendance", true) // Укажите маршрут после успешного входа
                         .permitAll()
                 )
                 .logout(logout -> logout
+                        .logoutSuccessUrl("/auth/login")
                         .permitAll()
                 )
-                // Отключить CSRF для простоты (не рекомендуется для продакшена)
+                // Использование HTTP Basic Authentication (или JWT)
+                .httpBasic()
+                .and()
+                // Отключить CSRF, так как мы используем RESTful API
                 .csrf(AbstractHttpConfigurer::disable);
 
-        // Установить аутентификационный провайдер
         http.authenticationProvider(authenticationProvider());
 
         return http.build();
@@ -62,3 +66,4 @@ public class WebSecurityConfig {
         return authProvider;
     }
 }
+

@@ -17,7 +17,7 @@ import java.util.List;
 * Просмотр - УЧИТЕЛЬ, СТУДЕНТ, АДМИН*/
 
 @RestController
-public class AppCourController {
+public class AttendanceController {
 
     @Autowired
     private AttendanceRepository repo;
@@ -64,4 +64,6 @@ public class AppCourController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+
 }

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <title>Регистрация/Вход</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
 <h1>Регистрация</h1>
-<form th:action="@{/api/auth/register}" method="post">
+<form th:action="@{/auth/register}" method="post">
     <label for="username">Имя пользователя:</label>
     <input type="text" id="username" name="username" required />
     <br />
@@ -23,19 +24,7 @@
     <br />
 
     <button type="submit">Зарегистрироваться</button>
-</form>
-
-<h1>Вход</h1>
-<form th:action="@{/api/auth/login}" method="post">
-    <label for="login_username">Имя пользователя:</label>
-    <input type="text" id="login_username" name="username" required />
-    <br />
-
-    <label for="login_password">Пароль:</label>
-    <input type="password" id="login_password" name="password" required />
-    <br />
-
-    <button type="submit">Войти</button>
+    <a href="login" class="button">Уже есть аккаунт? Войдите</a>
 </form>
 </body>
 </html>

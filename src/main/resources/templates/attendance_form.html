@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавить/Редактировать запись</title>
+</head>
+<body>
+<h1 th:text="${attendance.id != null} ? 'Редактировать запись' : 'Добавить новую запись'"></h1>
+<form th:action="@{/attendance/save}" th:object="${attendance}" method="post">
+    <input type="hidden" th:field="*{attendance.id}" />
+    <label for="status">Статус:</label>
+    <input type="text" id="status" th:field="*{attendance.status}" required />
+    <br />
+
+    <label for="date">Дата:</label>
+    <input type="date" id="date" th:field="*{attendance.date}" required />
+    <br />
+
+    <label for="student">ID студента:</label>
+    <input type="number" id="student" th:field="*{student.id}" required />
+    <br />
+
+    <label for="schedule">ID расписания:</label>
+    <input type="number" id="schedule" th:field="*{schedule.id}" required />
+    <br />
+
+    <button type="submit">Сохранить</button>
+</form>
+<a href="/attendance">Вернуться к списку</a>
+</body>
+</html>
