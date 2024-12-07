@@ -1,7 +1,7 @@
 // Функция для загрузки данных посещаемости
 async function loadAttendance(keyword = "") {
     try {
-        const response = await fetch(`/attendance?keyword=${keyword}`);
+        const response = await fetch(`http://localhost:8086/attendance?keyword=${keyword}`);
         if (!response.ok) {
             throw new Error("Ошибка при загрузке данных");
         }

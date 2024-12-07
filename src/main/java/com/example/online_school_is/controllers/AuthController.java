@@ -56,15 +56,15 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Регистрация прошла успешно!");
     }
 
-    @GetMapping("/register")
-    public ResponseEntity<String> getRegPage() throws IOException {
-        InputStream inputStream = getClass().getResourceAsStream("/templates/register.html");
-        String htmlContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.valueOf("text/html;charset=UTF-8"))
-                .body(htmlContent);
-    }
+//    @GetMapping("/register")
+//    public ResponseEntity<String> getRegPage() throws IOException {
+//        InputStream inputStream = getClass().getResourceAsStream("/templates/register.html");
+//        String htmlContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+//
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.valueOf("text/html;charset=UTF-8"))
+//                .body(htmlContent);
+//    }
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody Users user) {
@@ -78,13 +78,9 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<String> getLoginPage() throws IOException {
-        InputStream inputStream = getClass().getResourceAsStream("/templates/login.html");
-        String htmlContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.valueOf("text/html;charset=UTF-8"))
-                .body(htmlContent);
+    public ResponseEntity<Void> loginPage() {
+        return ResponseEntity.status(HttpStatus.OK).build(); // Просто возвращает статус 200
     }
+
 }
 
