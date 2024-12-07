@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     //нельзя показывать ПАРОЛИ А ВЫВОДЕ НА СТРАНИЦУ!!!!!!
 
+//    Optional<Users> getAll();
+
     Optional<Users> findByUsername(String username);
 
 //    @Query("select p from users p where concat(p.id, '', p.username, '', p.password, '', " +

@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-//import org.springframework.ui.Model;
 
 import java.util.List;
 
@@ -27,10 +26,13 @@ public class AttendanceController {
 
     @GetMapping("/attendance")
     public ResponseEntity<List<Attendance>> viewAttendance(@Param("keyword") String keyword) {
-        List<Attendance> listAtten = service.listAll(keyword);
-        return listAtten != null && !listAtten.isEmpty()
-                ? ResponseEntity.ok(listAtten)
-                : ResponseEntity.notFound().build();
+        List<Attendance> listAtten;
+        if (keyword != null) {
+            listAtten = service.listAll(keyword);
+        } else {
+            listAtten = service.listAll(null);
+        }
+        return ResponseEntity.ok(listAtten);
     } // надо ли создавать свой http stsus (код) для вывода отсутствия данных в базе
 
     @PostMapping("/attendance/new")
@@ -54,7 +56,7 @@ public class AttendanceController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/attendance/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteAttendance(@PathVariable Long id) {
         try {

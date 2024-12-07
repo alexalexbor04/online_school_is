@@ -25,27 +25,19 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        // Разрешить регистрацию и доступ к открытым API
                         .requestMatchers("/auth/register", "/auth/login").permitAll()
-                        // Ограничить доступ для административных маршрутов
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-//                        .requestMatchers("/teacher/**").hasRole("TAECHER")
-                        // Остальные запросы требуют аутентификации
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/auth/login") // Укажите маршрут для страницы логина
-                        .defaultSuccessUrl("/attendance", true) // Укажите маршрут после успешного входа
+                        .loginPage("/auth/login")          // Указываем GET-страницу логина
+                        .loginProcessingUrl("/auth/login") // Указываем POST-эндпоинт для обработки логина
+                        .defaultSuccessUrl("/attendance", true) // Перенаправление после успешного входа
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/auth/login")
                         .permitAll()
                 )
-                // Использование HTTP Basic Authentication (или JWT)
-                .httpBasic()
-                .and()
-                // Отключить CSRF, так как мы используем RESTful API
                 .csrf(AbstractHttpConfigurer::disable);
 
         http.authenticationProvider(authenticationProvider());

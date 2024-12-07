@@ -1,10 +1,10 @@
 package com.example.online_school_is.controllers;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-public class redirectController {
+@RestController
+public class RedirectController {
 
     @GetMapping("/")
     public String redirectToLogin() {

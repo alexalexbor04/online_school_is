@@ -5,7 +5,9 @@ import com.example.online_school_is.entity.Users;
 import com.example.online_school_is.repos.RoleRepository;
 import com.example.online_school_is.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -54,18 +56,35 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Регистрация прошла успешно!");
     }
 
+    @GetMapping("/register")
+    public ResponseEntity<String> getRegPage() throws IOException {
+        InputStream inputStream = getClass().getResourceAsStream("/templates/register.html");
+        String htmlContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/html;charset=UTF-8"))
+                .body(htmlContent);
+    }
+
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> loginUser(@RequestBody Users user) {
+    public ResponseEntity<String> loginUser(@RequestBody Users user) {
         Users existingUser = userRepository.findByUsername(user.getUsername())
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
         if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Неправильное имя пользователя или пароль"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неправильное имя пользователя или пароль");
         }
-
-        // В реальном приложении нужно использовать JWT для передачи токена
-        return ResponseEntity.ok(Map.of("message", "Вход выполнен успешно!"));
+        return ResponseEntity.ok("Вход выполнен успешно!");
     }
 
+    @GetMapping("/login")
+    public ResponseEntity<String> getLoginPage() throws IOException {
+        InputStream inputStream = getClass().getResourceAsStream("/templates/login.html");
+        String htmlContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("text/html;charset=UTF-8"))
+                .body(htmlContent);
+    }
 }
 

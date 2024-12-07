@@ -73,9 +73,9 @@ public class AdmController {
     @PostMapping("/users")
     public ResponseEntity<Users> createUser(@RequestBody Users user) {
         if (user.getRoles() == null || user.getRoles().isEmpty()) {
-            // Если роли не указаны, по умолчанию назначаем роль USER
-            Roles userRole = roleRepository.findByName("USER")
-                    .orElseThrow(() -> new IllegalArgumentException("Роль USER не найдена"));
+            // Если роли не указаны, по умолчанию назначаем роль STUDENT
+            Roles userRole = roleRepository.findByName("STUDENT")
+                    .orElseThrow(() -> new IllegalArgumentException("Роль STUDENT не найдена"));
             Set<Roles> roles = new HashSet<>();
             roles.add(userRole);
             user.setRoles(roles);
