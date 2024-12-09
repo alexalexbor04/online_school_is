@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.reactive.config.CorsRegistry;
 
 @Configuration
@@ -24,11 +27,12 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
+        http.cors().and().csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/register", "/auth/login").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
+
                 .formLogin(form -> form
                         .loginPage("/auth/login")          // Указываем GET-страницу логина
                         .loginProcessingUrl("/auth/login") // Указываем POST-эндпоинт для обработки логина
@@ -59,12 +63,18 @@ public class WebSecurityConfig {
         return authProvider;
     }
 
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowedOrigins("http://localhost:3000") // Укажите порт фронтенда
-//                .allowedMethods("GET", "POST", "PUT", "DELETE")
-//                .allowedHeaders("*");
-//    }
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true); // Разрешить передачу cookies
+        config.addAllowedOriginPattern("http://localhost:5173"); // Укажите ваш фронтенд (например, Vue/React/Angular)
+        config.addAllowedHeader("*"); // Разрешить любые заголовки
+        config.addAllowedMethod("*"); // Разрешить любые методы
+//        config.addExposedHeader("Authorization"); // Указать нужные заголовки, если это необходимо
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
 }
 
