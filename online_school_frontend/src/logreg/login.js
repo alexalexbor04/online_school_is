@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 alert("Вход выполнен успешно!");
-                window.location.href = "/attendance"; // Перенаправление на страницу после успешного входа
+                window.location.href = "/attendance";
             } else {
                 const error = await response.text();
                 alert(`Ошибка: ${error}`);
@@ -28,6 +28,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-
-console.log("123");
-

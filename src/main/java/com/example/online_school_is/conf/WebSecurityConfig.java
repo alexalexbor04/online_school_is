@@ -67,7 +67,7 @@ public class WebSecurityConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true); // Разрешить передачу cookies
-        config.addAllowedOriginPattern("http://localhost:5173"); // Укажите ваш фронтенд (например, Vue/React/Angular)
+        config.addAllowedOriginPattern("http://localhost:*"); // Укажите ваш фронтенд (например, Vue/React/Angular)
         config.addAllowedHeader("*"); // Разрешить любые заголовки
         config.addAllowedMethod("*"); // Разрешить любые методы
 //        config.addExposedHeader("Authorization"); // Указать нужные заголовки, если это необходимо

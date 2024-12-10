@@ -51,6 +51,11 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Регистрация прошла успешно!");
     }
 
+    @GetMapping("/register")
+    public ResponseEntity<Void> registerPage() {
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody Users user) {
         Users existingUser = userRepository.findByUsername(user.getUsername())
@@ -64,32 +69,6 @@ public class AuthController {
 
     @GetMapping("/login")
     public ResponseEntity<Void> loginPage() {
-        return ResponseEntity.status(HttpStatus.OK).build(); // Просто возвращает статус 200
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
-
-//    @GetMapping("/login")
-//    public ResponseEntity<String> getLoginPage() throws IOException {
-//        InputStream inputStream = getClass().getResourceAsStream("/static/auth/index.html");
-//        String htmlContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-//
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.TEXT_HTML)
-//                .body(htmlContent);
-//    }
-
-
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add(HttpHeaders.CONTENT_TYPE, "text/html");
-//
-//        return new ResponseEntity<>(headers, HttpStatus.OK);
-
-//    @GetMapping("/register")
-//    public ResponseEntity<String> getRegisterPage() throws IOException {
-//        InputStream inputStream = getClass().getResourceAsStream("/static/register.html");
-//        String htmlContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-//
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.TEXT_HTML)
-//                .body(htmlContent);
-//    }
