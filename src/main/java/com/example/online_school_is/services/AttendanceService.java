@@ -32,4 +32,12 @@ public class AttendanceService {
     public Attendance get(Long id) {
         return repoAtt.findById(id).get();
     }
+
+    public List<Attendance> filterByDate(java.sql.Date date) {
+        return repoAtt.filterByDate(date);
+    }
+
+    public List<Attendance> filterByStatus(String status) {
+        return repoAtt.filterByStatus(status);
+    }
 }

@@ -1,82 +1,81 @@
-create table roles (
-                       id int(15) not null auto_increment,
-                       name varchar(50) not null unique,
-                       primary key (id));
+-- Таблица roles
+CREATE TABLE roles (
+                       id INT AUTO_INCREMENT PRIMARY KEY,
+                       name VARCHAR(50) NOT NULL DEFAULT 3
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-create table users (
-                       id int(50) not null auto_increment,
-                       username varchar(50) not null unique,
-                       password varchar(255) not null,
-                       role_id int(15) not null,
-                       full_name varchar(100) not null,
-                       email varchar(100) unique,
-                       phone varchar(15),
-                       primary key (id),
-                       foreign key (role_id) references roles(id)
-)engine = InnoDB default charset = UTF8;
+-- Таблица users
+CREATE TABLE users (
+                       id INT AUTO_INCREMENT PRIMARY KEY,
+                       username VARCHAR(50) NOT NULL UNIQUE,
+                       password VARCHAR(255) NOT NULL,
+                       role_id INT NOT NULL,
+                       full_name VARCHAR(100) NOT NULL,
+                       email VARCHAR(100) UNIQUE,
+                       phone VARCHAR(15),
+                       CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-create table courses (
-                         id int(15) not null auto_increment,
-                         course_name varchar(100) not null,
-                         description text,
-                         teacher_id int,
-                         primary key (id),
-                         foreign key (teacher_id) references users(id) on delete set null
-)engine = InnoDB default charset = UTF8;
+-- Таблица courses
+CREATE TABLE courses (
+                         id INT AUTO_INCREMENT PRIMARY KEY,
+                         course_name VARCHAR(100) NOT NULL,
+                         description TEXT,
+                         teacher_id INT,
+                         CONSTRAINT fk_teacher_id FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Таблица materials
+CREATE TABLE materials (
+                           id INT AUTO_INCREMENT PRIMARY KEY,
+                           course_id INT NOT NULL,
+                           title VARCHAR(100) NOT NULL,
+                           file_path VARCHAR(255) NOT NULL,
+                           CONSTRAINT fk_course_id_materials FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Таблица schedule
+CREATE TABLE schedule (
+                          id INT AUTO_INCREMENT PRIMARY KEY,
+                          course_id INT NOT NULL,
+                          date DATE NOT NULL,
+                          start_time TIME NOT NULL,
+                          end_time TIME NOT NULL,
+                          room VARCHAR(50),
+                          CONSTRAINT fk_course_id_schedule FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-create table materials (
-                           id int(15) not null auto_increment,
-                           course_id int(15),
-                           title varchar(100) not null,
-                           file_path varchar(255) not null,
-                           primary key (id),
-                           foreign key (course_id) references courses(id) on delete cascade
-)engine = InnoDB default charset = UTF8;
+-- Таблица grades
+CREATE TABLE grades (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        student_id INT NOT NULL,
+                        course_id INT NOT NULL,
+                        grade DECIMAL(4, 2) NOT NULL CHECK (grade >= 0 AND grade <= 100),
+                        comment TEXT,
+                        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        CONSTRAINT fk_student_id_grades FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+                        CONSTRAINT fk_course_id_grades FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-create table schedule (
-                          id int(15) not null auto_increment,
-                          course_id int(15),
-                          date date not null,
-                          start_time time not null,
-                          end_time time not null,
-                          room varchar(50),
-                          primary key (id),
-                          foreign key (course_id) references courses(id) on delete cascade
-)engine = InnoDB default charset = UTF8;
-
-create table grades (
-                        id int(15) not null auto_increment,
-                        student_id int(15) not null,
-                        course_id int(15) not null,
-                        grade decimal(4, 2) check (grade >= 0 AND grade <= 100),
-                        comment text,
-                        date timestamp,
-                        primary key (id),
-                        foreign key (student_id) references users(id) on delete cascade,
-                        foreign key (course_id) references courses(id) on delete cascade
-)engine = InnoDB default charset = UTF8;
-
-create table attendance (
-                            id int(15) not null auto_increment,
-                            student_id int(15),
-                            schedule_id int(15),
-                            status varchar(20) check (status in ('Присутствовал', 'Отсутствовал')) not null,
-                            date date not null,
-                            primary key (id),
-                            foreign key (student_id) references users(id) on delete cascade,
-                            foreign key (schedule_id) references schedule(id) on delete cascade
-)engine = InnoDB default charset = UTF8;
-
+-- Таблица attendance
+CREATE TABLE attendance (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            student_id INT NOT NULL,
+                            schedule_id INT NOT NULL,
+                            status ENUM('Присутствовал', 'Отсутствовал') NOT NULL,
+                            date DATE NOT NULL,
+                            CONSTRAINT fk_student_id_attendance FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+                            CONSTRAINT fk_schedule_id_attendance FOREIGN KEY (schedule_id) REFERENCES schedule(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
-# drop table users;
+
+
 # drop table roles;
+# drop table users;
 # drop table courses;
-# drop table materials;
 # drop table schedule;
+# drop table materials;
 # drop table grades;
-# drop table attendance;
 # drop table attendance;

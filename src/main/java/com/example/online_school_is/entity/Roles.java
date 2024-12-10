@@ -11,7 +11,7 @@ import java.util.Set;
 public class Roles implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id = 3L;
     private String name;
 
     @ManyToMany(mappedBy = "roles")

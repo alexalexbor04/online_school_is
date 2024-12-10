@@ -14,7 +14,9 @@ public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
+    @Column(name = "password", nullable = false)
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -23,8 +25,11 @@ public class Users implements UserDetails {
             inverseJoinColumns = @JoinColumn(name="role_id")
     )
     private Set<Roles> roles;
+    @Column(name = "full_name", nullable = false)
     private String full_name;
+    @Column(name = "full_name", unique = true)
     private String email;
+    @Column(name = "phone", length = 15)
     private String phone;
 
     public Users() {}

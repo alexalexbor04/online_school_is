@@ -66,6 +66,15 @@ public class AttendanceController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+    @GetMapping("/attendance/filterByDate")
+    public ResponseEntity<List<Attendance>> filterByDate(@RequestParam("date") java.sql.Date date) {
+        List<Attendance> filteredList = service.filterByDate(date);
+        return ResponseEntity.ok(filteredList);
+    }
 
-
+    @GetMapping("/attendance/filterByStatus")
+    public ResponseEntity<List<Attendance>> filterByStatus(@RequestParam("status") String status) {
+        List<Attendance> filteredList = service.filterByStatus(status);
+        return ResponseEntity.ok(filteredList);
+    }
 }
