@@ -10,13 +10,20 @@ public class Schedule {
     @Column(name = "id", nullable = false)
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Courses course_id;
+
+    @Column(name = "date", nullable = false)
     private String date;
+
+    @Column(name = "start_time", nullable = false)
     private String start_time;
+
+    @Column(name = "end_time", nullable = false)
     private String end_time;
+
+    @Column(name = "room", length = 50)
     private String room;
 
     public Schedule() {}

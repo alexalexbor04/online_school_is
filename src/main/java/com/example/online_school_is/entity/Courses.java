@@ -21,8 +21,13 @@ public class Courses {
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     private Users teacher_id;
 
+    /* dependences*/
+
     @OneToMany(mappedBy = "course_id", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<Materials> materials;
+    private Set<Materials> materials;
+
+    @OneToMany(mappedBy = "course_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Schedule> schedules;
 
     public Courses() {}
 
