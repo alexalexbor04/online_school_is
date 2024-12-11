@@ -10,11 +10,11 @@ public class Attendance {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id", referencedColumnName = "id")
+    @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
     private Users student_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id", referencedColumnName = "id")
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id", nullable = false)
     private Schedule schedule_id;
 
     @Column(name = "status", nullable = false)

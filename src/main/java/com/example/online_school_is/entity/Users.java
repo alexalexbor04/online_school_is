@@ -40,6 +40,9 @@ public class Users implements UserDetails {
     @OneToMany(mappedBy = "teacher_id")
     private Set<Courses> courses;
 
+    @OneToMany(mappedBy = "student_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Attendance> attendance;
+
     public Users() {}
 
     public Long getId() { return id; }

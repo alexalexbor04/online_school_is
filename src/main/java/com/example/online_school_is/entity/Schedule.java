@@ -2,6 +2,8 @@ package com.example.online_school_is.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "schedule")
 public class Schedule {
@@ -25,6 +27,9 @@ public class Schedule {
 
     @Column(name = "room", length = 50)
     private String room;
+
+    @OneToMany(mappedBy = "schedule_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Attendance> attendances;
 
     public Schedule() {}
 
