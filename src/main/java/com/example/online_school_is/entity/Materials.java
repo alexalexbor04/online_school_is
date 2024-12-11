@@ -1,5 +1,6 @@
 package com.example.online_school_is.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,10 +10,15 @@ public class Materials {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
     private Courses course_id;
+
+    @Column(name = "title", nullable = false, length = 100)
     private String title;
+
+    @Column(name = "file_path", nullable = false)
     private String file_path;
 
     public Materials() {}
