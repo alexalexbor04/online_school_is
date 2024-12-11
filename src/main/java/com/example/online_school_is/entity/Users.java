@@ -6,8 +6,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -34,6 +34,11 @@ public class Users implements UserDetails {
 
     @Column(name = "phone", length = 15)
     private String phone;
+
+    /* dependences*/
+
+    @OneToMany(mappedBy = "teacher_id")
+    private Set<Courses> courses;
 
     public Users() {}
 

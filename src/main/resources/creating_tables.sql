@@ -77,6 +77,5 @@ drop table grades;
 drop table materials;
 drop table schedule;
 drop table courses;
-drop table users_roles;
 drop table users;
 drop table roles;

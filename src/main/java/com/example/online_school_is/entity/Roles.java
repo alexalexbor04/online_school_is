@@ -16,7 +16,7 @@ public class Roles implements GrantedAuthority {
     private String name;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Users> users; // Список пользователей с этой ролью
+    private Set<Users> users;
 
     //-------конструкторы------
     public Roles() {}
