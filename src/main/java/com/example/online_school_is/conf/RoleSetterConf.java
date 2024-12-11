@@ -52,10 +52,7 @@ public class RoleSetterConf implements CommandLineRunner {
             admin.setFull_name("bbb");
             admin.setPhone("123456789");
             admin.setPassword(passEnc.encode("1234"));
-            Set<Roles> roles = new HashSet<>();
-            roles.add(admRole);
-            roles.add(teacherRole);
-            admin.setRoles(roles);
+            admin.setRoles(admRole);
             repoUser.save(admin);
         }
 

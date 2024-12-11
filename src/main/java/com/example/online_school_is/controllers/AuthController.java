@@ -41,10 +41,7 @@ public class AuthController {
 
         Roles userRole = roleRepository.findByName("STUDENT")
                 .orElseThrow(() -> new RuntimeException("Роль STUDENT не найдена"));
-
-        Set<Roles> roles = new HashSet<>();
-        roles.add(userRole);
-        user.setRoles(roles);
+        user.setRoles(userRole);
 
         userRepository.save(user);
 

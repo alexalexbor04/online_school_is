@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -14,21 +15,23 @@ public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
+
     @Column(name = "password", nullable = false)
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name="users_roles",
-            joinColumns = @JoinColumn(name="user_id"),
-            inverseJoinColumns = @JoinColumn(name="role_id")
-    )
-    private Set<Roles> roles;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false) // Связь с таблицей roles
+    private Roles role;
+
     @Column(name = "full_name", nullable = false)
     private String full_name;
-    @Column(name = "full_name", unique = true)
+
+    @Column(name = "email", unique = true)
     private String email;
+
     @Column(name = "phone", length = 15)
     private String phone;
 
@@ -54,9 +57,9 @@ public class Users implements UserDetails {
 
     public void setPhone(String phone) { this.phone = phone; }
 
-    public Set<Roles> getRoles() { return roles; }
+    public Roles getRoles() { return role; }
 
-    public void setRoles(Set<Roles> roles) { this.roles = roles; }
+    public void setRoles(Roles role) { this.role = role; }
 
     @Override
     public String getUsername() {
@@ -90,10 +93,12 @@ public class Users implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .toList();
+        // Проверяем, есть ли роль, и возвращаем список с одной ролью
+        return role != null ?
+                List.of(new SimpleGrantedAuthority(role.getName())) :
+                List.of();
     }
+
 
 }
 

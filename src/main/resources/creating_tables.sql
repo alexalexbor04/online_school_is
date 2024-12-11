@@ -72,10 +72,11 @@ CREATE TABLE attendance (
 
 
 
-# drop table roles;
-# drop table users;
-# drop table courses;
-# drop table schedule;
-# drop table materials;
-# drop table grades;
-# drop table attendance;
+drop table attendance;
+drop table grades;
+drop table materials;
+drop table schedule;
+drop table courses;
+drop table users_roles;
+drop table users;
+drop table roles;

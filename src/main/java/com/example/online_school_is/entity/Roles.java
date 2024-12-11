@@ -1,6 +1,5 @@
 package com.example.online_school_is.entity;
 
-
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -11,11 +10,13 @@ import java.util.Set;
 public class Roles implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id = 3L;
+    private Long id;
+
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<Users> users;
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Users> users; // Список пользователей с этой ролью
 
     //-------конструкторы------
     public Roles() {}

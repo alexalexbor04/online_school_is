@@ -48,11 +48,7 @@ public class AdmController {
 
         Roles role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new IllegalArgumentException("Роль с названием " + roleName + " не найдена"));
-
-        Set<Roles> roles = new HashSet<>();
-        roles.add(role); // Назначение новой роли
-
-        user.setRoles(roles);
+        user.setRoles(role);
         userRepository.save(user);
 
         return ResponseEntity.ok("Роль пользователя успешно изменена");
@@ -72,13 +68,11 @@ public class AdmController {
     // Создание нового пользователя (администратор может добавить нового пользователя)
     @PostMapping("/users")
     public ResponseEntity<Users> createUser(@RequestBody Users user) {
-        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+        if (user.getRoles() == null) {
             // Если роли не указаны, по умолчанию назначаем роль STUDENT
             Roles userRole = roleRepository.findByName("STUDENT")
                     .orElseThrow(() -> new IllegalArgumentException("Роль STUDENT не найдена"));
-            Set<Roles> roles = new HashSet<>();
-            roles.add(userRole);
-            user.setRoles(roles);
+            user.setRoles(userRole);
         }
 
         Users createdUser = userRepository.save(user);
