@@ -1,6 +1,7 @@
 package com.example.online_school_is.entity;
 
 import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "courses")
@@ -9,12 +10,28 @@ public class Courses {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 100, nullable = false)
     private String course_name;
+
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     private Users teacher_id;
+
+    /* dependences */
+
+    @OneToMany(mappedBy = "course_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Materials> materials;
+
+    @OneToMany(mappedBy = "course_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Schedule> schedule;
+
+    @OneToMany(mappedBy = "course_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Grades> grades;
+
+
+    /* constructors */
 
     public Courses() {}
 

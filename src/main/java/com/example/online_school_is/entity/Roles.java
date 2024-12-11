@@ -15,6 +15,7 @@ public class Roles implements GrantedAuthority {
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
+    /* dependences */
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Users> users; // Список пользователей с этой ролью
 

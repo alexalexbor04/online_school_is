@@ -2,6 +2,8 @@ package com.example.online_school_is.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "grades")
 public class Grades {
@@ -10,15 +12,20 @@ public class Grades {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id", referencedColumnName = "id")
+    @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
     private Users student_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
     private Courses course_id;
 
+    @Column(name = "grade", nullable = false, precision = 4, scale = 2)
     private Double grade;
+
+    @Column(name = "comment")
     private String comment;
+
+    @Column(name = "date")
     private String date;
 
     public Grades() {}

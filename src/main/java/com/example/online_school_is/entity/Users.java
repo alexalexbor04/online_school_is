@@ -35,6 +35,16 @@ public class Users implements UserDetails {
     @Column(name = "phone", length = 15)
     private String phone;
 
+    /* dependences */
+
+    @OneToMany(mappedBy = "student_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Grades> grades;
+
+    @OneToMany(mappedBy = "student_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Attendance> attendance;
+
+    /* constructors */
+
     public Users() {}
 
     public Long getId() { return id; }

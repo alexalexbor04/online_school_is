@@ -2,6 +2,8 @@ package com.example.online_school_is.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "schedule")
 public class Schedule {
@@ -10,14 +12,28 @@ public class Schedule {
     @Column(name = "id", nullable = false)
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
     private Courses course_id;
+
+    @Column(name = "date", nullable = false)
     private String date;
+
+    @Column(name = "start_time", nullable = false)
     private String start_time;
+
+    @Column(name = "end_time", nullable = false)
     private String end_time;
+
+    @Column(name = "room", length = 50)
     private String room;
+
+    /* dependences */
+
+    @OneToMany(mappedBy = "schedule_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Schedule> schedule;
+
+    /* constructors */
 
     public Schedule() {}
 
