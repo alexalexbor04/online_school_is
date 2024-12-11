@@ -16,7 +16,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/admin")
-@PreAuthorize("hasRole('ADMIN')") // Применяется ко всем методам
+@PreAuthorize("hasRole('admin')") // Применяется ко всем методам
 public class AdmController {
 
     @Autowired
@@ -70,8 +70,8 @@ public class AdmController {
     public ResponseEntity<Users> createUser(@RequestBody Users user) {
         if (user.getRoles() == null) {
             // Если роли не указаны, по умолчанию назначаем роль STUDENT
-            Roles userRole = roleRepository.findByName("STUDENT")
-                    .orElseThrow(() -> new IllegalArgumentException("Роль STUDENT не найдена"));
+            Roles userRole = roleRepository.findByName("student")
+                    .orElseThrow(() -> new IllegalArgumentException("Роль student не найдена"));
             user.setRoles(userRole);
         }
 

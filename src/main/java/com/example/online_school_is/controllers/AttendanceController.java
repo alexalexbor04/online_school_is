@@ -36,7 +36,7 @@ public class AttendanceController {
     } // надо ли создавать свой http stsus (код) для вывода отсутствия данных в базе
 
     @PostMapping("/attendance/new")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('admin')")
     public ResponseEntity<Attendance> createAttendance(@RequestBody Attendance attendance) {
         try {
             // Сохраняем объект в базе
@@ -48,7 +48,7 @@ public class AttendanceController {
     }
 
     @GetMapping("/attendance/edit/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')")
+    @PreAuthorize("hasAnyRole('admin', 'teacher', 'student')")
     public ResponseEntity<Attendance> getAttendanceById(@PathVariable Long id) {
         Attendance attendance = service.get(id);
         return attendance != null
@@ -57,7 +57,7 @@ public class AttendanceController {
     }
 
     @DeleteMapping("/attendance/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('admin')")
     public ResponseEntity<Void> deleteAttendance(@PathVariable Long id) {
         try {
             service.delete(id);
