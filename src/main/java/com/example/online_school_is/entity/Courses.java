@@ -29,6 +29,9 @@ public class Courses {
     @OneToMany(mappedBy = "course_id", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Schedule> schedules;
 
+    @OneToMany(mappedBy = "course_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Grades> grades;
+
     public Courses() {}
 
     public Long getId() { return id; }

@@ -43,6 +43,9 @@ public class Users implements UserDetails {
     @OneToMany(mappedBy = "student_id", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Attendance> attendance;
 
+    @OneToMany(mappedBy = "student_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Grades> grades;
+
     public Users() {}
 
     public Long getId() { return id; }

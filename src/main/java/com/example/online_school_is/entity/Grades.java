@@ -10,15 +10,20 @@ public class Grades {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id", referencedColumnName = "id")
+    @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
     private Users student_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id", referencedColumnName = "id")
+    @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
     private Courses course_id;
 
+    @Column(name = "grade", nullable = false)
     private Double grade;
+
+    @Column(name = "comment")
     private String comment;
+
+    @Column(name = "date", nullable = false)
     private String date;
 
     public Grades() {}
