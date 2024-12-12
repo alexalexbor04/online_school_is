@@ -1,10 +1,13 @@
 const apiUrl = "http://localhost:8086/attendance";
 
-export { fetchAttendance, renderTable, resetFilters, filterAttendance };
+export { fetchAttendance, renderTable, resetFilters, filterAttendance, showAddForm, saveAttendance};
 window.filterAttendance = filterAttendance;
 window.resetFilters = resetFilters;
 window.fetchAttendance = fetchAttendance;
 window.renderTable = renderTable;
+window.showAddForm = showAddForm;
+window.saveAttendance = saveAttendance;
+
 
 
 function fetchAttendance() {
@@ -85,3 +88,49 @@ function filterAttendance() {
 document.addEventListener("DOMContentLoaded", () => {
     fetchAttendance();
 });
+
+function showAddForm() {
+    document.getElementById("modal-title").textContent = "Add Attendance";
+    document.getElementById("attendance-id").value = ""; // Очистка поля ID
+    document.getElementById("student-id").value = "";
+    document.getElementById("course-id").value = "";
+    document.getElementById("date").value = "";
+    document.getElementById("status").value = "Присутствовал";
+    document.getElementById("modal").style.display = "block"; // Показываем модальное окно
+}
+
+function saveAttendance() {
+    const studentId = document.getElementById("student-id").value;
+    const courseId = document.getElementById("course-id").value;
+    const date = new Date(document.getElementById("date").value).toISOString().split("T")[0];
+    const status = document.getElementById("status").value;
+
+    const attendance = {
+        student: { id: studentId },
+        schedule: { course_id: { id: courseId } },
+        date: date,
+        status: status,
+    };
+
+    const method = "POST"; //создаём
+    const url = `${apiUrl}/new`;
+
+    fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(attendance),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Error saving attendance");
+            }
+            fetchAttendance();
+            closeModal();
+        })
+        .catch(error => console.error("Error saving attendance:", error));
+}
+
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+}
+
