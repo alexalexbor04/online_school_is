@@ -8,8 +8,11 @@
   <body id="body_id">
 
   </body>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!--  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>-->
   <script>
+    import axios from "axios";
+
+    let axios;
     const data = axios
       .get("http://localhost:8086/admin/users", { withCredentials: true })
       .then((res) => {

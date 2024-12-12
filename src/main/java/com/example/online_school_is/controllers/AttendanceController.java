@@ -33,7 +33,7 @@ public class AttendanceController {
             listAtten = service.listAll(null);
         }
         return ResponseEntity.ok(listAtten);
-    } // надо ли создавать свой http stsus (код) для вывода отсутствия данных в базе
+    }
 
     @PostMapping("/attendance/new")
     @PreAuthorize("hasRole('admin')")

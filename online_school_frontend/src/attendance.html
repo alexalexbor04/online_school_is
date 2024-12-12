@@ -1,124 +1,76 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Attendance</title>-->
-<!--    <script src="./att/attendance.js" defer></script>-->
-<!--</head>-->
-<!--<body>-->
-<!--<header>-->
-<!--    <h1>Список посещаемости</h1>-->
-<!--    <nav>-->
-<!--        <a href="./attendance.html">Посещения</a>-->
-<!--        <a href="#">Студенты</a>-->
-<!--        <a href="#">Выход</a>-->
-<!--    </nav>-->
-<!--</header>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Посещаемость</title>
+</head>
+<body id = "body-id">
 
-<!--<section>-->
-<!--    <div>-->
-<!--        <input type="text" id="search" placeholder="Введите ключевое слово">-->
-<!--        <button onclick="search()">Поиск</button>-->
-<!--    </div>-->
-<!--    <button>Добавить запись</button>-->
-<!--    &lt;!&ndash;        onclick&ndash;&gt;-->
-<!--</section>-->
+<h1>Посещаемость</h1>
 
-<!--<section id="attendance-container">-->
-<!--    &lt;!&ndash; Сюда будут добавляться записи посещаемости &ndash;&gt;-->
-<!--</section>-->
+<!--<div class="filter-form">-->
+<!--    <input type="text" id="keyword" placeholder="Поиск">-->
+<!--    <input type="date" id="filter-date">-->
+<!--    <select id="filter-status">-->
+<!--        <option value="">Статус</option>-->
+<!--        <option value="Присутствовал">Присутствовал</option>-->
+<!--        <option value="Отсутствовал">Отсутствовал</option>-->
+<!--    </select>-->
+<!--    <button onclick="filterAttendance()">Filter</button>-->
+<!--    <button onclick="resetFilters()">Reset</button>-->
+<!--</div>-->
+<!--<table id="attendance-table">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th>ID</th>-->
+<!--        <th>Student</th>-->
+<!--        <th>Course</th>-->
+<!--        <th>Date</th>-->
+<!--        <th>Status</th>-->
+<!--        <th>Actions</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    &lt;!&ndash; Rows will be dynamically inserted here &ndash;&gt;-->
+<!--    </tbody>-->
+<!--</table>-->
 
-<!--<template id="attendance-template">-->
-<!--    <div class="attendance-item">-->
-<!--        <p><strong>Студент:</strong> <span class="student-name"></span></p>-->
-<!--        <p><strong>Дата:</strong> <span class="attendance-date"></span></p>-->
-<!--        <p><strong>Статус:</strong> <span class="attendance-status"></span></p>-->
-<!--        <button class="edit-btn">Редактировать</button>-->
-<!--&lt;!&ndash;        onclick&ndash;&gt;-->
-<!--        <button class="delete-btn">Удалить</button>-->
-<!--        &lt;!&ndash;        onclick&ndash;&gt;-->
-<!--    </div>-->
-<!--</template>-->
+<!--<button onclick="showAddForm()">Add New</button>-->
 
-<!--<div id="add-form" style="display: none;">-->
-<!--    <h2>Добавить запись</h2>-->
-<!--    <form id="add-attendance-form">-->
-<!--        <label for="student">Имя студента:</label>-->
-<!--        <input type="text" id="student" name="student" required>-->
-<!--        <label for="date">Дата:</label>-->
-<!--        <input type="date" id="date" name="date" required>-->
-<!--        <label for="status">Статус:</label>-->
-<!--        <input type="text" id="status" name="status" required>-->
-<!--        <button type="submit">Добавить</button>-->
+<!--&lt;!&ndash; Modal for adding/editing attendance &ndash;&gt;-->
+<!--<div id="modal" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">-->
+<!--    <h2 id="modal-title">Add Attendance</h2>-->
+<!--    <form id="attendance-form">-->
+<!--        <input type="hidden" id="attendance-id">-->
+<!--        <label>-->
+<!--            Student ID:-->
+<!--            <input type="number" id="student-id" required>-->
+<!--        </label>-->
+<!--        <br><br>-->
+<!--        <label>-->
+<!--            Course ID:-->
+<!--            <input type="number" id="course-id" required>-->
+<!--        </label>-->
+<!--        <br><br>-->
+<!--        <label>-->
+<!--            Date:-->
+<!--            <input type="date" id="date" required>-->
+<!--        </label>-->
+<!--        <br><br>-->
+<!--        <label>-->
+<!--            Status:-->
+<!--            <select id="status" required>-->
+<!--                <option value="Присутствовал">Присутствовал</option>-->
+<!--                <option value="Отсутствовал">Отсутствовал</option>-->
+<!--            </select>-->
+<!--        </label>-->
+<!--        <br><br>-->
+<!--        <button type="button" onclick="saveAttendance()">Save</button>-->
+<!--        <button type="button" onclick="closeModal()">Cancel</button>-->
 <!--    </form>-->
 <!--</div>-->
-<!--</body>-->
-<!--</html>-->
 
-
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Attendance</title>
-<!--    <link rel="stylesheet" href="styles.css">-->
-</head>
-<body>
-<div class="container">
-    <h1>Attendance</h1>
-
-    <!-- Навигационные кнопки -->
-    <div class="nav-buttons">
-<!--        <a href="/users.html">Users</a>-->
-        <a href="#">Users</a>
-        <a href="#">Materials</a>
-        <a href="#">Schedule</a>
-        <a href="#">Add Attendance</a>
-    </div>
-
-    <!-- Фильтры -->
-    <div class="filter-section">
-        <div>
-            <input type="text" id="keyword" placeholder="Search by keyword"/>
-            <button id="searchButton">Search</button>
-        </div>
-
-        <div>
-            <input type="date" id="filterDate"/>
-            <button id="filterDateButton">Filter by Date</button>
-        </div>
-
-        <div>
-            <select id="filterStatus">
-                <option value="" disabled selected>Select Status</option>
-                <option value="Present">Present</option>
-                <option value="Absent">Absent</option>
-            </select>
-            <button id="filterStatusButton">Filter by Status</button>
-        </div>
-    </div>
-
-    <!-- Таблица -->
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Student</th>
-            <th>Schedule</th>
-            <th>Status</th>
-            <th>Date</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody id="attendanceTable">
-        <!-- Данные будут загружены динамически -->
-        </tbody>
-    </table>
-</div>
-
-<script src="./att/attendance.js"></script>
 </body>
+<script src="./att/attendance.js"></script>
 </html>
-
