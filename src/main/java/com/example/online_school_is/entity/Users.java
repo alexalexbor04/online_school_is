@@ -23,7 +23,7 @@ public class Users implements UserDetails {
     private String password;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false) // Связь с таблицей roles
+    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     private Roles role;
 
     @Column(name = "full_name", nullable = false)

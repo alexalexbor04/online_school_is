@@ -9,68 +9,67 @@
 
 <h1>Посещаемость</h1>
 
-<!--<div class="filter-form">-->
-<!--    <input type="text" id="keyword" placeholder="Поиск">-->
-<!--    <input type="date" id="filter-date">-->
-<!--    <select id="filter-status">-->
-<!--        <option value="">Статус</option>-->
-<!--        <option value="Присутствовал">Присутствовал</option>-->
-<!--        <option value="Отсутствовал">Отсутствовал</option>-->
-<!--    </select>-->
-<!--    <button onclick="filterAttendance()">Filter</button>-->
-<!--    <button onclick="resetFilters()">Reset</button>-->
-<!--</div>-->
-<!--<table id="attendance-table">-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th>ID</th>-->
-<!--        <th>Student</th>-->
-<!--        <th>Course</th>-->
-<!--        <th>Date</th>-->
-<!--        <th>Status</th>-->
-<!--        <th>Actions</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    &lt;!&ndash; Rows will be dynamically inserted here &ndash;&gt;-->
-<!--    </tbody>-->
-<!--</table>-->
+<div class="filter-form">
+    <input type="text" id="keyword" placeholder="Поиск">
+    <input type="date" id="filter-date">
+    <select id="filter-status">
+        <option value="">Статус</option>
+        <option value="Присутствовал">Присутствовал</option>
+        <option value="Отсутствовал">Отсутствовал</option>
+    </select>
+    <button onclick="filterAttendance()">Filter</button>
+    <button onclick="resetFilters()">Reset</button>
+</div>
+<table id="attendance-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Student</th>
+        <th>Course</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Rows will be dynamically inserted here -->
+    </tbody>
+</table>
 
-<!--<button onclick="showAddForm()">Add New</button>-->
+<button onclick="showAddForm()">Add New</button>
 
-<!--&lt;!&ndash; Modal for adding/editing attendance &ndash;&gt;-->
-<!--<div id="modal" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">-->
-<!--    <h2 id="modal-title">Add Attendance</h2>-->
-<!--    <form id="attendance-form">-->
-<!--        <input type="hidden" id="attendance-id">-->
-<!--        <label>-->
-<!--            Student ID:-->
-<!--            <input type="number" id="student-id" required>-->
-<!--        </label>-->
-<!--        <br><br>-->
-<!--        <label>-->
-<!--            Course ID:-->
-<!--            <input type="number" id="course-id" required>-->
-<!--        </label>-->
-<!--        <br><br>-->
-<!--        <label>-->
-<!--            Date:-->
-<!--            <input type="date" id="date" required>-->
-<!--        </label>-->
-<!--        <br><br>-->
-<!--        <label>-->
-<!--            Status:-->
-<!--            <select id="status" required>-->
-<!--                <option value="Присутствовал">Присутствовал</option>-->
-<!--                <option value="Отсутствовал">Отсутствовал</option>-->
-<!--            </select>-->
-<!--        </label>-->
-<!--        <br><br>-->
-<!--        <button type="button" onclick="saveAttendance()">Save</button>-->
-<!--        <button type="button" onclick="closeModal()">Cancel</button>-->
-<!--    </form>-->
-<!--</div>-->
-
+<!-- Modal for adding/editing attendance -->
+<div id="modal" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
+    <h2 id="modal-title">Add Attendance</h2>
+    <form id="attendance-form">
+        <input type="hidden" id="attendance-id">
+        <label>
+            Student ID:
+            <input type="number" id="student-id" required>
+        </label>
+        <br><br>
+        <label>
+            Course ID:
+            <input type="number" id="course-id" required>
+        </label>
+        <br><br>
+        <label>
+            Date:
+            <input type="date" id="date" required>
+        </label>
+        <br><br>
+        <label>
+            Status:
+            <select id="status" required>
+                <option value="Присутствовал">Присутствовал</option>
+                <option value="Отсутствовал">Отсутствовал</option>
+            </select>
+        </label>
+        <br><br>
+        <button type="button" onclick="saveAttendance()">Save</button>
+        <button type="button" onclick="closeModal()">Cancel</button>
+    </form>
+</div>
+<script type="module" src="../src/att/attendance.js" defer></script>
 </body>
-<script src="./att/attendance.js"></script>
 </html>

@@ -1,11 +1,87 @@
-import axios from "axios";
+const apiUrl = "http://localhost:8086/attendance";
 
-const data = axios
-    .get("http://localhost:8086/attendance", { withCredentials: true })
-    .then((res) => {
-        const body = document.getElementById('body_id');
-        body.innerHTML = JSON.stringify(res.data, null, 2);
-        console.log(res.data)
+export { fetchAttendance, renderTable, resetFilters, filterAttendance };
+window.filterAttendance = filterAttendance;
+window.resetFilters = resetFilters;
+window.fetchAttendance = fetchAttendance;
+window.renderTable = renderTable;
+
+
+function fetchAttendance() {
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => renderTable(data))
+        .catch(error => console.error("Error fetching attendance data:", error));
+}
+
+function renderTable(data) {
+    const tableBody = document.querySelector("#attendance-table tbody");
+    tableBody.innerHTML = "";
+
+    if (data.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6">No data available</td></tr>`;
+        return;
+    }
+
+    data.forEach(item => {
+        const row = `
+            <tr>
+                <td>${item.id}</td>
+                <td>${item.student.full_name}</td>
+                <td>${item.schedule.course_id.course_name}</td>
+                <td>${item.date}</td>
+                <td>${item.status}</td>
+                <td>
+                    <a href="#" onclick="editAttendance(${item.id})">Edit</a>
+                    <a href="#" onclick="deleteAttendance(${item.id})">Delete</a>
+                </td>
+            </tr>
+        `;
+        tableBody.innerHTML += row;
     });
+}
 
+// Сброс фильтров
+function resetFilters() {
+    document.getElementById("keyword").value = "";
+    document.getElementById("filter-date").value = "";
+    document.getElementById("filter-status").value = "";
+    fetchAttendance();
+}
 
+// Фильтрация по ключевому слову, дате и статусу
+function filterAttendance() {
+    const keyword = document.getElementById("keyword").value.toLowerCase();
+    const date = document.getElementById("filter-date").value;
+    const status = document.getElementById("filter-status").value;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            let filteredData = data;
+
+            if (keyword) {
+                filteredData = filteredData.filter(
+                    item =>
+                        item.student.full_name.toLowerCase().includes(keyword) ||
+                        item.schedule.course_id.course_name.toLowerCase().includes(keyword)
+                );
+            }
+
+            if (date) {
+                filteredData = filteredData.filter(item => item.date === date);
+            }
+
+            if (status) {
+                filteredData = filteredData.filter(item => item.status === status);
+            }
+
+            renderTable(filteredData);
+        })
+        .catch(error => console.error("Error filtering attendance:", error));
+}
+
+// Инициализация
+document.addEventListener("DOMContentLoaded", () => {
+    fetchAttendance();
+});

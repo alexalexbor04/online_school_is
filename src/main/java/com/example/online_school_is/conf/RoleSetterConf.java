@@ -46,7 +46,6 @@ public class RoleSetterConf implements CommandLineRunner {
 
         if (!repoUser.findByUsername("admin_s").isPresent()) {
             Users admin = new Users();
-//            Set<Roles> set = new HashSet<>();
             admin.setUsername("admin_s");
             admin.setEmail("admin@email.com");
             admin.setFull_name("bbb");
