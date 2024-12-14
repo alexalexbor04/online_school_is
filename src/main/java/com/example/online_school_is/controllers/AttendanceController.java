@@ -14,7 +14,7 @@ import java.util.List;
 
 /* уд, ред, доб - АДМИН
 * Просмотр - УЧИТЕЛЬ, СТУДЕНТ, АДМИН*/
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class AttendanceController {
 

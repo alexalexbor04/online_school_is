@@ -66,11 +66,10 @@ public class WebSecurityConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true); // Разрешить передачу cookies
-        config.addAllowedOriginPattern("http://localhost:*"); // Укажите ваш фронтенд (например, Vue/React/Angular)
+        config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("http://localhost:*");
         config.addAllowedHeader("*"); // Разрешить любые заголовки
         config.addAllowedMethod("*"); // Разрешить любые методы
-//        config.addExposedHeader("Authorization"); // Указать нужные заголовки, если это необходимо
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

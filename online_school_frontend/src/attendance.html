@@ -49,13 +49,8 @@
         </label>
         <br><br>
         <label>
-            Course ID:
-            <input type="number" id="course-id" required>
-        </label>
-        <br><br>
-        <label>
-            Date:
-            <input type="date" id="date" required>
+            Schedule ID:
+            <input type="number" id="schedule-id" required>
         </label>
         <br><br>
         <label>
@@ -66,10 +61,11 @@
             </select>
         </label>
         <br><br>
-        <button type="button" onclick="saveAttendance()">Save</button>
-        <button type="button" onclick="closeModal()">Cancel</button>
+        <button type="button" onclick="saveAttendance()">Сохранить</button>
+        <button type="button" onclick="closeModal()">Отменить</button>
     </form>
 </div>
 <script type="module" src="../src/att/attendance.js" defer></script>
+<script type="module" src="../src/att/modal_add.js" defer></script>
 </body>
 </html>

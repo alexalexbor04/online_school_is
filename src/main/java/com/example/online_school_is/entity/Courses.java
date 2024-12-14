@@ -18,7 +18,7 @@ public class Courses {
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "teacher_id", referencedColumnName = "id")
+    @JoinColumn(name = "teacher_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_courses_users"))
     private Users teacher_id;
 
     /* dependences*/

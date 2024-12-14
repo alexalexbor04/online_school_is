@@ -20,9 +20,6 @@ public class Attendance {
     @Column(name = "status", nullable = false)
     private String status;
 
-    @Column(name = "date", nullable = false)
-    private String date;
-
     public Attendance() {}
 
     public Long getId() { return id; }
@@ -40,9 +37,5 @@ public class Attendance {
     public String getStatus() { return status; }
 
     public void setStatus(String status) { this.status = status; }
-
-    public String getDate() { return date; }
-
-    public void setDate(String date) { this.date = date; }
 }
 

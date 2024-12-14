@@ -26,9 +26,9 @@ public class RoleSetterConf implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Roles studentRole = repoRole.findByName("studnet").orElseGet(() -> {
+        Roles admRole = repoRole.findByName("admin").orElseGet(() -> {
             Roles role = new Roles();
-            role.setName("studnet");
+            role.setName("admin");
             return repoRole.save(role);
         });
 
@@ -38,9 +38,9 @@ public class RoleSetterConf implements CommandLineRunner {
             return repoRole.save(role);
         });
 
-        Roles admRole = repoRole.findByName("admin").orElseGet(() -> {
+        Roles studentRole = repoRole.findByName("studnet").orElseGet(() -> {
             Roles role = new Roles();
-            role.setName("admin");
+            role.setName("studnet");
             return repoRole.save(role);
         });
 
