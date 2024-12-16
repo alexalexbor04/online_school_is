@@ -27,6 +27,12 @@ function fetchAttendance() {
             if (!response.ok) {
                 throw new Error(`Ошибка запроса: ${response.status}`);
             }
+            // if (response.status === 401) {
+            //     alert("Сессия завершена. Пожалуйста, авторизуйтесь снова.");
+            //     localStorage.removeItem("token"); // Удаляем токен из localStorage
+            //     window.location.href = "http://localhost:8086/"; // Редирект на страницу логина
+            //     throw new Error("Unauthorized");
+            // }
             return response.json();
         })
         .then(data => renderTable(data))

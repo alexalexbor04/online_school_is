@@ -11,7 +11,10 @@ window.closeEditModal = closeEditModal;
 function openEditModal(id) {
     const url = `${apiUrl}/edit/${id}`;
 
-    fetch(url)
+    fetch(url, {
+        method: "GET",
+        headers: getAuthHeaders(), // Добавляем заголовки с токеном
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error("Ошибка получения данных для редактирования");
@@ -27,6 +30,7 @@ function openEditModal(id) {
         })
         .catch(error => console.error("Error fetching attendance for edit:", error));
 }
+
 
 // Сохранить изменения
 function saveEditedAttendance() {
