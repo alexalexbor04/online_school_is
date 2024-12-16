@@ -1,8 +1,12 @@
 package com.example.online_school_is.conf;
 
 import com.example.online_school_is.services.UserServicesDet;
+import com.example.online_school_is.conf.JwtAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,11 +25,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.authentication.AuthenticationManager;
 
+
+import jakarta.servlet.ServletException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 @Configuration
@@ -38,13 +45,13 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register", "/auth/login").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jsonLoginFilter(authManager), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
                         .logoutSuccessUrl("/auth/login")
@@ -63,52 +70,16 @@ public class WebSecurityConfig {
                 .build();
     }
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public OncePerRequestFilter jsonLoginFilter(AuthenticationManager authManager) {
-        return new OncePerRequestFilter() {
-            private final ObjectMapper objectMapper = new ObjectMapper();
-
-            @Override
-            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-                    throws IOException, ServletException {
-                if ("/auth/login".equals(request.getRequestURI()) && HttpMethod.POST.matches(request.getMethod())) {
-                    try {
-                        // Чтение JSON данных
-                        Map<String, String> credentials = objectMapper.readValue(request.getInputStream(), Map.class);
-                        String username = credentials.get("username");
-                        String password = credentials.get("password");
-
-                        // Аутентификация через AuthenticationManager
-                        Authentication authRequest = new UsernamePasswordAuthenticationToken(username, password);
-                        Authentication authResult = authManager.authenticate(authRequest);
-
-                        // Установка аутентификации в SecurityContext
-                        SecurityContextHolder.getContext().setAuthentication(authResult);
-
-                        response.setStatus(HttpServletResponse.SC_OK);
-                        response.getWriter().write("Вход выполнен успешно!");
-                    } catch (Exception e) {
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.getWriter().write("Неправильное имя пользователя или пароль");
-                    }
-                } else {
-                    filterChain.doFilter(request, response);
-                }
-            }
-        };
-    }
-
-    @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("http://localhost:*"); // Разрешить все источники
+        config.addAllowedOriginPattern("*"); // Разрешить все источники
         config.addAllowedHeader("*"); // Разрешить все заголовки
         config.addAllowedMethod("*"); // Разрешить все методы (GET, POST и т.д.)
         config.addExposedHeader("Authorization"); // Если требуется передать заголовок

@@ -1,20 +1,42 @@
 const apiUrl = "http://localhost:8086/attendance";
 
-export { fetchAttendance, renderTable, resetFilters, filterAttendance, deleteAttendance};
+export { fetchAttendance, renderTable, resetFilters, filterAttendance, deleteAttendance, getAuthHeaders };
 window.filterAttendance = filterAttendance;
 window.resetFilters = resetFilters;
 window.fetchAttendance = fetchAttendance;
 window.renderTable = renderTable;
 window.deleteAttendance = deleteAttendance;
+window.getAuthHeaders = getAuthHeaders;
 
-
-function fetchAttendance() {
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => renderTable(data))
-        .catch(error => console.error("Error fetching attendance data:", error));
+// Функция получения токена из localStorage
+function getAuthHeaders() {
+    const token = localStorage.getItem("token");
+    return {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+    };
 }
 
+// Получение данных о посещаемости
+function fetchAttendance() {
+    fetch(apiUrl, {
+        method: "GET",
+        headers: getAuthHeaders(), // Добавляем заголовки с токеном
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Ошибка запроса: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => renderTable(data))
+        .catch(error => {
+            console.error("Error fetching attendance data:", error);
+            alert("Ошибка загрузки данных. Пожалуйста, проверьте авторизацию.");
+        });
+}
+
+// Отображение данных в таблице
 function renderTable(data) {
     const tableBody = document.querySelector("#attendance-table tbody");
     tableBody.innerHTML = "";
@@ -56,7 +78,10 @@ function filterAttendance() {
     const date = document.getElementById("filter-date").value;
     const status = document.getElementById("filter-status").value;
 
-    fetch(apiUrl)
+    fetch(apiUrl, {
+        method: "GET",
+        headers: getAuthHeaders(),
+    })
         .then(response => response.json())
         .then(data => {
             let filteredData = data;
@@ -82,13 +107,7 @@ function filterAttendance() {
         .catch(error => console.error("Error filtering attendance:", error));
 }
 
-// Инициализация
-document.addEventListener("DOMContentLoaded", () => {
-    fetchAttendance();
-});
-
-// export { deleteAttendance };
-
+// Удаление записи
 function deleteAttendance(id) {
     const confirmDelete = confirm("Вы уверены, что хотите удалить эту запись?");
     if (!confirmDelete) return;
@@ -97,7 +116,7 @@ function deleteAttendance(id) {
 
     fetch(url, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
     })
         .then(response => {
             if (!response.ok) {
@@ -109,4 +128,7 @@ function deleteAttendance(id) {
         .catch(error => console.error("Error deleting attendance:", error));
 }
 
-
+// Инициализация
+document.addEventListener("DOMContentLoaded", () => {
+    fetchAttendance();
+});

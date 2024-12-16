@@ -1,4 +1,4 @@
-import { fetchAttendance } from "./attendance.js";
+import {fetchAttendance, getAuthHeaders} from "./attendance.js";
 const apiUrl = "http://localhost:8086/attendance";
 
 export { openEditModal, saveEditedAttendance, closeEditModal };
@@ -45,7 +45,7 @@ function saveEditedAttendance() {
 
     fetch(url, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify(updatedAttendance)
     })
         .then(response => {

@@ -18,6 +18,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const errorMessage = document.getElementById("error-message");
 
             if (response.ok) {
+                const responseData = await response.json(); // Парсим JSON
+                const token = responseData.token;
+                localStorage.setItem("token", token); // Сохраняем токен
+                alert(responseData.message); // Показываем сообщение
                 window.location.href = "/attendance";
             } else if (response.status === 401) {
                 errorMessage.textContent = "Неправильное имя пользователя или пароль.";
@@ -28,8 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } catch (error) {
             console.error("Ошибка:", error);
-            errorMessage.textContent = "Ошибка подключения к серверу.";
-            errorMessage.style.display = "block";
+            alert("Ошибка подключения к серверу");
         }
 
     });

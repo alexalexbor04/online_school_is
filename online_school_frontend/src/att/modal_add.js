@@ -1,4 +1,4 @@
-import {fetchAttendance} from "./attendance.js";
+import {fetchAttendance, getAuthHeaders} from "./attendance.js";
 const apiUrl = "http://localhost:8086/attendance";
 
 export { showAddForm, saveAttendance, closeModal };
@@ -35,7 +35,7 @@ function saveAttendance() {
     // Отправка данных на сервер
     fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify(attendance),
     })
         .then(response => {
