@@ -3,6 +3,7 @@ package com.example.online_school_is.controllers;
 import com.example.online_school_is.entity.Attendance;
 import com.example.online_school_is.repos.AttendanceRepository;
 import com.example.online_school_is.services.AttendanceService;
+import org.hibernate.boot.model.source.spi.PluralAttributeElementNature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,6 @@ public class AttendanceController {
     @PreAuthorize("hasRole('admin')")
     public ResponseEntity<Attendance> createAttendance(@RequestBody Attendance attendance) {
         try {
-            // Сохраняем объект в базе
             Attendance createdAtt = service.save(attendance);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdAtt);
         } catch (Exception e) {
@@ -54,6 +54,25 @@ public class AttendanceController {
         return attendance != null
                 ? ResponseEntity.ok(attendance)
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @PutMapping("/attendance/edit/{id}")
+    @PreAuthorize("hasRole('teacher')")
+    public ResponseEntity<Attendance> updateAttendance(@PathVariable Long id, @RequestBody Attendance attendance) {
+        try {
+            Attendance existAtt = service.get(id);
+            if (existAtt != null) {
+                existAtt.setStudent(attendance.getStudent());
+                existAtt.setSchedule(attendance.getSchedule());
+                existAtt.setStatus(attendance.getStatus());
+                Attendance saveAtt = repo.save(existAtt);
+                return ResponseEntity.ok(saveAtt);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @DeleteMapping("/attendance/{id}")

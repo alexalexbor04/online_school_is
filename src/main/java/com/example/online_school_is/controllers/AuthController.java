@@ -39,8 +39,8 @@ public class AuthController {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        Roles userRole = roleRepository.findByName("STUDENT")
-                .orElseThrow(() -> new RuntimeException("Роль STUDENT не найдена"));
+        Roles userRole = roleRepository.findByName("student")
+                .orElseThrow(() -> new RuntimeException("Роль student не найдена"));
         user.setRoles(userRole);
 
         userRepository.save(user);
@@ -55,14 +55,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody Users user) {
-        Users existingUser = userRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
-
-        if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неправильное имя пользователя или пароль");
-        }
-        return ResponseEntity.ok("Вход выполнен успешно!");
+        return userRepository.findByUsername(user.getUsername())
+                .filter(existingUser -> passwordEncoder.matches(user.getPassword(), existingUser.getPassword()))
+                .map(existingUser -> ResponseEntity.ok("Вход выполнен успешно!"))
+                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Неправильное имя пользователя или пароль"));
     }
+
 
     @GetMapping("/login")
     public ResponseEntity<Void> loginPage() {

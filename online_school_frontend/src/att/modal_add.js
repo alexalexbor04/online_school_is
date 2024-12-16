@@ -13,7 +13,7 @@ function showAddForm() {
     document.getElementById("student-id").value = "";
     document.getElementById("schedule-id").value = "";
     document.getElementById("status").value = "Присутствовал";
-    document.getElementById("modal").style.display = "block";
+    document.getElementById("modal_add").style.display = "block";
 }
 
 function saveAttendance() {
@@ -30,7 +30,7 @@ function saveAttendance() {
 
     const url = `${apiUrl}/new`;
 
-    console.log("Отправляемые данные:", JSON.stringify(attendance));
+    // console.log("Отправляемые данные:", JSON.stringify(attendance)); ОТПРАВЛЕННЫЕ ДАННЫЕ
 
     // Отправка данных на сервер
     fetch(url, {
@@ -49,5 +49,5 @@ function saveAttendance() {
 }
 
 function closeModal() {
-    document.getElementById("modal").style.display = "none";
+    document.getElementById("modal_add").style.display = "none";
 }

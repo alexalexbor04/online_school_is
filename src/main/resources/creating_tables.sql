@@ -127,7 +127,7 @@ INSERT INTO grades (student_id, course_id, grade, comment, date) VALUES
 INSERT INTO attendance (student_id, schedule_id, status) VALUES
                                                                    (4, 1, 'Присутствовал'),
                                                                    (5, 1, 'Отсутствовал'),
-                                                                   (6, 2, 'Присутствовал'),
+                                                                  (6, 2, 'Присутствовал'),
                                                                    (7, 3, 'Присутствовал'),
                                                                    (8, 4, 'Присутствовал'),
                                                                    (9, 5, 'Отсутствовал');

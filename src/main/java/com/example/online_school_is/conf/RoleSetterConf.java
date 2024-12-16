@@ -38,9 +38,9 @@ public class RoleSetterConf implements CommandLineRunner {
             return repoRole.save(role);
         });
 
-        Roles studentRole = repoRole.findByName("studnet").orElseGet(() -> {
+        Roles studentRole = repoRole.findByName("student").orElseGet(() -> {
             Roles role = new Roles();
-            role.setName("studnet");
+            role.setName("student");
             return repoRole.save(role);
         });
 

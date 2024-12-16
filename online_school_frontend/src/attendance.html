@@ -36,11 +36,11 @@
     </tbody>
 </table>
 
-<button onclick="showAddForm()">Add New</button>
+<button onclick="showAddForm()">Добавить</button>
 
 <!-- модальное окно для добавления -->
-<div id="modal" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
-    <h2 id="modal-title">Add Attendance</h2>
+<div id="modal_add" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
+    <h2 id="modal-title">Добавить помещение</h2>
     <form id="attendance-form">
         <input type="hidden" id="attendance-id">
         <label>
@@ -65,7 +65,45 @@
         <button type="button" onclick="closeModal()">Отменить</button>
     </form>
 </div>
+
+<!-- Модальное окно для редактирования -->
+<div id="edit-modal" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
+    <h2 id="edit-modal-title">Редактировать</h2>
+    <form id="edit-attendance-form">
+        <input type="hidden" id="edit-attendance-id">
+        <label>
+            Student ID:
+            <input type="number" id="edit-student-id" required>
+        </label>
+        <br><br>
+        <label>
+            Schedule ID:
+            <input type="number" id="edit-schedule-id" required>
+        </label>
+        <br><br>
+        <label>
+            Status:
+            <select id="edit-status" required>
+                <option value="Присутствовал">Присутствовал</option>
+                <option value="Отсутствовал">Отсутствовал</option>
+            </select>
+        </label>
+        <br><br>
+        <button type="button" onclick="saveEditedAttendance()">Сохранить</button>
+        <button type="button" onclick="closeEditModal()">Отменить</button>
+    </form>
+</div>
+
+
 <script type="module" src="../src/att/attendance.js" defer></script>
 <script type="module" src="../src/att/modal_add.js" defer></script>
+<script type="module" src="../src/att/modal_edit.js" defer></script>
 </body>
 </html>
+
+
+<!-- add counted amount rows in the table-->
+<!-- SORT-->
+<!-- role parsing-->
+<!-- check all the possible bags and mistakes-->
+<!-- modals for all the mistakes-->

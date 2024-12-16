@@ -1,10 +1,11 @@
 const apiUrl = "http://localhost:8086/attendance";
 
-export { fetchAttendance, renderTable, resetFilters, filterAttendance};
+export { fetchAttendance, renderTable, resetFilters, filterAttendance, deleteAttendance};
 window.filterAttendance = filterAttendance;
 window.resetFilters = resetFilters;
 window.fetchAttendance = fetchAttendance;
 window.renderTable = renderTable;
+window.deleteAttendance = deleteAttendance;
 
 
 function fetchAttendance() {
@@ -32,8 +33,8 @@ function renderTable(data) {
                 <td>${item.schedule.date}</td>
                 <td>${item.status}</td>
                 <td>
-                    <a href="#" onclick="editAttendance(${item.id})">Edit</a>
-                    <a href="#" onclick="deleteAttendance(${item.id})">Delete</a>
+                    <a href="#" onclick="openEditModal(${item.id})">Редактировать</a>
+                    <a href="#" onclick="deleteAttendance(${item.id})">Удалить</a>
                 </td>
             </tr>
         `;
@@ -85,4 +86,27 @@ function filterAttendance() {
 document.addEventListener("DOMContentLoaded", () => {
     fetchAttendance();
 });
+
+// export { deleteAttendance };
+
+function deleteAttendance(id) {
+    const confirmDelete = confirm("Вы уверены, что хотите удалить эту запись?");
+    if (!confirmDelete) return;
+
+    const url = `${apiUrl}/${id}`;
+
+    fetch(url, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Ошибка удаления записи");
+            }
+            alert("Запись успешно удалена");
+            fetchAttendance(); // Обновить таблицу после удаления
+        })
+        .catch(error => console.error("Error deleting attendance:", error));
+}
+
 
