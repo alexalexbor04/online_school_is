@@ -1,14 +1,17 @@
 const apiUrl = "http://localhost:8086/attendance";
 
-export { fetchAttendance, renderTable, resetFilters, filterAttendance, deleteAttendance, getAuthHeaders };
+export { fetchAttendance, renderTable, resetFilters, filterAttendance, deleteAttendance,
+    getAuthHeaders, sortAttendanceByDate, sortAttendanceByStudent, sortAttendanceByCourse };
 window.filterAttendance = filterAttendance;
 window.resetFilters = resetFilters;
 window.fetchAttendance = fetchAttendance;
 window.renderTable = renderTable;
 window.deleteAttendance = deleteAttendance;
 window.getAuthHeaders = getAuthHeaders;
+window.sortAttendanceByCourse = sortAttendanceByCourse;
+window.sortAttendanceByStudent = sortAttendanceByStudent;
+window.sortAttendanceByDate = sortAttendanceByDate;
 
-// Функция получения токена из localStorage
 function getAuthHeaders() {
     const token = localStorage.getItem("token");
     return {
@@ -17,11 +20,12 @@ function getAuthHeaders() {
     };
 }
 
-// Получение данных о посещаемости
+let attendanceData = [];
+
 function fetchAttendance() {
     fetch(apiUrl, {
         method: "GET",
-        headers: getAuthHeaders(), // Добавляем заголовки с токеном
+        headers: getAuthHeaders(),
     })
         .then(response => {
             if (!response.ok) {
@@ -35,20 +39,38 @@ function fetchAttendance() {
             // }
             return response.json();
         })
-        .then(data => renderTable(data))
+        .then(data => {
+            attendanceData = data;
+            renderTable(attendanceData)
+        })
         .catch(error => {
             console.error("Error fetching attendance data:", error);
             alert("Ошибка загрузки данных. Пожалуйста, проверьте авторизацию.");
         });
 }
 
-// Отображение данных в таблице
+function sortAttendanceByDate() {
+    attendanceData.sort((a, b) => new Date(a.schedule.date) - new Date(b.schedule.date));
+    renderTable(attendanceData);
+}
+
+function sortAttendanceByStudent() {
+    attendanceData.sort((a, b) => a.student.full_name.localeCompare(b.student.full_name));
+    renderTable(attendanceData);
+}
+
+function sortAttendanceByCourse() {
+    attendanceData.sort((a, b) => a.schedule.course_id.course_name.localeCompare(b.schedule.course_id.course_name));
+    renderTable(attendanceData);
+}
+
 function renderTable(data) {
     const tableBody = document.querySelector("#attendance-table tbody");
     tableBody.innerHTML = "";
 
     if (data.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="6">No data available</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6">Нет доступных данных</td></tr>`;
+        updateRowCount(0);
         return;
     }
 
@@ -68,9 +90,13 @@ function renderTable(data) {
         `;
         tableBody.innerHTML += row;
     });
+    updateRowCount(data.length);
 }
 
-// Сброс фильтров
+function updateRowCount(count) {
+    document.getElementById("row-count").textContent = count;
+}
+
 function resetFilters() {
     document.getElementById("keyword").value = "";
     document.getElementById("filter-date").value = "";
@@ -78,7 +104,6 @@ function resetFilters() {
     fetchAttendance();
 }
 
-// Фильтрация по ключевому слову, дате и статусу
 function filterAttendance() {
     const keyword = document.getElementById("keyword").value.toLowerCase();
     const date = document.getElementById("filter-date").value;
@@ -110,10 +135,9 @@ function filterAttendance() {
 
             renderTable(filteredData);
         })
-        .catch(error => console.error("Error filtering attendance:", error));
+        .catch(error => console.error("Ошибка фильтров:", error));
 }
 
-// Удаление записи
 function deleteAttendance(id) {
     const confirmDelete = confirm("Вы уверены, что хотите удалить эту запись?");
     if (!confirmDelete) return;
@@ -131,10 +155,9 @@ function deleteAttendance(id) {
             alert("Запись успешно удалена");
             fetchAttendance(); // Обновить таблицу после удаления
         })
-        .catch(error => console.error("Error deleting attendance:", error));
+        .catch(error => console.error("Ошибка удаления:", error));
 }
 
-// Инициализация
 document.addEventListener("DOMContentLoaded", () => {
     fetchAttendance();
 });

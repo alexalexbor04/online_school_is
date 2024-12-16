@@ -10,14 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('admin')") // Применяется ко всем методам
-public class AdmController {
+public class UserController {
 
     @Autowired
     private UserRepository userRepository;

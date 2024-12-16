@@ -9,6 +9,13 @@
 
 <h1>Посещаемость</h1>
 
+<div style="margin-top: 10px;">
+    <button onclick="sortAttendanceByDate()">Сортировать по дате</button>
+    <button onclick="sortAttendanceByStudent()">Сортировать по имени студента</button>
+    <button onclick="sortAttendanceByCourse()">Сортировать по названию курса</button>
+</div>
+
+
 <div class="filter-form">
     <input type="text" id="keyword" placeholder="Поиск">
     <input type="date" id="filter-date">
@@ -36,6 +43,11 @@
     </tbody>
 </table>
 
+<div id="total-rows">
+    Всего записей: <span id="row-count">0</span>
+</div>
+
+
 <button onclick="showAddForm()">Добавить</button>
 
 <!-- модальное окно для добавления -->
@@ -44,13 +56,17 @@
     <form id="attendance-form">
         <input type="hidden" id="attendance-id">
         <label>
-            Student ID:
-            <input type="number" id="student-id" required>
+            Student:
+            <select id="student-id" required>
+                <option value="">Выберите студента</option>
+            </select>
         </label>
         <br><br>
         <label>
-            Schedule ID:
-            <input type="number" id="schedule-id" required>
+            Schedule:
+            <select id="schedule-id" required>
+                <option value="">Выберите курс и дату</option>
+            </select>
         </label>
         <br><br>
         <label>
@@ -102,8 +118,6 @@
 </html>
 
 
-<!-- add counted amount rows in the table-->
-<!-- SORT-->
 <!-- role parsing-->
 <!-- check all the possible bags and mistakes-->
 <!-- modals for all the mistakes-->
