@@ -5,12 +5,15 @@ import com.example.online_school_is.entity.Users;
 import com.example.online_school_is.repos.RoleRepository;
 import com.example.online_school_is.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Key;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -25,22 +28,20 @@ public class UserController {
 
     // Получение списка пользователей
     @GetMapping("/users")
-    public ResponseEntity<List<Users>> listUsers() {
-        List<Users> users = userRepository.findAll();
+    public ResponseEntity<List<Users>> listUsers(@Param("keyword") String keyword) {
+        List<Users> users;
+        if (keyword != null) {
+            users = userRepository.searchUsers(keyword);
+        } else {
+            users = userRepository.findAll();
+        }
         return ResponseEntity.ok(users);
-    }
-
-    // Получение пользователя по ID
-    @GetMapping("/users/{id}")
-    public ResponseEntity<Users> getUserById(@PathVariable("id") Long id) {
-        Users user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Пользователь с ID " + id + " не найден"));
-        return ResponseEntity.ok(user);
     }
 
     // Изменение роли пользователя
     @PutMapping("/users/{id}/changeRole")
-    public ResponseEntity<String> changeRole(@PathVariable("id") Long id, @RequestParam("role_name") String roleName) {
+    public ResponseEntity<String> changeRole(@PathVariable("id") Long id, @RequestBody Map<String, String> body) {
+        String roleName = body.get("role");
         Users user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Пользователь с ID " + id + " не найден"));
 
@@ -52,6 +53,7 @@ public class UserController {
         return ResponseEntity.ok("Роль пользователя успешно изменена");
     }
 
+
     // Удаление пользователя
     @DeleteMapping("/users/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
@@ -61,19 +63,5 @@ public class UserController {
         userRepository.delete(user);
 
         return ResponseEntity.ok("Пользователь с ID " + id + " успешно удалён");
-    }
-
-    // Создание нового пользователя (администратор может добавить нового пользователя)
-    @PostMapping("/users")
-    public ResponseEntity<Users> createUser(@RequestBody Users user) {
-        if (user.getRoles() == null) {
-            // Если роли не указаны, по умолчанию назначаем роль STUDENT
-            Roles userRole = roleRepository.findByName("student")
-                    .orElseThrow(() -> new IllegalArgumentException("Роль student не найдена"));
-            user.setRoles(userRole);
-        }
-
-        Users createdUser = userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 }

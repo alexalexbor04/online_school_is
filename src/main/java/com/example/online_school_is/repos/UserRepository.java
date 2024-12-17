@@ -11,14 +11,10 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<Users, Long> {
 
-    //нельзя показывать ПАРОЛИ А ВЫВОДЕ НА СТРАНИЦУ!!!!!!
-
-//    Optional<Users> getAll();
-
     Optional<Users> findByUsername(String username);
 
-//    @Query("select p from users p where concat(p.id, '', p.username, '', p.password, '', " +
-//            "p.role_id, '', p.full_name, '', p.email, '', p.phone) like %?1%")
-//    List<Users> searchUsers(String keyword);
+    @Query("select p from Users p where concat(p.id, '', p.username, '', p.role, '', " +
+            "p.full_name, '', p.email, '', p.phone) like %?1%")
+    List<Users> searchUsers(String keyword);
 }
 

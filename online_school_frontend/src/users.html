@@ -1,24 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body id="body_id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Пользователи</title>
+</head>
+<body id = "body-id">
 
-  </body>
-<!--  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>-->
-  <script>
-    import axios from "axios";
+<h1>Пользователи</h1>
 
-    let axios;
-    const data = axios
-      .get("http://localhost:8086/admin/users", { withCredentials: true })
-      .then((res) => {
-        const body = document.getElementById('body_id');
-        body.innerHTML = JSON.stringify(res.data, null, 2);
-        console.log(res.data)
-      });
-  </script>
+<div style="margin-top: 10px;">
+  <button onclick="sortUsersByFullName()">Сортировать по имени</button>
+  <button onclick="sortUsersByRole()">Сортировать по роли</button>
+</div>
+
+<div class = "filter-users">
+  <input type="text" id="keyword" placeholder="Поиск">
+  <select id="filter-status">
+    <option value="">Роль</option>
+    <option value="admin">admin</option>
+    <option value="teacher">teacher</option>
+    <option value="student">student</option>
+  </select>
+  <button onclick="filterUsers()">Найти</button>
+  <button onclick="resetFilters()">Очистить</button>
+</div>
+
+<table id="users-table">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Username</th>
+    <th>Role</th>
+    <th>Full name</th>
+    <th>Email</th>
+    <th>Phone</th>
+  </tr>
+  </thead>
+  <tbody>
+
+  </tbody>
+</table>
+
+<div id="total-rows">
+  Всего записей: <span id="row-count">0</span>
+</div>
+
+<!-- Модальное окно для редактирования роли пользователя -->
+<div id="edit-modal-users" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
+  <h2>Редактировать роль пользователя</h2>
+  <form id="edit-role-form">
+    <input type="hidden" id="edit-user-id">
+    <label>
+      Username:
+      <input type="text" id="edit-username" disabled>
+    </label>
+    <br><br>
+    <label>
+      Role:
+      <select id="edit-role">
+        <option value="admin">admin</option>
+        <option value="teacher">teacher</option>
+        <option value="student">student</option>
+      </select>
+    </label>
+    <br><br>
+    <button type="button" onclick="saveUserRole()">Сохранить</button>
+    <button type="button" onclick="closeEditModal()">Отменить</button>
+  </form>
+</div>
+
+
+<script type="module" src="../src/user/users.js" defer></script>
+
+</body>
 </html>
