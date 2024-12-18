@@ -20,12 +20,13 @@ public class GradesService {
         return repoGrades.findAll();
     }
 
-    public void save(Grades grades) {
+    public Grades save(Grades grades) {
         repoGrades.save(grades);
+        return grades;
     }
 
-    public void delete(Grades grades) {
-        repoGrades.delete(grades);
+    public void delete(Long id) {
+        repoGrades.deleteById(id);
     }
 
     public Grades get(Long id) {
