@@ -20,12 +20,13 @@ public class CoursesService {
         return repoCour.findAll();
     }
 
-    public void save(Courses courses) {
+    public Courses save(Courses courses) {
         repoCour.save(courses);
+        return courses;
     }
 
-    public void delete(Courses courses) {
-        repoCour.delete(courses);
+    public void delete(Long id) {
+        repoCour.deleteById(id);
     }
 
     public Courses get(Long id) {

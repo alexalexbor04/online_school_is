@@ -53,8 +53,6 @@ public class UserController {
         return ResponseEntity.ok("Роль пользователя успешно изменена");
     }
 
-
-    // Удаление пользователя
     @DeleteMapping("/users/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
         Users user = userRepository.findById(id)

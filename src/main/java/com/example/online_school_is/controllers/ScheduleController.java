@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RequestMapping("/schedule")
-@PreAuthorize("hasRole('admin, teacher')")
 @RestController
 public class ScheduleController {
 
@@ -24,7 +23,7 @@ public class ScheduleController {
     private ScheduleRepository repo;
 
     @GetMapping("/")
-    public ResponseEntity<List<Schedule>> viewAttendance(@Param("keyword") String keyword) {
+    public ResponseEntity<List<Schedule>> viewSchedule(@Param("keyword") String keyword) {
         List<Schedule> listSch;
         if (keyword != null) {
             listSch = service.listAll(keyword);
@@ -34,6 +33,7 @@ public class ScheduleController {
         return ResponseEntity.ok(listSch);
     }
 
+    @PreAuthorize("hasRole('admin')")
     @PostMapping("/new")
     public ResponseEntity<Schedule> newSchedule(@RequestBody Schedule schedule) {
         try {
@@ -44,6 +44,7 @@ public class ScheduleController {
         }
     }
 
+    @PreAuthorize("hasRole('admin, teacher')")
     @GetMapping("/edit/{id}")
     public ResponseEntity<Schedule> editSchedule(@PathVariable Long id) {
         Schedule schedule = service.get(id);
@@ -52,6 +53,7 @@ public class ScheduleController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @PreAuthorize("hasRole('admin, teacher')")
     @PutMapping("/edit/{id}")
     public ResponseEntity<Schedule> updateSchedule(@PathVariable Long id, @RequestBody Schedule schedule) {
         try {
@@ -62,8 +64,8 @@ public class ScheduleController {
                 existSch.setStart_time(schedule.getStart_time());
                 existSch.setEnd_time(schedule.getEnd_time());
                 existSch.setCourse_id(schedule.getCourse_id());
-                Schedule saveAtt = repo.save(existSch);
-                return ResponseEntity.ok(saveAtt);
+                Schedule saveSch = service.save(existSch);
+                return ResponseEntity.ok(saveSch);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
@@ -72,6 +74,7 @@ public class ScheduleController {
         }
     }
 
+    @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Schedule> deleteSchedule(@PathVariable Long id) {
         try {

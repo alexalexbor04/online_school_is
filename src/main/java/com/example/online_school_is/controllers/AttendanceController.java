@@ -65,7 +65,7 @@ public class AttendanceController {
                 existAtt.setStudent(attendance.getStudent());
                 existAtt.setSchedule(attendance.getSchedule());
                 existAtt.setStatus(attendance.getStatus());
-                Attendance saveAtt = repo.save(existAtt);
+                Attendance saveAtt = service.save(existAtt);
                 return ResponseEntity.ok(saveAtt);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
