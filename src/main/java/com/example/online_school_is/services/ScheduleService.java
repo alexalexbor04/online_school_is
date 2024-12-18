@@ -20,8 +20,9 @@ public class ScheduleService {
         return repoSch.findAll();
     }
 
-    public void save(Schedule schedule) {
+    public Schedule save(Schedule schedule) {
         repoSch.save(schedule);
+        return schedule;
     }
 
     public Schedule get(Long id) {
