@@ -1,6 +1,5 @@
 package com.example.online_school_is.controllers;
 
-import com.example.online_school_is.entity.Courses;
 import com.example.online_school_is.entity.Grades;
 import com.example.online_school_is.repos.GradesRepository;
 import com.example.online_school_is.services.GradesService;
@@ -77,7 +76,7 @@ public class GradesController {
 
     @PreAuthorize("hasRole('teacher')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Grades> deleteCourse(@PathVariable Long id) {
+    public ResponseEntity<Grades> deleteGrade(@PathVariable Long id) {
         try {
             service.delete(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

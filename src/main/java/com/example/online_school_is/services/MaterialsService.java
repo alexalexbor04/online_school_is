@@ -20,12 +20,13 @@ public class MaterialsService {
         return repoMat.findAll();
     }
 
-    public void save(Materials mat) {
+    public Materials save(Materials mat) {
         repoMat.save(mat);
+        return mat;
     }
 
-    public void delete(Materials mat) {
-        repoMat.delete(mat);
+    public void delete(Long id) {
+        repoMat.deleteById(id);
     }
 
     public Materials get(Long id) {
