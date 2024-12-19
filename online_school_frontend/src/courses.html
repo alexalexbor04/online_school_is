@@ -4,7 +4,101 @@
     <meta charset="UTF-8">
     <title>Курсы</title>
 </head>
-<body>
+<body id = "body-id">
+
+<h1>Курсы</h1>
+
+<a href="/admin/users">Users</a></p>
+<a href="/schedule">Schedule</a></p>
+<a href="/attendance">Attendance</a></p>
+<a href="/courses">Courses</a></p>
+<a href="/#">Grades</a></p>
+<a href="/#">Materials</a></p>
+
+<div style="margin-top: 10px;">
+    <button onclick="sortCoursesByName()">Сортировать по дате</button>
+</div>
+
+<div class="filter-form">
+    <input type="text" id="keyword" placeholder="Поиск">
+    <button onclick="filterCourses()">Найти</button>
+    <button onclick="resetFilters()">Очистить</button>
+</div>
+
+<table id="courses-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Course_name</th>
+        <th>Description</th>
+        <th>Teacher_name</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+<div id="total-rows">
+    Всего записей: <span id="row-count">0</span>
+</div>
+
+<button onclick="showAddForm()">Добавить</button>
+
+<!--ADD MODAL-->
+<div id="modal_add" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
+    <h2 id="modal-title">Добавить курс</h2>
+    <form id="course-form">
+        <input type="hidden" id="course-id">
+        <label>
+            Course_name:
+            <input type="text" id="course-name" required>
+        </label>
+        <br><br>
+        <label>
+            Description:
+            <input type="text" id="description" required>
+        </label>
+        <br><br>
+        <label>
+            TeacherID:
+            <select id="student-id" required>
+                <option value="">Выберите имя учителя</option>
+            </select>
+        </label>
+        <br><br>
+        <button type="button" onclick="saveCourses()">Сохранить</button>
+        <button type="button" onclick="closeModal()">Отменить</button>
+    </form>
+</div>
+
+<!--EDIT MODAL-->
+<div id="edit-modal" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
+    <h2 id="edit-modal-title">Редактировать</h2>
+    <form id="edit-course-form">
+        <input type="hidden" id="edit-course-id">
+        <label>
+            Course name:
+            <input type="text" id="edit-course-name" required>
+        </label>
+        <br><br>
+        <label>
+            Description:
+            <input type="text" id="edit-description" required>
+        </label>
+        <br><br>
+        <label>
+            TeacherID:
+            <input type="number" id="edit-teacher-id" required>
+        </label>
+        <br><br>
+        <button type="button" onclick="saveEditedCourse()">Сохранить</button>
+        <button type="button" onclick="closeEditModal()">Отменить</button>
+    </form>
+</div>
+
+
+<script type="module" src="../src/courses/courses.js" defer></script>
 
 </body>
 </html>

@@ -230,7 +230,8 @@ function deleteSchedule(id) {
 // Запрос списка курсов для формы добавления
 function fetchCourses() {
     // Замените путь на ваш API для получения курсов
-    fetch("http://localhost:8086/courses", { headers: getAuthHeaders() })
+    fetch("http://localhost:8086/courses",
+        { headers: getAuthHeaders()})
         .then(response => response.json())
         .then(courses => {
             const courseSelect = document.getElementById("course-id");
