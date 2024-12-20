@@ -40,7 +40,7 @@ function fetchAttendance() {
         .catch(error => {
             console.error("Error fetching attendance data:", error);
             alert("Ошибка загрузки данных. Пожалуйста, проверьте авторизацию.");
-            // редирект
+            window.location.href = "/auth/login";
         });
 }
 

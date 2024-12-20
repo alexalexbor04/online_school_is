@@ -11,6 +11,8 @@ export {
     saveEditedCourse,
     closeModal,
     closeEditModal,
+    showAddForm,
+    openEditModal
 };
 
 window.getAuthHeaders = getAuthHeaders;
@@ -23,6 +25,8 @@ window.saveCourses = saveCourses;
 window.saveEditedCourse = saveEditedCourse;
 window.closeModal = closeModal;
 window.closeEditModal = closeEditModal;
+window.showAddForm = showAddForm;
+window.openEditModal = openEditModal;
 
 let coursesData = [];
 
@@ -31,32 +35,29 @@ function getAuthHeaders() {
     const token = localStorage.getItem("token");
     return {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "Authorization": `Bearer ${token}`,
     };
 }
 
 // Получение курсов с сервера
 function fetchCourses() {
-    fetch(apiUrl, {
-        method: "GET",
-        headers: getAuthHeaders(),
-    })
-        .then((response) => {
+    fetch(apiUrl + "/", { headers: getAuthHeaders() })
+        .then(response => {
             if (!response.ok) {
                 throw new Error(`Ошибка запроса: ${response.status}`);
             }
             return response.json();
         })
-        .then((data) => {
+        .then(data => {
             coursesData = data;
             renderTable(coursesData);
         })
-        .catch((error) => {
-            console.error("Ошибка загрузки данных курсов", error);
+        .catch(error => {
+            console.error("Ошибка загрузки курсов:", error);
             alert("Ошибка загрузки данных. Проверьте авторизацию.");
+            // window.location.href = "/auth/login";
         });
 }
-
 // Отображение таблицы курсов
 function renderTable(data) {
     const tableBody = document.querySelector("#courses-table tbody");
@@ -72,9 +73,9 @@ function renderTable(data) {
         const row = `
       <tr>
         <td>${course.id}</td>
-        <td>${course.name}</td>
+        <td>${course.course_name}</td>
         <td>${course.description}</td>
-        <td>${course.teacher.name}</td>
+        <td>${course.teacher_id.full_name}</td>
         <td>
           <a href="#" onclick="openEditModal(${course.id})">Редактировать</a>
           <a href="#" onclick="deleteCourse(${course.id})">Удалить</a>
@@ -88,7 +89,7 @@ function renderTable(data) {
 
 // Сортировка по имени курса
 function sortCoursesByName() {
-    coursesData.sort((a, b) => a.name.localeCompare(b.name));
+    coursesData.sort((a, b) => a.course_name.localeCompare(b.course_name));
     renderTable(coursesData);
 }
 
@@ -98,8 +99,9 @@ function filterCourses() {
 
     const filteredData = coursesData.filter(
         (course) =>
-            course.name.toLowerCase().includes(keyword) ||
-            course.description.toLowerCase().includes(keyword)
+            course.course_name.toLowerCase().includes(keyword) ||
+            course.description.toLowerCase().includes(keyword) ||
+            course.teacher_id.full_name.toLowerCase().includes(keyword)
     );
 
     renderTable(filteredData);
@@ -142,17 +144,14 @@ function saveCourses() {
 }
 
 // Открыть модальное окно редактирования
-function openEditModal(courseId) {
-    const course = coursesData.find((c) => c.id === courseId);
-    if (!course) {
-        alert("Курс не найден!");
-        return;
-    }
+function openEditModal(id) {
+    const course = coursesData.find(cour => cour.id === id);
+    if (!course) return;
 
     document.getElementById("edit-course-id").value = course.id;
-    document.getElementById("edit-course-name").value = course.name;
+    document.getElementById("edit-course-name").value = course.course_name;
     document.getElementById("edit-description").value = course.description;
-    document.getElementById("edit-teacher-id").value = course.teacher.id;
+    document.getElementById("edit-teacher-id").value = course.teacher_id.id;
 
     document.getElementById("edit-modal").style.display = "block";
 }
@@ -160,14 +159,11 @@ function openEditModal(courseId) {
 // Сохранить изменения курса
 function saveEditedCourse() {
     const courseId = document.getElementById("edit-course-id").value;
-    const name = document.getElementById("edit-course-name").value;
-    const description = document.getElementById("edit-description").value;
-    const teacherId = document.getElementById("edit-teacher-id").value;
 
     const updatedCourse = {
-        name,
-        description,
-        teacher: { id: parseInt(teacherId) },
+        course_name: document.getElementById("edit-course-name").value,
+        description: document.getElementById("edit-description").value,
+        teacher_id: { id: document.getElementById("edit-teacher-id").value },
     };
 
     fetch(`${apiUrl}/edit/${courseId}`, {
@@ -179,14 +175,16 @@ function saveEditedCourse() {
             if (!response.ok) {
                 throw new Error("Ошибка обновления курса");
             }
+            alert("Курс успешно обновлен!");
             closeEditModal();
-            fetchCourses();
+            fetchCourses(); // Обновить список курсов после сохранения изменений
         })
         .catch((error) => {
-            console.error("Ошибка обновления курса", error);
+            console.error("Ошибка обновления курса:", error);
             alert("Ошибка сохранения изменений.");
         });
 }
+
 
 // Удаление курса
 function deleteCourse(courseId) {
@@ -212,6 +210,11 @@ function deleteCourse(courseId) {
 // Закрытие модальных окон
 function closeModal() {
     document.getElementById("modal_add").style.display = "none";
+}
+
+function showAddForm() {
+    document.getElementById("modal_add").style.display = "block";
+    fetchCourses();
 }
 
 function closeEditModal() {

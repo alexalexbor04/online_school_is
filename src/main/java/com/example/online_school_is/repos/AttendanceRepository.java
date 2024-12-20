@@ -14,8 +14,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
             "p.status) like %?1%")
     List<Attendance> searchAttendance(String keyword);
 
-    //    @Query("SELECT p FROM Attendance p WHERE DATE(p.date) = ?1")
-    //    List<Attendance> filterByDate(java.sql.Date date);
 
     @Query("SELECT p FROM Attendance p WHERE DATE(p.status) = ?1")
     List<Attendance> filterByStatus(String status);

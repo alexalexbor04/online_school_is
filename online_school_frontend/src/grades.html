@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Расписание</title>
+    <title>Оценки</title>
 </head>
 <body id = "body-id">
 
-<h1>Расписание</h1>
+<h1>Оценки</h1>
 
 <a href="/attendance">Attendance</a></p>
 <a href="/schedule">Schedule</a></p>
@@ -17,35 +17,35 @@
 <a href="/materials">Materials</a></p>
 
 <div style="margin-top: 10px;">
-    <button onclick="sortScheduleByDate()">Сортировать по дате</button>
-    <button onclick="sortScheduleByStartTime()">Сортировать по началу урока</button>
-    <button onclick="sortScheduleByCourse()">Сортировать по названию курса</button>
+    <button onclick="sortGradesByDate()">Сортировать по дате</button>
+    <button onclick="sortGradesByStudent()">Сортировать по имени студента</button>
+    <button onclick="sortGradeByCourse()">Сортировать по названию курса</button>
+    <button onclick="sortGradesByGrade()">Сортировать по оценке</button>
 </div>
 
-<div class="filter-form-sch">
+
+<div class="filter-form">
     <input type="text" id="keyword" placeholder="Поиск">
     <input type="date" id="filter-date">
+    <input type="number" id="filer-garde">
     <select id="filter-course">
         <option value="">Курс</option>
-        <option value="Java Programming">Java Programming</option>
-        <option value="Web Development">Web Development</option>
-        <option value="Data Science">Data Science</option>
-        <option value="Python Basics">Python Basics</option>
-        <option value="Machine Learning">Machine Learning</option>
+<!--        <option value="Присутствовал">Присутствовал</option>-->
+<!--        <option value="Отсутствовал">Отсутствовал</option>-->
     </select>
-    <button onclick="filterSch()">Найти</button>
+    <button onclick="filterGrade()">Найти</button>
     <button onclick="resetFilters()">Очистить</button>
 </div>
 
-<table id="schedule-table">
+<table id="grade-table">
     <thead>
     <tr>
         <th>ID</th>
         <th>Курс</th>
+        <th>Оценка</th>
         <th>Дата</th>
-        <th>Начало</th>
-        <th>Конец</th>
-        <th>Онлайн-комната</th>
+        <th>Имя студента</th>
+        <th>Комментарий</th>
     </tr>
     </thead>
     <tbody>
@@ -57,41 +57,43 @@
     Всего записей: <span id="row-count">0</span>
 </div>
 
+
 <button onclick="showAddForm()">Добавить</button>
 
 <!-- модальное окно для добавления -->
 <div id="modal_add" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
-    <h2 id="modal-title">Добавить расписание</h2>
-    <form id="schedule-form">
-        <input type="hidden" id="schedule-id">
+    <h2 id="modal-title">Добавить оценку</h2>
+    <form id="grade-form">
+        <input type="hidden" id="grade-id">
         <label>
-            CourseID:
-            <select id="course-id" required>
-                <option value="">Выберите id курса</option>
+            Имя ученика:
+            <select id="student-id" required>
+                <option value="">Выберите студента</option>
             </select>
+        </label>
+        <br><br>
+        <label>
+            Курс:
+            <select id="course-id" required>
+                <option value="">Выберите курс</option>
+            </select>
+        </label>
+        <br><br>
+        <label>
+            Оценка:
+            <input type="number" id="grade" required>
         </label>
         <br><br>
         <label>
             Дата:
             <input type="date" id="date-sch" required>
         </label>
-        <br><br>
         <label>
-            Начало:
-            <input type="time" id="start_time" required>
+            Комментарий:
+            <input type="text" id="comment" required>
         </label>
         <br><br>
-        <label>
-            Конец:
-            <input type="time" id="end_time" required>
-        </label>
-        <br><br>
-        <label>
-            Комната:
-            <input type="text" id="room" required>
-        </label>
-        <br><br>
-        <button type="button" onclick="saveSchedule()">Сохранить</button>
+        <button type="button" onclick="saveGrade()">Сохранить</button>
         <button type="button" onclick="closeModal()">Отменить</button>
     </form>
 </div>
@@ -99,39 +101,41 @@
 <!-- Модальное окно для редактирования -->
 <div id="edit-modal" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
     <h2 id="edit-modal-title">Редактировать</h2>
-    <form id="edit-schedule-form">
-        <input type="hidden" id="edit-schedule-id">
+    <form id="edit-grades-form">
+        <input type="hidden" id="edit-grades-id">
         <label>
-            CourseID:
+            Course ID:
             <input type="number" id="edit-course-id" required>
         </label>
         <br><br>
         <label>
-            Дата:
-            <input type="date" id="edit-date-sch" required>
+            Grade:
+            <input type="number" id="edit-grade" required>
         </label>
         <br><br>
         <label>
-            Время начала:
-            <input type="time" id="edit-start_time" required>
+            Date:
+            <input type="date" id="edit-date" required>
         </label>
         <br><br>
         <label>
-            Время конца:
-            <input type="time" id="edit-end_time" required>
+            Student ID:
+            <input type="number" id="edit-student-id" required>
         </label>
         <br><br>
         <label>
-            Комната:
-            <input type="text" id="edit-room" required>
+            Comment:
+            <input type="text" id="edit-comment" required>
         </label>
         <br><br>
-        <button type="button" onclick="saveEditedSchedule()">Сохранить</button>
+        <button type="button" onclick="saveEditedGrade()">Сохранить</button>
         <button type="button" onclick="closeEditModal()">Отменить</button>
     </form>
 </div>
 
-<script type="module" src="../src/sch/schedule.js" defer></script>
+
+<script type="module" src="../src/grades/grades.js" defer></script>
 
 </body>
+</html>
 </html>

@@ -29,10 +29,6 @@ function saveAttendance() {
     };
 
     const url = `${apiUrl}/new`;
-
-    // console.log("Отправляемые данные:", JSON.stringify(attendance)); ОТПРАВЛЕННЫЕ ДАННЫЕ
-
-    // Отправка данных на сервер
     fetch(url, {
         method: "POST",
         headers: getAuthHeaders(),

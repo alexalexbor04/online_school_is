@@ -44,7 +44,7 @@ function fetchUsers() {
         .catch(error => {
             console.error("Ошибка загрузки данных юзеров", error);
             alert("Ошибка загрузки данных. Пожалуйста, проверьте авторизацию.");
-            // переход на страницу логина
+            window.location.href = "/auth/login";
         });
 }
 

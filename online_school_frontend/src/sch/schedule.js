@@ -46,12 +46,11 @@ function fetchSchedule() {
         .catch(error => {
             console.error("Ошибка загрузки расписания:", error);
             alert("Ошибка загрузки данных. Проверьте авторизацию.");
-            window.location.href = "/login";
+            window.location.href = "/auth/login";
         });
 }
 
 function formatTime(timeString) {
-    // Функция для обрезки времени до формата чч:мм
     return timeString ? timeString.substring(0, 5) : "";
 }
 
@@ -228,19 +227,19 @@ function deleteSchedule(id) {
 }
 
 // Запрос списка курсов для формы добавления
-function fetchCourses() {
-    // Замените путь на ваш API для получения курсов
-    fetch("http://localhost:8086/courses",
-        { headers: getAuthHeaders()})
-        .then(response => response.json())
-        .then(courses => {
-            const courseSelect = document.getElementById("course-id");
-            courseSelect.innerHTML = '<option value="">Выберите курс</option>';
-            courses.forEach(course => {
-                courseSelect.innerHTML += `<option value="${course.id}">${course.course_name}</option>`;
-            });
-        });
-}
+// function fetchCourses() {
+//     // Замените путь на ваш API для получения курсов
+//     fetch("http://localhost:8086/courses",
+//         { headers: getAuthHeaders()})
+//         .then(response => response.json())
+//         .then(courses => {
+//             const courseSelect = document.getElementById("course-id");
+//             courseSelect.innerHTML = '<option value="">Выберите курс</option>';
+//             courses.forEach(course => {
+//                 courseSelect.innerHTML += `<option value="${course.id}">${course.course_name}</option>`;
+//             });
+//         });
+// }
 
 // Инициализация
 document.addEventListener("DOMContentLoaded", () => {
