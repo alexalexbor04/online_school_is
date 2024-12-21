@@ -97,7 +97,10 @@ function filterSch() {
 
     const filteredData = scheduleData.filter(item => {
         return (
-            (!keyword || item.course_id.course_name.toLowerCase().includes(keyword)) &&
+            (!keyword || item.course_id.course_name.toLowerCase().includes(keyword) ||
+                item.end_time.toLowerCase().includes(keyword) ||
+                item.start_time.toLowerCase().includes(keyword) ||
+                item.room.toLowerCase().includes(keyword)) &&
             (!date || item.date === date) &&
             (!course || item.course_id.course_name === course)
         );
@@ -134,7 +137,7 @@ function sortScheduleByCourse() {
 // Показ формы добавления
 function showAddForm() {
     document.getElementById("modal_add").style.display = "block";
-    fetchCourses(); // Запрос списка курсов
+    fetchSchedule(); // Запрос списка курсов
 }
 
 // Закрыть форму добавления

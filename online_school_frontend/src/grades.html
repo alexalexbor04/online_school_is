@@ -7,6 +7,8 @@
 </head>
 <body id = "body-id">
 
+<script type="module" src="../src/grades/grades.js" defer></script>
+
 <h1>Оценки</h1>
 
 <a href="/attendance">Attendance</a></p>
@@ -27,13 +29,11 @@
 <div class="filter-form">
     <input type="text" id="keyword" placeholder="Поиск">
     <input type="date" id="filter-date">
-    <input type="number" id="filer-garde">
+    <input type="number" id="filter-grade">
     <select id="filter-course">
         <option value="">Курс</option>
-<!--        <option value="Присутствовал">Присутствовал</option>-->
-<!--        <option value="Отсутствовал">Отсутствовал</option>-->
     </select>
-    <button onclick="filterGrade()">Найти</button>
+    <button onclick="filterGrades()">Найти</button>
     <button onclick="resetFilters()">Очистить</button>
 </div>
 
@@ -67,16 +67,12 @@
         <input type="hidden" id="grade-id">
         <label>
             Имя ученика:
-            <select id="student-id" required>
-                <option value="">Выберите студента</option>
-            </select>
+            <input type="number" id="student-id" required>
         </label>
         <br><br>
         <label>
             Курс:
-            <select id="course-id" required>
-                <option value="">Выберите курс</option>
-            </select>
+            <input type="number" id="course-id" required>
         </label>
         <br><br>
         <label>
@@ -86,7 +82,7 @@
         <br><br>
         <label>
             Дата:
-            <input type="date" id="date-sch" required>
+            <input type="date" id="date-grade" required>
         </label>
         <label>
             Комментарий:
@@ -115,7 +111,7 @@
         <br><br>
         <label>
             Date:
-            <input type="date" id="edit-date" required>
+            <input type="date" id="edit-date-grade" required>
         </label>
         <br><br>
         <label>
@@ -132,9 +128,6 @@
         <button type="button" onclick="closeEditModal()">Отменить</button>
     </form>
 </div>
-
-
-<script type="module" src="../src/grades/grades.js" defer></script>
 
 </body>
 </html>

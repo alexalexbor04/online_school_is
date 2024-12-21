@@ -55,9 +55,10 @@ function fetchCourses() {
         .catch(error => {
             console.error("Ошибка загрузки курсов:", error);
             alert("Ошибка загрузки данных. Проверьте авторизацию.");
-            // window.location.href = "/auth/login";
+            window.location.href = "/auth/login";
         });
 }
+
 // Отображение таблицы курсов
 function renderTable(data) {
     const tableBody = document.querySelector("#courses-table tbody");
