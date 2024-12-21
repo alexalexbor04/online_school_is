@@ -116,7 +116,8 @@ function filterAttendance() {
                 filteredData = filteredData.filter(
                     item =>
                         item.student.full_name.toLowerCase().includes(keyword) ||
-                        item.schedule.course_id.course_name.toLowerCase().includes(keyword)
+                        item.schedule.course_id.course_name.toLowerCase().includes(keyword) ||
+                        item.id.toLowerCase().includes(keyword)
                 );
             }
 
