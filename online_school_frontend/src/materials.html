@@ -2,9 +2,106 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Материалы</title>
 </head>
-<body>
+<body id = "body-id">
+<h1>Материалы</h1>
+
+<a href="/attendance">Attendance</a></p>
+<a href="/schedule">Schedule</a></p>
+<a href="/admin/users">Users</a></p>
+<a href="/courses">Courses</a></p>
+<a href="/grades">Grades</a></p>
+<a href="/materials">Materials</a></p>
+
+<div style="margin-top: 10px;">
+    <button onclick="sortMatByTitle()">Сортировать названию</button>
+    <button onclick="sortMatByCourse()">Сортировать курсу</button>
+</div>
+
+
+<div class="filter-form">
+    <input type="text" id="keyword" placeholder="Поиск">
+    <select id="filter-course-mat">
+        <option value="">Курс</option>
+    </select>
+    <button onclick="filterMat()">Найти</button>
+    <button onclick="resetFilters()">Очистить</button>
+</div>
+
+<table id="mat-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Курс</th>
+        <th>Название</th>
+        <th>Файл</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+
+<div id="total-rows">
+    Всего записей: <span id="row-count">0</span>
+</div>
+
+
+<button onclick="showAddForm()">Добавить</button>
+
+<!-- модальное окно для добавления -->
+<div id="modal_add" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
+    <h2 id="modal-title">Добавить оценку</h2>
+    <form id="mat-form">
+        <input type="hidden" id="mat-id">
+        <label>
+            Название:
+            <input type="text" id="title-id" required>
+        </label>
+        <br><br>
+        <label>
+            Курс:
+            <input type="number" id="course-id" required>
+        </label>
+        <br><br>
+        <label>
+            Файл:
+            <input type="text" id="file-path" required>
+        </label>
+        <br><br>
+        <button type="button" onclick="saveMat()">Сохранить</button>
+        <button type="button" onclick="closeModal()">Отменить</button>
+    </form>
+</div>
+
+<!-- Модальное окно для редактирования -->
+<div id="edit-modal" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
+    <h2 id="edit-modal-title">Редактировать</h2>
+    <form id="edit-mat-form">
+        <input type="hidden" id="edit-mat-id">
+        <label>
+            Название:
+            <input type="text" id="edit-title" required>
+        </label>
+        <br><br>
+        <label>
+            Course ID:
+            <input type="number" id="edit-course-id" required>
+        </label>
+        <br><br>
+        <label>
+            Файл:
+            <input type="text" id="edit-file-path" required>
+        </label>
+        <br><br>
+        <button type="button" onclick="saveEditedMat()">Сохранить</button>
+        <button type="button" onclick="closeEditModal()">Отменить</button>
+    </form>
+</div>
+
+<script type="module" src="../src/mat/materials.js" defer></script>
 
 </body>
 </html>
