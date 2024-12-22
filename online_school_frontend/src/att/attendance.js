@@ -2,22 +2,21 @@ import {getAuthHeaders, updateRowCount, deleteRecord, loadStudents, loadSchedule
 
 const apiUrl = "http://localhost:8086/attendance";
 
-export { fetchAttendance, renderTable, resetFilters, filterAttendance, deleteAttendance,
-    sortAttendanceByDate, sortAttendanceByStudent, sortAttendanceByCourse, showAddForm, saveAttendance,
+export { fetchAttendance, renderTable, resetFilters,
+    deleteAttendance,
+    filterAndSortAttendance,
+    showAddForm, saveAttendance,
     saveEditedAttendance, openEditModal};
 
-window.filterAttendance = filterAttendance;
 window.resetFilters = resetFilters;
 window.fetchAttendance = fetchAttendance;
 window.renderTable = renderTable;
 window.deleteAttendance = deleteAttendance;
-window.sortAttendanceByCourse = sortAttendanceByCourse;
-window.sortAttendanceByStudent = sortAttendanceByStudent;
-window.sortAttendanceByDate = sortAttendanceByDate;
 window.showAddForm = showAddForm;
 window.saveAttendance = saveAttendance;
 window.saveEditedAttendance = saveEditedAttendance;
 window.openEditModal = openEditModal;
+window.filterAndSortAttendance = filterAndSortAttendance;
 
 let attendanceData = [];
 
@@ -41,21 +40,6 @@ function fetchAttendance() {
             alert("Ошибка загрузки данных. Пожалуйста, проверьте авторизацию.");
             window.location.href = "/auth/login";
         });
-}
-
-function sortAttendanceByDate() {
-    attendanceData.sort((a, b) => new Date(a.schedule.date) - new Date(b.schedule.date));
-    renderTable(attendanceData);
-}
-
-function sortAttendanceByStudent() {
-    attendanceData.sort((a, b) => a.student.full_name.localeCompare(b.student.full_name));
-    renderTable(attendanceData);
-}
-
-function sortAttendanceByCourse() {
-    attendanceData.sort((a, b) => a.schedule.course_id.course_name.localeCompare(b.schedule.course_id.course_name));
-    renderTable(attendanceData);
 }
 
 function renderTable(data) {
@@ -94,10 +78,11 @@ function resetFilters() {
     fetchAttendance();
 }
 
-function filterAttendance() {
+function filterAndSortAttendance(sortBy = null) {
     const keyword = document.getElementById("keyword").value.toLowerCase();
     const date = document.getElementById("filter-date").value;
     const status = document.getElementById("filter-status").value;
+    const course = parseInt(document.getElementById("filter-course").value, 10);
 
     fetch(apiUrl, {
         method: "GET",
@@ -107,6 +92,7 @@ function filterAttendance() {
         .then(data => {
             let filteredData = data;
 
+            // Фильтрация
             if (keyword) {
                 filteredData = filteredData.filter(
                     item =>
@@ -124,10 +110,32 @@ function filterAttendance() {
                 filteredData = filteredData.filter(item => item.status === status);
             }
 
+            if (course) {
+                filteredData = filteredData.filter(item => item.schedule.course_id.id === course);
+            }
+
+            // Сортировка
+            if (sortBy) {
+                switch (sortBy) {
+                    case "date":
+                        filteredData.sort((a, b) => new Date(a.schedule.date) - new Date(b.schedule.date));
+                        break;
+                    case "student":
+                        filteredData.sort((a, b) => a.student.full_name.localeCompare(b.student.full_name));
+                        break;
+                    case "course":
+                        filteredData.sort((a, b) => a.schedule.course_id.course_name.localeCompare(b.schedule.course_id.course_name));
+                        break;
+                    default:
+                        break;
+                }
+            }
+
             renderTable(filteredData);
         })
-        .catch(error => console.error("Ошибка фильтров:", error));
+        .catch(error => console.error("Ошибка фильтров и сортировки:", error));
 }
+
 
 function showAddForm() {
     document.getElementById("modal-title").textContent = "Добавить посещение";
@@ -225,6 +233,10 @@ function saveEditedAttendance() {
 function deleteAttendance(id) {
     deleteRecord(id, apiUrl, fetchAttendance);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadCourse("filter-course");
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchAttendance();

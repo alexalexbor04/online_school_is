@@ -2,19 +2,17 @@ import {getAuthHeaders, loadCourse, updateRowCount, closeModal, deleteRecord} fr
 
 const apiUrl = "http://localhost:8086/materials";
 
-export { getAuthHeaders, fetchMat, filterMat, resetFilters, showAddForm, saveMat, openEditModal,
-    saveEditedMat, sortMatByTitle, sortMatByCourse, deleteMat};
+export { getAuthHeaders, fetchMat, filterAndSortMat, resetFilters, showAddForm, saveMat,
+    openEditModal, saveEditedMat, deleteMat};
 
 window.fetchMat= fetchMat;
-window.filterMat = filterMat;
+window.filterAndSortMat = filterAndSortMat;
 window.resetFilters = resetFilters;
 window.saveMat = saveMat;
 window.showAddForm = showAddForm;
 window.openEditModal = openEditModal;
 window.saveEditedMat = saveEditedMat;
 window.deleteMat = deleteMat;
-window.sortMatByTitle = sortMatByTitle;
-window.sortMatByCourse = sortMatByCourse;
 
 
 let matData = [];
@@ -66,19 +64,34 @@ function renderTable(data) {
     updateRowCount(data.length);
 }
 
-function filterMat() {
+function filterAndSortMat(sortBy = null) {
     const keyword = document.getElementById("keyword").value.toLowerCase();
-    const course = document.getElementById("filter-course-mat").value;
+    const course = parseInt(document.getElementById("filter-course-mat").value, 10);
 
-    const filteredData = matData.filter(item => {
+    let filteredData = matData;
+
+    filteredData = filteredData.filter(item => {
         return (
             (!keyword ||
                 item.file_path.toLowerCase().includes(keyword) ||
                 item.course_id.course_name.toLowerCase().includes(keyword) ||
                 item.title.toLowerCase().includes(keyword)) &&
-            (!course || item.course_name === course)
+            (!course || item.course_id.id === course)
         );
     });
+
+    if (sortBy) {
+        switch (sortBy) {
+            case "title":
+                filteredData.sort((a, b) => a.title.localeCompare(b.title));
+                break;
+            case "course":
+                filteredData.sort((a, b) => a.course_id.course_name.localeCompare(b.course_id.course_name));
+                break;
+            default:
+                break;
+        }
+    }
 
     renderTable(filteredData);
 }
@@ -87,16 +100,6 @@ function resetFilters() {
     document.getElementById("keyword").value = "";
     document.getElementById("filter-course-mat").value = "";
     renderTable(matData);
-}
-
-function sortMatByTitle() {
-    const sorted = [...matData].sort((a, b) => a.title.localeCompare(b.title));
-    renderTable(sorted);
-}
-
-function sortMatByCourse() {
-    const sorted = [...matData].sort((a, b) => a.course_id.course_name.localeCompare(b.course_id.course_name));
-    renderTable(sorted);
 }
 
 function showAddForm() {
@@ -108,7 +111,6 @@ function showAddForm() {
     fetchMat();
 }
 
-// Сохранение нового расписания
 function saveMat() {
     const newMat = {
         course_id: { id: document.getElementById("course-id").value },
@@ -173,6 +175,10 @@ function saveEditedMat() {
 function deleteMat(id) {
     deleteRecord(id, apiUrl, fetchMat)
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadCourse("filter-course-mat");
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchMat();

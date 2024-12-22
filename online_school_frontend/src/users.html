@@ -18,9 +18,10 @@
 <a href="/about">Об авторе</a></p>
 
 <div style="margin-top: 10px;">
-  <button onclick="sortUsersByFullName()">Сортировать по имени</button>
-  <button onclick="sortUsersByRole()">Сортировать по роли</button>
+  <button onclick="filterAndSortUsers('fullName')">Сортировать по имени</button>
+  <button onclick="filterAndSortUsers('role')">Сортировать по роли</button>
 </div>
+
 
 <div class = "filter-users">
   <input type="text" id="keyword" placeholder="Поиск">
@@ -30,7 +31,7 @@
     <option value="teacher">teacher</option>
     <option value="student">student</option>
   </select>
-  <button onclick="filterUsers()">Найти</button>
+  <button onclick="filterAndSortUsers()">Найти</button>
   <button onclick="resetFilters()">Очистить</button>
 </div>
 

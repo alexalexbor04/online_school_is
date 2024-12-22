@@ -5,24 +5,22 @@ const apiUrl = "http://localhost:8086/courses";
 export {
     fetchCourses,
     renderTable,
-    sortCoursesByName,
-    filterCourses,
     resetFilters,
     saveCourses,
     saveEditedCourse,
     showAddForm,
-    openEditModal
+    openEditModal,
+    filterAndSortCourses
 };
 
 window.fetchCourses = fetchCourses;
 window.renderTable = renderTable;
-window.sortCoursesByName = sortCoursesByName;
-window.filterCourses = filterCourses;
 window.resetFilters = resetFilters;
 window.saveCourses = saveCourses;
 window.saveEditedCourse = saveEditedCourse;
 window.showAddForm = showAddForm;
 window.openEditModal = openEditModal;
+window.filterAndSortCourses = filterAndSortCourses;
 
 let coursesData = [];
 
@@ -73,23 +71,31 @@ function renderTable(data) {
     updateRowCount(data.length);
 }
 
-function sortCoursesByName() {
-    coursesData.sort((a, b) => a.course_name.localeCompare(b.course_name));
-    renderTable(coursesData);
-}
-
-function filterCourses() {
+function filterAndSortCourses(sortBy = null) {
     const keyword = document.getElementById("keyword").value.toLowerCase();
+    let filteredData = coursesData;
 
-    const filteredData = coursesData.filter(
-        (course) =>
+    filteredData = filteredData.filter(course => {
+        return (
             course.course_name.toLowerCase().includes(keyword) ||
             course.description.toLowerCase().includes(keyword) ||
             course.teacher_id.full_name.toLowerCase().includes(keyword)
-    );
+        );
+    });
+
+    if (sortBy) {
+        switch (sortBy) {
+            case "name":
+                filteredData.sort((a, b) => a.course_name.localeCompare(b.course_name));
+                break;
+            default:
+                break;
+        }
+    }
 
     renderTable(filteredData);
 }
+
 
 function resetFilters() {
     document.getElementById("keyword").value = "";

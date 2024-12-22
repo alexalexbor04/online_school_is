@@ -2,22 +2,17 @@ import {loadStudents, closeModal, getAuthHeaders, loadCourse, updateRowCount, de
 
 const apiUrl = "http://localhost:8086/grades";
 
-export { getAuthHeaders, fetchGrades, filterGrades, resetFilters, showAddForm, saveGrade, openEditModal,
-    saveEditedGrade, sortGradesByDate, sortGradesByStudent, sortGradeByCourse, sortGradesByGrade};
+export { getAuthHeaders, fetchGrades, filterAndSortGrades, resetFilters,
+    showAddForm, saveGrade, openEditModal, saveEditedGrade};
 
 window.fetchGrades = fetchGrades;
-window.filterGrades = filterGrades;
+window.filterAndSortGrades = filterAndSortGrades;
 window.resetFilters = resetFilters;
 window.saveGrade = saveGrade;
 window.showAddForm = showAddForm;
 window.openEditModal = openEditModal;
 window.saveEditedGrade = saveEditedGrade;
 window.deleteGrade = deleteGrade;
-window.sortGradesByDate = sortGradesByDate;
-window.sortGradesByStudent = sortGradesByStudent;
-window.sortGradesByGrade = sortGradesByGrade;
-window.sortGradeByCourse = sortGradeByCourse;
-
 
 let gradesData = [];
 
@@ -70,26 +65,49 @@ function renderTable(data) {
     updateRowCount(data.length);
 }
 
-function filterGrades() {
+function filterAndSortGrades(sortBy = null) {
     const keyword = document.getElementById("keyword").value.toLowerCase();
     const date = document.getElementById("filter-date").value;
     const grade = document.getElementById("filter-grade").value;
-    const course = document.getElementById("filter-course").value;
+    const course = parseInt(document.getElementById("filter-course").value, 10);
 
-    const filteredData = gradesData.filter(item => {
+    let filteredData = gradesData;
+
+    filteredData = filteredData.filter(item => {
         return (
             (!keyword ||
                 item.student_id.full_name.toLowerCase().includes(keyword) ||
                 item.course_id.course_name.toLowerCase().includes(keyword) ||
-                item.comment.toLowerCase().includes(keyword)) &&
+                item.comment.toLowerCase().includes(keyword) ||
+                item.date.toLowerCase().includes(keyword)) &&
             (!date || item.date === date) &&
             (!grade || item.grade === parseInt(grade)) &&
-            (!course || item.course_name === course)
+            (!course || item.course_id.id === course)
         );
     });
 
+    if (sortBy) {
+        switch (sortBy) {
+            case "date":
+                filteredData.sort((a, b) => new Date(a.date) - new Date(b.date));
+                break;
+            case "student":
+                filteredData.sort((a, b) => a.student_id.full_name.localeCompare(b.student_id.full_name));
+                break;
+            case "course":
+                filteredData.sort((a, b) => a.course_id.course_name.localeCompare(b.course_id.course_name));
+                break;
+            case "grade":
+                filteredData.sort((a, b) => a.grade - b.grade);
+                break;
+            default:
+                break;
+        }
+    }
+
     renderTable(filteredData);
 }
+
 
 function resetFilters() {
     document.getElementById("keyword").value = "";
@@ -98,27 +116,6 @@ function resetFilters() {
     document.getElementById("filter-course").value = "";
     renderTable(gradesData);
 }
-
-function sortGradesByDate() {
-    const sorted = [...gradesData].sort((a, b) => new Date(a.date) - new Date(b.date));
-    renderTable(sorted);
-}
-
-function sortGradesByStudent() {
-    const sorted = [...gradesData].sort((a, b) => a.student_id.full_name.localeCompare(b.student_id.full_name));
-    renderTable(sorted);
-}
-
-function sortGradeByCourse() {
-    const sorted = [...gradesData].sort((a, b) => a.course_id.course_name.localeCompare(b.course_id.course_name));
-    renderTable(sorted);
-}
-
-function sortGradesByGrade() {
-    const sorted = [...gradesData].sort((a, b) => a.grade - b.grade);
-    renderTable(sorted);
-}
-
 
 function showAddForm() {
     document.getElementById("grade-id").value = "";
@@ -202,6 +199,10 @@ function saveEditedGrade() {
 function deleteGrade(id) {
     deleteRecord(id, apiUrl, fetchGrades);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadCourse("filter-course");
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchGrades();

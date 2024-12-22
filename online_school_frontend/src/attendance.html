@@ -19,10 +19,11 @@
 <a href="/about">Об авторе</a></p>
 
 <div style="margin-top: 10px;">
-    <button onclick="sortAttendanceByDate()">Сортировать по дате</button>
-    <button onclick="sortAttendanceByStudent()">Сортировать по имени студента</button>
-    <button onclick="sortAttendanceByCourse()">Сортировать по названию курса</button>
+    <button onclick="filterAndSortAttendance('date')">Сортировать по дате</button>
+    <button onclick="filterAndSortAttendance('student')">Сортировать по имени студента</button>
+    <button onclick="filterAndSortAttendance('course')">Сортировать по названию курса</button>
 </div>
+
 
 
 <div class="filter-form">
@@ -33,7 +34,10 @@
         <option value="Присутствовал">Присутствовал</option>
         <option value="Отсутствовал">Отсутствовал</option>
     </select>
-    <button onclick="filterAttendance()">Найти</button>
+    <select id="filter-course">
+        <option value=""></option>
+    </select>
+    <button onclick="filterAndSortAttendance()">Найти</button>
     <button onclick="resetFilters()">Очистить</button>
 </div>
 

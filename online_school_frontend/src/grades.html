@@ -20,11 +20,12 @@
 <a href="/about">Об авторе</a></p>
 
 <div style="margin-top: 10px;">
-    <button onclick="sortGradesByDate()">Сортировать по дате</button>
-    <button onclick="sortGradesByStudent()">Сортировать по имени студента</button>
-    <button onclick="sortGradeByCourse()">Сортировать по названию курса</button>
-    <button onclick="sortGradesByGrade()">Сортировать по оценке</button>
+    <button onclick="filterAndSortGrades('date')">Сортировать по дате</button>
+    <button onclick="filterAndSortGrades('student')">Сортировать по имени студента</button>
+    <button onclick="filterAndSortGrades('course')">Сортировать по названию курса</button>
+    <button onclick="filterAndSortGrades('grade')">Сортировать по оценке</button>
 </div>
+
 
 
 <div class="filter-form">
@@ -34,7 +35,7 @@
     <select id="filter-course">
         <option value="">Курс</option>
     </select>
-    <button onclick="filterGrades()">Найти</button>
+    <button onclick="filterAndSortGrades()">Найти</button>
     <button onclick="resetFilters()">Очистить</button>
 </div>
 

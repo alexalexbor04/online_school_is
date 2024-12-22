@@ -18,12 +18,13 @@
 <a href="/about">Об авторе</a></p>
 
 <div style="margin-top: 10px;">
-    <button onclick="sortCoursesByName()">Сортировать по названию</button>
+    <button onclick="filterAndSortCourses('name')">Сортировать по названию</button>
 </div>
+
 
 <div class="filter-form">
     <input type="text" id="keyword" placeholder="Поиск">
-    <button onclick="filterCourses()">Найти</button>
+    <button onclick="filterAndSortCourses()">Найти</button>
     <button onclick="resetFilters()">Очистить</button>
 </div>
 

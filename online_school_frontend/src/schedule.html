@@ -18,9 +18,9 @@
 <a href="/about">Об авторе</a></p>
 
 <div style="margin-top: 10px;">
-    <button onclick="sortScheduleByDate()">Сортировать по дате</button>
-    <button onclick="sortScheduleByStartTime()">Сортировать по началу урока</button>
-    <button onclick="sortScheduleByCourse()">Сортировать по названию курса</button>
+    <button onclick="filterAndSortSch('date')">Сортировать по дате</button>
+    <button onclick="filterAndSortSch('startTime')">Сортировать по началу урока</button>
+    <button onclick="filterAndSortSch('course')">Сортировать по названию курса</button>
 </div>
 
 <div class="filter-form-sch">
@@ -29,7 +29,7 @@
     <select id="filter-course">
         <option value="">Курс</option>
     </select>
-    <button onclick="filterSch()">Найти</button>
+    <button onclick="filterAndSortSch()">Найти</button>
     <button onclick="resetFilters()">Очистить</button>
 </div>
 

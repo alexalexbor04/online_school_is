@@ -1,7 +1,9 @@
+import {getAuthHeaders, deleteRecord, updateRowCount, closeModal} from "../app_funcs.js"
+
 const apiUrl = "http://localhost:8086/admin/users";
 
-export { getAuthHeaders, fetchUsers, renderTable, openEditModal, saveUserRole, deleteUser, closeEditModal,
-    resetFilters, sortUsersByFullName, sortUsersByRole, filterUsers };
+export { fetchUsers, renderTable, openEditModal, saveUserRole, deleteUser,
+    resetFilters, filterAndSortUsers };
 
 window.getAuthHeaders = getAuthHeaders;
 window.fetchAttendance = fetchUsers;
@@ -9,20 +11,8 @@ window.renderTable = renderTable;
 window.openEditModal = openEditModal;
 window.saveUserRole = saveUserRole;
 window.deleteUser = deleteUser;
-window.closeEditModal = closeEditModal;
 window.resetFilters = resetFilters;
-window.sortUsersByFullName = sortUsersByFullName;
-window.sortUsersByRole = sortUsersByRole;
-window.filterUsers = filterUsers;
-
-
-function getAuthHeaders() {
-    const token = localStorage.getItem("token");
-    return {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-    };
-}
+window.filterAndSortUsers = filterAndSortUsers;
 
 let usersData = [];
 
@@ -78,7 +68,6 @@ function renderTable(data) {
     updateRowCount(data.length);
 }
 
-// Функция открытия модального окна для редактирования роли
 function openEditModal(userId) {
     const user = usersData.find(u => u.id === userId);
     if (!user) {
@@ -93,7 +82,6 @@ function openEditModal(userId) {
     document.getElementById("edit-modal-users").style.display = "block";
 }
 
-// Функция сохранения измененной роли
 function saveUserRole() {
     const userId = document.getElementById("edit-user-id").value;
     const newRole = document.getElementById("edit-role").value;
@@ -108,7 +96,7 @@ function saveUserRole() {
                 throw new Error("Ошибка при обновлении роли пользователя.");
             }
             alert("Роль пользователя обновлена.");
-            closeEditModal();
+            closeModal("edit-modal");
             fetchAttendance();
         })
         .catch(error => {
@@ -117,75 +105,43 @@ function saveUserRole() {
         });
 }
 
-// Закрыть модальное окно
-function closeEditModal() {
-    document.getElementById("edit-modal-users").style.display = "none";
-}
-
-// Функция удаления пользователя
 function deleteUser(userId) {
-    const confirmDelete = confirm("Вы уверены, что хотите удалить этого пользователя?");
-    if (!confirmDelete) return;
-
-    fetch(`${apiUrl}/${userId}`, {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Ошибка при удалении пользователя.");
-            }
-            alert("Пользователь успешно удален.");
-            fetchAttendance();
-        })
-        .catch(error => {
-            console.error("Ошибка удаления пользователя:", error);
-            alert("Ошибка при удалении пользователя.");
-        });
+    deleteRecord(userId, apiUrl, fetchUsers);
 }
 
-// Сортировка по имени
-function sortUsersByFullName() {
-    const sortedData = [...usersData].sort((a, b) => a.full_name.localeCompare(b.full_name));
-    renderTable(sortedData);
-}
-
-// Сортировка по роли
-function sortUsersByRole() {
-    const sortedData = [...usersData].sort((a, b) => a.roles.name.localeCompare(b.roles.name));
-    renderTable(sortedData);
-}
-
-function updateRowCount(count) {
-    document.getElementById("row-count").textContent = count;
-}
-
-// Фильтрация пользователей
-function filterUsers() {
+function filterAndSortUsers(sortBy = null) {
     const keyword = document.getElementById("keyword").value.toLowerCase();
     const selectedRole = document.getElementById("filter-status").value;
 
     let filteredData = usersData;
 
-    // Фильтрация по ключевому слову
-    if (keyword) {
-        filteredData = filteredData.filter(user =>
-            user.username.toLowerCase().includes(keyword) ||
-            user.full_name.toLowerCase().includes(keyword) ||
-            user.email.toLowerCase().includes(keyword) ||
-            user.phone.includes(keyword)
+    filteredData = filteredData.filter(user => {
+        return (
+            (!keyword ||
+                user.username.toLowerCase().includes(keyword) ||
+                user.full_name.toLowerCase().includes(keyword) ||
+                user.email.toLowerCase().includes(keyword) ||
+                user.phone.includes(keyword)) &&
+            (!selectedRole || user.roles.name === selectedRole)
         );
-    }
+    });
 
-    // Фильтрация по роли
-    if (selectedRole) {
-        filteredData = filteredData.filter(user => user.roles.name === selectedRole);
+    if (sortBy) {
+        switch (sortBy) {
+            case "fullName":
+                filteredData.sort((a, b) => a.full_name.localeCompare(b.full_name));
+                break;
+            case "role":
+                filteredData.sort((a, b) => a.roles.name.localeCompare(b.roles.name));
+                break;
+            default:
+                break;
+        }
     }
 
     renderTable(filteredData);
 }
 
-// Сброс фильтров
 function resetFilters() {
     document.getElementById("keyword").value = "";
     document.getElementById("filter-status").value = "";

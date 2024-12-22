@@ -2,17 +2,13 @@ const apiUrl = "http://localhost:8086/schedule";
 
 import {getAuthHeaders, updateRowCount, closeModal, deleteRecord} from "../app_funcs.js";
 
-export { fetchSchedule, renderTable, filterSch, resetFilters, sortScheduleByDate, sortScheduleByStartTime,
-    sortScheduleByCourse, showAddForm, saveSchedule, openEditModal, saveEditedSchedule,
-    deleteSchedule
+export { fetchSchedule, renderTable, resetFilters, showAddForm, saveSchedule, openEditModal,
+    saveEditedSchedule, deleteSchedule, filterAndSortSch
 };
 
 window.fetchSchedule = fetchSchedule;
-window.filterSch = filterSch;
+window.filterAndSortSch = filterAndSortSch;
 window.resetFilters = resetFilters;
-window.sortScheduleByDate = sortScheduleByDate;
-window.sortScheduleByStartTime = sortScheduleByStartTime;
-window.sortScheduleByCourse = sortScheduleByCourse;
 window.showAddForm = showAddForm;
 window.saveSchedule = saveSchedule;
 window.openEditModal = openEditModal;
@@ -74,44 +70,49 @@ function renderTable(data) {
     updateRowCount(data.length);
 }
 
-function filterSch() {
+function filterAndSortSch(sortBy = null) {
     const keyword = document.getElementById("keyword").value.toLowerCase();
     const date = document.getElementById("filter-date").value;
-    const course = document.getElementById("filter-course").value;
+    const course = parseInt(document.getElementById("filter-course").value, 10);
 
-    const filteredData = scheduleData.filter(item => {
+    let filteredData = scheduleData;
+
+    filteredData = filteredData.filter(item => {
         return (
             (!keyword || item.course_id.course_name.toLowerCase().includes(keyword) ||
                 item.end_time.toLowerCase().includes(keyword) ||
                 item.start_time.toLowerCase().includes(keyword) ||
                 item.room.toLowerCase().includes(keyword)) &&
             (!date || item.date === date) &&
-            (!course || item.course_id.name === course)
+            (!course || item.course_id.id === course)
         );
     });
+
+    if (sortBy) {
+        switch (sortBy) {
+            case "date":
+                filteredData.sort((a, b) => new Date(a.date) - new Date(b.date));
+                break;
+            case "startTime":
+                filteredData.sort((a, b) => a.start_time.localeCompare(b.start_time));
+                break;
+            case "course":
+                filteredData.sort((a, b) => a.course_id.course_name.localeCompare(b.course_id.course_name));
+                break;
+            default:
+                break;
+        }
+    }
+
     renderTable(filteredData);
 }
+
 
 function resetFilters() {
     document.getElementById("keyword").value = "";
     document.getElementById("filter-date").value = "";
     document.getElementById("filter-course").value = "";
     renderTable(scheduleData);
-}
-
-function sortScheduleByDate() {
-    const sorted = [...scheduleData].sort((a, b) => new Date(a.date) - new Date(b.date));
-    renderTable(sorted);
-}
-
-function sortScheduleByStartTime() {
-    const sorted = [...scheduleData].sort((a, b) => a.start_time.localeCompare(b.start_time));
-    renderTable(sorted);
-}
-
-function sortScheduleByCourse() {
-    const sorted = [...scheduleData].sort((a, b) => a.course_id.course_name.localeCompare(b.course_id.course_name));
-    renderTable(sorted);
 }
 
 function showAddForm() {
@@ -150,7 +151,6 @@ function saveSchedule() {
         .catch(error => console.error("Ошибка добавления:", error));
 }
 
-// Открыть форму редактирования
 function openEditModal(id) {
     const schedule = scheduleData.find(sch => sch.id === id);
     if (!schedule) return;

@@ -17,17 +17,16 @@
 <a href="/about">Об авторе</a></p>
 
 <div style="margin-top: 10px;">
-    <button onclick="sortMatByTitle()">Сортировать названию</button>
-    <button onclick="sortMatByCourse()">Сортировать курсу</button>
+    <button onclick="filterAndSortMat('title')">Сортировать по названию</button>
+    <button onclick="filterAndSortMat('course')">Сортировать по курсу</button>
 </div>
-
 
 <div class="filter-form">
     <input type="text" id="keyword" placeholder="Поиск">
     <select id="filter-course-mat">
         <option value="">Курс</option>
     </select>
-    <button onclick="filterMat()">Найти</button>
+    <button onclick="filterAndSortMat()">Найти</button>
     <button onclick="resetFilters()">Очистить</button>
 </div>
 
