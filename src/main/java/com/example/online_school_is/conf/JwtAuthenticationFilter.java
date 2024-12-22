@@ -23,7 +23,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String path = request.getRequestURI();
 
-        // Игнорируем маршрут /auth/login
         if (path.equals("/auth/login") || path.equals("/auth/register")) {
             filterChain.doFilter(request, response);
             return;
@@ -35,7 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = header.substring(7);
             try {
                 Claims claims = Jwts.parser()
-                        .setSigningKey("secretKeySecretKey12345678secretKeySecretKey12345678secretKeySecretKey12345678secretKeySecretKey12345678secretKeySecretKey12345678")
+                        .setSigningKey("secretKeySecretKey12345678secretKeySecretKey12345678secretKeySecretKey" +
+                                "12345678secretKeySecretKey12345678secretKeySecretKey12345678")
                         .parseClaimsJws(token)
                         .getBody();
 

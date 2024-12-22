@@ -37,6 +37,7 @@
         <th>Курс</th>
         <th>Название</th>
         <th>Файл</th>
+        <th>Действия</th>
     </tr>
     </thead>
     <tbody>
@@ -57,20 +58,17 @@
     <form id="mat-form">
         <input type="hidden" id="mat-id">
         <label>
-            Название:
-            <input type="text" id="title-id" required>
+            <input type="text" id="title-id" placeholder="Название" required>
         </label>
         <br><br>
         <label>
-            Курс:
             <select id="course-id" required>
                 <option value="">Выберите курс</option>
             </select>
         </label>
         <br><br>
         <label>
-            Файл:
-            <input type="text" id="file-path" required>
+            <input type="text" id="file-path" placeholder="Файл" required>
         </label>
         <br><br>
         <button type="button" onclick="saveMat()">Сохранить</button>
@@ -84,20 +82,17 @@
     <form id="edit-mat-form">
         <input type="hidden" id="edit-mat-id">
         <label>
-            Название:
-            <input type="text" id="edit-title" required>
+            <input type="text" id="edit-title" placeholder="Название" required>
         </label>
         <br><br>
         <label>
-            Course ID:
             <select id="edit-course-id" required>
                 <option value="">Выберите курс</option>
             </select>
         </label>
         <br><br>
         <label>
-            Файл:
-            <input type="text" id="edit-file-path" required>
+            <input type="text" id="edit-file-path" placeholder="Файл" required>
         </label>
         <br><br>
         <button type="button" onclick="saveEditedMat()">Сохранить</button>

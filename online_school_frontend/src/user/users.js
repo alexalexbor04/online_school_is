@@ -96,7 +96,7 @@ function saveUserRole() {
                 throw new Error("Ошибка при обновлении роли пользователя.");
             }
             alert("Роль пользователя обновлена.");
-            closeModal("edit-modal");
+            closeModal("edit-modal-users");
             fetchAttendance();
         })
         .catch(error => {

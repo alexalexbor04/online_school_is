@@ -48,6 +48,7 @@
         <th>Дата</th>
         <th>Имя студента</th>
         <th>Комментарий</th>
+        <th>Действия</th>
     </tr>
     </thead>
     <tbody>
@@ -68,31 +69,26 @@
     <form id="grade-form">
         <input type="hidden" id="grade-id">
         <label>
-            Имя ученика:
             <select id="student-id" required>
                 <option value="">Выберите студента</option>
             </select>
         </label>
         <br><br>
         <label>
-            Курс:
             <select id="course-id" required>
                 <option value=""></option>
             </select>
         </label>
         <br><br>
         <label>
-            Оценка:
-            <input type="number" id="grade" required>
+            <input type="number" id="grade" placeholder="Оценка" required>
         </label>
         <br><br>
         <label>
-            Дата:
             <input type="date" id="date-grade" required>
         </label>
         <label>
-            Комментарий:
-            <input type="text" id="comment" required>
+            <input type="text" id="comment" placeholder="Комментарий" required>
         </label>
         <br><br>
         <button type="button" onclick="saveGrade()">Сохранить</button>
@@ -106,32 +102,27 @@
     <form id="edit-grades-form">
         <input type="hidden" id="edit-grades-id">
         <label>
-            Course ID:
             <select id="edit-course-id" required>
                 <option value=""></option>
             </select>
         </label>
         <br><br>
         <label>
-            Grade:
-            <input type="number" id="edit-grade" required>
+            <input type="number" id="edit-grade" placeholder="Оценка" required>
         </label>
         <br><br>
         <label>
-            Date:
-            <input type="date" id="edit-date-grade" required>
+            <input type="date" id="edit-date-grade" placeholder="Оценка" required>
         </label>
         <br><br>
         <label>
-            Student ID:
             <select id="edit-student-id" required>
                 <option value="">Выберите студента</option>
             </select>
         </label>
         <br><br>
         <label>
-            Comment:
-            <input type="text" id="edit-comment" required>
+            <input type="text" id="edit-comment" placeholder="Комментарий" required>
         </label>
         <br><br>
         <button type="button" onclick="saveEditedGrade()">Сохранить</button>

@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/* уд, ред, доб - АДМИН
-* Просмотр - УЧИТЕЛЬ, СТУДЕНТ, АДМИН*/
+/* ред, доб - УЧИТЕЛЬ
+удаление - учитель, админ
+* Просмотр - СТУДЕНТ, АДМИН, Учитель*/
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class AttendanceController {
@@ -37,7 +38,7 @@ public class AttendanceController {
     }
 
     @PostMapping("/attendance/new")
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('teacher')")
     public ResponseEntity<Attendance> createAttendance(@RequestBody Attendance attendance) {
         try {
             Attendance createdAtt = service.save(attendance);
@@ -48,7 +49,7 @@ public class AttendanceController {
     }
 
     @GetMapping("/attendance/edit/{id}")
-    @PreAuthorize("hasAnyRole('admin', 'teacher', 'student')")
+    @PreAuthorize("hasAnyRole('teacher')")
     public ResponseEntity<Attendance> getAttendanceById(@PathVariable Long id) {
         Attendance attendance = service.get(id);
         return attendance != null
@@ -76,7 +77,7 @@ public class AttendanceController {
     }
 
     @DeleteMapping("/attendance/{id}")
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('teacher') or hasRole('admin')")
     public ResponseEntity<Void> deleteAttendance(@PathVariable Long id) {
         try {
             service.delete(id);

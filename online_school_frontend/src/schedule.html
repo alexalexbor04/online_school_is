@@ -42,6 +42,7 @@
         <th>Начало</th>
         <th>Конец</th>
         <th>Онлайн-комната</th>
+        <th>Действия</th>
     </tr>
     </thead>
     <tbody>
@@ -61,30 +62,27 @@
     <form id="schedule-form">
         <input type="hidden" id="schedule-id">
         <label>
-            CourseID:
             <select id="course-id" required>
                 <option value=""></option>
             </select>
         </label>
         <br><br>
         <label>
-            Дата:
             <input type="date" id="date-sch" required>
         </label>
         <br><br>
         <label>
-            Начало:
+            Время начала:
             <input type="time" id="start_time" required>
         </label>
         <br><br>
         <label>
-            Конец:
+            Время конца:
             <input type="time" id="end_time" required>
         </label>
         <br><br>
         <label>
-            Комната:
-            <input type="text" id="room" required>
+            <input type="text" id="room" placeholder="Онлайн-комната" required>
         </label>
         <br><br>
         <button type="button" onclick="saveSchedule()">Сохранить</button>
@@ -98,14 +96,12 @@
     <form id="edit-schedule-form">
         <input type="hidden" id="edit-schedule-id">
         <label>
-            CourseID:
             <select id="edit-course-id" required>
                 <option value=""></option>
             </select>
         </label>
         <br><br>
         <label>
-            Дата:
             <input type="date" id="edit-date-sch" required>
         </label>
         <br><br>
@@ -120,8 +116,7 @@
         </label>
         <br><br>
         <label>
-            Комната:
-            <input type="text" id="edit-room" required>
+            <input type="text" id="edit-room" placeholder="Онлайн-комната" required>
         </label>
         <br><br>
         <button type="button" onclick="saveEditedSchedule()">Сохранить</button>
