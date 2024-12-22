@@ -11,12 +11,13 @@
 
 <h1>Оценки</h1>
 
-<a href="/attendance">Attendance</a></p>
-<a href="/schedule">Schedule</a></p>
-<a href="/admin/users">Users</a></p>
-<a href="/courses">Courses</a></p>
-<a href="/grades">Grades</a></p>
-<a href="/materials">Materials</a></p>
+<a href="/attendance">Посещения</a></p>
+<a href="/schedule">Расписание</a></p>
+<a href="/admin/users">Пользователи</a></p>
+<a href="/courses">Курсы</a></p>
+<a href="/grades">Оценки</a></p>
+<a href="/materials">Материалы</a></p>
+<a href="/about">Об авторе</a></p>
 
 <div style="margin-top: 10px;">
     <button onclick="sortGradesByDate()">Сортировать по дате</button>
@@ -29,7 +30,7 @@
 <div class="filter-form">
     <input type="text" id="keyword" placeholder="Поиск">
     <input type="date" id="filter-date">
-    <input type="number" id="filter-grade">
+    <input type="number" id="filter-grade" placeholder="Оценка">
     <select id="filter-course">
         <option value="">Курс</option>
     </select>
@@ -67,12 +68,16 @@
         <input type="hidden" id="grade-id">
         <label>
             Имя ученика:
-            <input type="number" id="student-id" required>
+            <select id="student-id" required>
+                <option value="">Выберите студента</option>
+            </select>
         </label>
         <br><br>
         <label>
             Курс:
-            <input type="number" id="course-id" required>
+            <select id="course-id" required>
+                <option value=""></option>
+            </select>
         </label>
         <br><br>
         <label>
@@ -90,7 +95,7 @@
         </label>
         <br><br>
         <button type="button" onclick="saveGrade()">Сохранить</button>
-        <button type="button" onclick="closeModal()">Отменить</button>
+        <button type="button" onclick="closeModal('modal_add')">Отменить</button>
     </form>
 </div>
 
@@ -101,7 +106,9 @@
         <input type="hidden" id="edit-grades-id">
         <label>
             Course ID:
-            <input type="number" id="edit-course-id" required>
+            <select id="edit-course-id" required>
+                <option value=""></option>
+            </select>
         </label>
         <br><br>
         <label>
@@ -116,7 +123,9 @@
         <br><br>
         <label>
             Student ID:
-            <input type="number" id="edit-student-id" required>
+            <select id="edit-student-id" required>
+                <option value="">Выберите студента</option>
+            </select>
         </label>
         <br><br>
         <label>
@@ -125,7 +134,7 @@
         </label>
         <br><br>
         <button type="button" onclick="saveEditedGrade()">Сохранить</button>
-        <button type="button" onclick="closeEditModal()">Отменить</button>
+        <button type="button" onclick="closeModal('edit-modal')">Отменить</button>
     </form>
 </div>
 

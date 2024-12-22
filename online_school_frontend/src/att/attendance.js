@@ -1,24 +1,23 @@
+import {getAuthHeaders, updateRowCount, deleteRecord, loadStudents, loadSchedules, closeModal} from "../app_funcs.js";
+
 const apiUrl = "http://localhost:8086/attendance";
 
 export { fetchAttendance, renderTable, resetFilters, filterAttendance, deleteAttendance,
-    getAuthHeaders, sortAttendanceByDate, sortAttendanceByStudent, sortAttendanceByCourse };
+    sortAttendanceByDate, sortAttendanceByStudent, sortAttendanceByCourse, showAddForm, saveAttendance,
+    saveEditedAttendance, openEditModal};
+
 window.filterAttendance = filterAttendance;
 window.resetFilters = resetFilters;
 window.fetchAttendance = fetchAttendance;
 window.renderTable = renderTable;
 window.deleteAttendance = deleteAttendance;
-window.getAuthHeaders = getAuthHeaders;
 window.sortAttendanceByCourse = sortAttendanceByCourse;
 window.sortAttendanceByStudent = sortAttendanceByStudent;
 window.sortAttendanceByDate = sortAttendanceByDate;
-
-function getAuthHeaders() {
-    const token = localStorage.getItem("token");
-    return {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-    };
-}
+window.showAddForm = showAddForm;
+window.saveAttendance = saveAttendance;
+window.saveEditedAttendance = saveEditedAttendance;
+window.openEditModal = openEditModal;
 
 let attendanceData = [];
 
@@ -88,10 +87,6 @@ function renderTable(data) {
     updateRowCount(data.length);
 }
 
-function updateRowCount(count) {
-    document.getElementById("row-count").textContent = count;
-}
-
 function resetFilters() {
     document.getElementById("keyword").value = "";
     document.getElementById("filter-date").value = "";
@@ -134,24 +129,101 @@ function filterAttendance() {
         .catch(error => console.error("Ошибка фильтров:", error));
 }
 
-function deleteAttendance(id) {
-    const confirmDelete = confirm("Вы уверены, что хотите удалить эту запись?");
-    if (!confirmDelete) return;
+function showAddForm() {
+    document.getElementById("modal-title").textContent = "Добавить посещение";
+    document.getElementById("attendance-id").value = ""; // Очистка поля ID
+    document.getElementById("student-id").value = "";
+    document.getElementById("schedule-id").value = "";
+    document.getElementById("status").value = "Присутствовал";
 
-    const url = `${apiUrl}/${id}`;
+    loadStudents("student-id");
+
+    loadSchedules("schedule-id");
+
+    document.getElementById("modal_add").style.display = "block";
+}
+
+function saveAttendance() {
+    const studentId = document.getElementById("student-id").value;
+    const scheduleId = document.getElementById("schedule-id").value;
+    const status = document.getElementById("status").value;
+
+    const attendance = {
+        student: { id: parseInt(studentId) },
+        schedule: { id: parseInt(scheduleId) },
+        status: status // Статус
+    };
+
+    const url = `${apiUrl}/new`;
+    fetch(url, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(attendance),
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.message || "Ошибка сохранения"); });
+            }
+            fetchAttendance();
+            closeModal("modal_add");
+        })
+        .catch(error => console.error("Ошибка сохранения посещения:", error));
+}
+
+function openEditModal(id) {
+    const url = `${apiUrl}/edit/${id}`;
 
     fetch(url, {
-        method: "DELETE",
+        method: "GET",
         headers: getAuthHeaders(),
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error("Ошибка удаления записи");
+                throw new Error("Ошибка получения данных для редактирования");
             }
-            alert("Запись успешно удалена");
-            fetchAttendance(); // Обновить таблицу после удаления
+            return response.json();
         })
-        .catch(error => console.error("Ошибка удаления:", error));
+        .then(data => {
+            document.getElementById("edit-attendance-id").value = data.id || "";
+            loadStudents("edit-student-id", data.student?.id);
+            loadSchedules("edit-schedule-id", data.schedule?.id);
+            document.getElementById("edit-status").value = data.status || "Присутствовал";
+            document.getElementById("edit-modal").style.display = "block";
+        })
+        .catch(error => console.error("Error fetching attendance for edit:", error));
+}
+
+function saveEditedAttendance() {
+    const id = document.getElementById("edit-attendance-id").value;
+    const studentId = document.getElementById("edit-student-id").value;
+    const scheduleId = document.getElementById("edit-schedule-id").value;
+    const status = document.getElementById("edit-status").value;
+
+    const updatedAttendance = {
+        student: { id: parseInt(studentId) },
+        schedule: { id: parseInt(scheduleId) },
+        status: status
+    };
+
+    const url = `${apiUrl}/edit/${id}`;
+
+    fetch(url, {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(updatedAttendance)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Ошибка сохранения изменений");
+            }
+            fetchAttendance();
+            closeModal("edit-modal");
+        })
+        .catch(error => console.error("Error saving edited attendance:", error));
+}
+
+function deleteAttendance(id) {
+    deleteRecord(id, apiUrl, fetchAttendance);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

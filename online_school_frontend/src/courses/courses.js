@@ -1,7 +1,8 @@
+import {getAuthHeaders, loadTeacher, closeModal, deleteRecord, updateRowCount} from "../app_funcs.js"
+
 const apiUrl = "http://localhost:8086/courses";
 
 export {
-    getAuthHeaders,
     fetchCourses,
     renderTable,
     sortCoursesByName,
@@ -9,13 +10,10 @@ export {
     resetFilters,
     saveCourses,
     saveEditedCourse,
-    closeModal,
-    closeEditModal,
     showAddForm,
     openEditModal
 };
 
-window.getAuthHeaders = getAuthHeaders;
 window.fetchCourses = fetchCourses;
 window.renderTable = renderTable;
 window.sortCoursesByName = sortCoursesByName;
@@ -23,23 +21,11 @@ window.filterCourses = filterCourses;
 window.resetFilters = resetFilters;
 window.saveCourses = saveCourses;
 window.saveEditedCourse = saveEditedCourse;
-window.closeModal = closeModal;
-window.closeEditModal = closeEditModal;
 window.showAddForm = showAddForm;
 window.openEditModal = openEditModal;
 
 let coursesData = [];
 
-// Получение токена из localStorage
-function getAuthHeaders() {
-    const token = localStorage.getItem("token");
-    return {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-    };
-}
-
-// Получение курсов с сервера
 function fetchCourses() {
     fetch(apiUrl + "/", { headers: getAuthHeaders() })
         .then(response => {
@@ -59,7 +45,6 @@ function fetchCourses() {
         });
 }
 
-// Отображение таблицы курсов
 function renderTable(data) {
     const tableBody = document.querySelector("#courses-table tbody");
     tableBody.innerHTML = "";
@@ -88,13 +73,11 @@ function renderTable(data) {
     updateRowCount(data.length);
 }
 
-// Сортировка по имени курса
 function sortCoursesByName() {
     coursesData.sort((a, b) => a.course_name.localeCompare(b.course_name));
     renderTable(coursesData);
 }
 
-// Фильтрация курсов
 function filterCourses() {
     const keyword = document.getElementById("keyword").value.toLowerCase();
 
@@ -108,13 +91,24 @@ function filterCourses() {
     renderTable(filteredData);
 }
 
-// Сброс фильтров
 function resetFilters() {
     document.getElementById("keyword").value = "";
     fetchCourses();
 }
 
-// Добавление нового курса
+function showAddForm() {
+    document.getElementById("course-id").value = "";
+    document.getElementById("course-name").value = "";
+    document.getElementById("description").value = "";
+    loadTeacher("teacher-id");
+    document.getElementById("modal_add").style.display = "block";
+    fetchCourses();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetchCourses();
+});
+
 function saveCourses() {
     const name = document.getElementById("course-name").value;
     const description = document.getElementById("description").value;
@@ -135,7 +129,7 @@ function saveCourses() {
             if (!response.ok) {
                 throw new Error("Ошибка добавления курса");
             }
-            closeModal();
+            closeModal("modal_add");
             fetchCourses();
         })
         .catch((error) => {
@@ -144,7 +138,6 @@ function saveCourses() {
         });
 }
 
-// Открыть модальное окно редактирования
 function openEditModal(id) {
     const course = coursesData.find(cour => cour.id === id);
     if (!course) return;
@@ -152,12 +145,11 @@ function openEditModal(id) {
     document.getElementById("edit-course-id").value = course.id;
     document.getElementById("edit-course-name").value = course.course_name;
     document.getElementById("edit-description").value = course.description;
-    document.getElementById("edit-teacher-id").value = course.teacher_id.id;
+    loadTeacher("edit-teacher-id", course.teacher_id.id);
 
     document.getElementById("edit-modal").style.display = "block";
 }
 
-// Сохранить изменения курса
 function saveEditedCourse() {
     const courseId = document.getElementById("edit-course-id").value;
 
@@ -177,8 +169,8 @@ function saveEditedCourse() {
                 throw new Error("Ошибка обновления курса");
             }
             alert("Курс успешно обновлен!");
-            closeEditModal();
-            fetchCourses(); // Обновить список курсов после сохранения изменений
+            closeModal("edit-modal");
+            fetchCourses();
         })
         .catch((error) => {
             console.error("Ошибка обновления курса:", error);
@@ -186,48 +178,6 @@ function saveEditedCourse() {
         });
 }
 
-
-// Удаление курса
 function deleteCourse(courseId) {
-    const confirmDelete = confirm("Вы уверены, что хотите удалить этот курс?");
-    if (!confirmDelete) return;
-
-    fetch(`${apiUrl}/${courseId}`, {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Ошибка удаления курса");
-            }
-            fetchCourses();
-        })
-        .catch((error) => {
-            console.error("Ошибка удаления курса", error);
-            alert("Ошибка при удалении курса.");
-        });
+    deleteRecord(id, apiUrl, fetchCourses);
 }
-
-// Закрытие модальных окон
-function closeModal() {
-    document.getElementById("modal_add").style.display = "none";
-}
-
-function showAddForm() {
-    document.getElementById("modal_add").style.display = "block";
-    fetchCourses();
-}
-
-function closeEditModal() {
-    document.getElementById("edit-modal").style.display = "none";
-}
-
-// Обновление количества строк в таблице
-function updateRowCount(count) {
-    document.getElementById("row-count").textContent = count;
-}
-
-// Инициализация
-document.addEventListener("DOMContentLoaded", () => {
-    fetchCourses();
-});

@@ -8,12 +8,13 @@
 <body id = "body-id">
 <h1>Материалы</h1>
 
-<a href="/attendance">Attendance</a></p>
-<a href="/schedule">Schedule</a></p>
-<a href="/admin/users">Users</a></p>
-<a href="/courses">Courses</a></p>
-<a href="/grades">Grades</a></p>
-<a href="/materials">Materials</a></p>
+<a href="/attendance">Посещения</a></p>
+<a href="/schedule">Расписание</a></p>
+<a href="/admin/users">Пользователи</a></p>
+<a href="/courses">Курсы</a></p>
+<a href="/grades">Оценки</a></p>
+<a href="/materials">Материалы</a></p>
+<a href="/about">Об авторе</a></p>
 
 <div style="margin-top: 10px;">
     <button onclick="sortMatByTitle()">Сортировать названию</button>
@@ -63,7 +64,9 @@
         <br><br>
         <label>
             Курс:
-            <input type="number" id="course-id" required>
+            <select id="course-id" required>
+                <option value="">Выберите курс</option>
+            </select>
         </label>
         <br><br>
         <label>
@@ -72,7 +75,7 @@
         </label>
         <br><br>
         <button type="button" onclick="saveMat()">Сохранить</button>
-        <button type="button" onclick="closeModal()">Отменить</button>
+        <button type="button" onclick="closeModal('modal_add')">Отменить</button>
     </form>
 </div>
 
@@ -88,7 +91,9 @@
         <br><br>
         <label>
             Course ID:
-            <input type="number" id="edit-course-id" required>
+            <select id="edit-course-id" required>
+                <option value="">Выберите курс</option>
+            </select>
         </label>
         <br><br>
         <label>
@@ -97,7 +102,7 @@
         </label>
         <br><br>
         <button type="button" onclick="saveEditedMat()">Сохранить</button>
-        <button type="button" onclick="closeEditModal()">Отменить</button>
+        <button type="button" onclick="closeModal('edit-modal')">Отменить</button>
     </form>
 </div>
 

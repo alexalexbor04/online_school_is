@@ -68,7 +68,8 @@ public class AuthController {
                     .setSubject(existingUser.getUsername())
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1 час
-                    .signWith(SignatureAlgorithm.HS512, "secretKeySecretKey12345678secretKeySecretKey12345678secretKeySecretKey12345678secretKeySecretKey12345678secretKeySecretKey12345678")
+                    .signWith(SignatureAlgorithm.HS512, "secretKeySecretKey12345678secretKeySecretKey12345678" +
+                            "secretKeySecretKey12345678secretKeySecretKey12345678secretKeySecretKey12345678")
                     .compact();
 
             return ResponseEntity.ok(Map.of("token", token));

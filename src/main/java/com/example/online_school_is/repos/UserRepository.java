@@ -3,6 +3,7 @@ package com.example.online_school_is.repos;
 import com.example.online_school_is.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,5 +17,9 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     @Query("select p from Users p where concat(p.id, '', p.username, '', p.role, '', " +
             "p.full_name, '', p.email, '', p.phone) like %?1%")
     List<Users> searchUsers(String keyword);
+
+    @Query("SELECT u FROM Users u WHERE u.role.name = :roleName")
+    List<Users> findByRoleName(@Param("roleName") String roleName);
+
 }
 

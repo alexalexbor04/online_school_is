@@ -1,18 +1,17 @@
+import {loadStudents, closeModal, getAuthHeaders, loadCourse, updateRowCount, deleteRecord} from "../app_funcs.js";
+
 const apiUrl = "http://localhost:8086/grades";
 
 export { getAuthHeaders, fetchGrades, filterGrades, resetFilters, showAddForm, saveGrade, openEditModal,
-    saveEditedGrade, closeEditModal, sortGradesByDate, sortGradesByStudent, sortGradeByCourse, sortGradesByGrade};
+    saveEditedGrade, sortGradesByDate, sortGradesByStudent, sortGradeByCourse, sortGradesByGrade};
 
-window.getAuthHeaders = getAuthHeaders;
 window.fetchGrades = fetchGrades;
 window.filterGrades = filterGrades;
 window.resetFilters = resetFilters;
 window.saveGrade = saveGrade;
 window.showAddForm = showAddForm;
-window.closeModal = closeModal;
 window.openEditModal = openEditModal;
 window.saveEditedGrade = saveEditedGrade;
-window.closeEditModal = closeEditModal;
 window.deleteGrade = deleteGrade;
 window.sortGradesByDate = sortGradesByDate;
 window.sortGradesByStudent = sortGradesByStudent;
@@ -21,14 +20,6 @@ window.sortGradeByCourse = sortGradeByCourse;
 
 
 let gradesData = [];
-
-function getAuthHeaders() {
-    const token = localStorage.getItem("token");
-    return {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-    };
-}
 
 function fetchGrades() {
     fetch(apiUrl + "/", { headers: getAuthHeaders() })
@@ -77,10 +68,6 @@ function renderTable(data) {
         tableBody.innerHTML += row;
     });
     updateRowCount(data.length);
-}
-
-function updateRowCount(count) {
-    document.getElementById("row-count").textContent = count;
 }
 
 function filterGrades() {
@@ -133,18 +120,17 @@ function sortGradesByGrade() {
 }
 
 
-// Показ формы добавления
 function showAddForm() {
+    document.getElementById("grade-id").value = "";
+    document.getElementById("comment").value = "";
+    document.getElementById("date-grade").value = "";
+    document.getElementById("grade").value = "";
+    loadCourse("course-id");
+    loadStudents("student-id");
     document.getElementById("modal_add").style.display = "block";
-    fetchGrades(); // Запрос списка курсов
+    fetchGrades();
 }
 
-// Закрыть форму добавления
-function closeModal() {
-    document.getElementById("modal_add").style.display = "none";
-}
-
-// Сохранение нового расписания
 function saveGrade() {
     const newGrade = {
         course_id: { id: document.getElementById("course-id").value },
@@ -162,28 +148,27 @@ function saveGrade() {
         .then(response => response.json())
         .then(() => {
             alert("Оценка добавлена!");
-            closeModal();
+            closeModal("modal_add");
             fetchGrades();
         })
         .catch(error => console.error("Ошибка добавления:", error));
 }
 
-// Открыть форму редактирования
 function openEditModal(id) {
     const grade = gradesData.find(gr => gr.id === id);
     if (!grade) return;
 
     document.getElementById("edit-grades-id").value = grade.id;
-    document.getElementById("edit-course-id").value = grade.course_id.id;
     document.getElementById("edit-grade").value = grade.grade;
     document.getElementById("edit-date-grade").value = grade.date;
-    document.getElementById("edit-student-id").value = grade.student_id.id;
     document.getElementById("edit-comment").value = grade.comment;
+
+    loadCourse("edit-course-id", grade.course_id.id);
+    loadStudents("edit-student-id", grade.student_id.id);
 
     document.getElementById("edit-modal").style.display = "block";
 }
 
-// Сохранить изменения курса
 function saveEditedGrade() {
     const gardeId = document.getElementById("edit-grades-id").value;
 
@@ -205,7 +190,7 @@ function saveEditedGrade() {
                 throw new Error("Ошибка обновления оценки");
             }
             alert("Оценка успешно обновлена!");
-            closeEditModal();
+            closeModal("edit-modal");
             fetchGrades();
         })
         .catch((error) => {
@@ -214,28 +199,8 @@ function saveEditedGrade() {
         });
 }
 
-function closeEditModal() {
-    document.getElementById("edit-modal").style.display = "none";
-}
-
-function deleteGrade(gradeID) {
-    const confirmDelete = confirm("Вы уверены, что хотите удалить этот курс?");
-    if (!confirmDelete) return;
-
-    fetch(`${apiUrl}/${gradeID}`, {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Ошибка удаления оценки");
-            }
-            fetchGrades();
-        })
-        .catch((error) => {
-            console.error("Ошибка удаления оценки", error);
-            alert("Ошибка при удалении оценки.");
-        });
+function deleteGrade(id) {
+    deleteRecord(id, apiUrl, fetchGrades);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

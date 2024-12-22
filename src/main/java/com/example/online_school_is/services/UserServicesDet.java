@@ -1,10 +1,13 @@
 package com.example.online_school_is.services;
 
+import com.example.online_school_is.entity.Users;
 import com.example.online_school_is.repos.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserServicesDet implements UserDetailsService {

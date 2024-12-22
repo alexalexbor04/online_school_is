@@ -9,12 +9,13 @@
 
 <h1>Расписание</h1>
 
-<a href="/attendance">Attendance</a></p>
-<a href="/schedule">Schedule</a></p>
-<a href="/admin/users">Users</a></p>
-<a href="/courses">Courses</a></p>
-<a href="/grades">Grades</a></p>
-<a href="/materials">Materials</a></p>
+<a href="/attendance">Посещения</a></p>
+<a href="/schedule">Расписание</a></p>
+<a href="/admin/users">Пользователи</a></p>
+<a href="/courses">Курсы</a></p>
+<a href="/grades">Оценки</a></p>
+<a href="/materials">Материалы</a></p>
+<a href="/about">Об авторе</a></p>
 
 <div style="margin-top: 10px;">
     <button onclick="sortScheduleByDate()">Сортировать по дате</button>
@@ -27,11 +28,6 @@
     <input type="date" id="filter-date">
     <select id="filter-course">
         <option value="">Курс</option>
-        <option value="Java Programming">Java Programming</option>
-        <option value="Web Development">Web Development</option>
-        <option value="Data Science">Data Science</option>
-        <option value="Python Basics">Python Basics</option>
-        <option value="Machine Learning">Machine Learning</option>
     </select>
     <button onclick="filterSch()">Найти</button>
     <button onclick="resetFilters()">Очистить</button>
@@ -66,7 +62,9 @@
         <input type="hidden" id="schedule-id">
         <label>
             CourseID:
-            <input type="number" id="course-id" required>
+            <select id="course-id" required>
+                <option value=""></option>
+            </select>
         </label>
         <br><br>
         <label>
@@ -90,7 +88,7 @@
         </label>
         <br><br>
         <button type="button" onclick="saveSchedule()">Сохранить</button>
-        <button type="button" onclick="closeModal()">Отменить</button>
+        <button type="button" onclick="closeModal('modal_add')">Отменить</button>
     </form>
 </div>
 
@@ -101,7 +99,9 @@
         <input type="hidden" id="edit-schedule-id">
         <label>
             CourseID:
-            <input type="number" id="edit-course-id" required>
+            <select id="edit-course-id" required>
+                <option value=""></option>
+            </select>
         </label>
         <br><br>
         <label>
@@ -125,7 +125,7 @@
         </label>
         <br><br>
         <button type="button" onclick="saveEditedSchedule()">Сохранить</button>
-        <button type="button" onclick="closeEditModal()">Отменить</button>
+        <button type="button" onclick="closeModal('edit-modal')">Отменить</button>
     </form>
 </div>
 

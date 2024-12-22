@@ -1,7 +1,9 @@
 const apiUrl = "http://localhost:8086/schedule";
 
+import {getAuthHeaders, updateRowCount, closeModal, deleteRecord} from "../app_funcs.js";
+
 export { fetchSchedule, renderTable, filterSch, resetFilters, sortScheduleByDate, sortScheduleByStartTime,
-    sortScheduleByCourse, showAddForm, saveSchedule, closeModal, openEditModal, saveEditedSchedule, closeEditModal,
+    sortScheduleByCourse, showAddForm, saveSchedule, openEditModal, saveEditedSchedule,
     deleteSchedule
 };
 
@@ -13,24 +15,12 @@ window.sortScheduleByStartTime = sortScheduleByStartTime;
 window.sortScheduleByCourse = sortScheduleByCourse;
 window.showAddForm = showAddForm;
 window.saveSchedule = saveSchedule;
-window.closeModal = closeModal;
 window.openEditModal = openEditModal;
 window.saveEditedSchedule = saveEditedSchedule;
-window.closeEditModal = closeEditModal;
 window.deleteSchedule = deleteSchedule;
 
 let scheduleData = [];
 
-// Получаем заголовки для авторизации
-function getAuthHeaders() {
-    const token = localStorage.getItem("token");
-    return {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-    };
-}
-
-// Загрузка данных расписания
 function fetchSchedule() {
     fetch(apiUrl + "/", { headers: getAuthHeaders() })
         .then(response => {
@@ -82,14 +72,8 @@ function renderTable(data) {
         tableBody.innerHTML += row;
     });
     updateRowCount(data.length);
-}   
-
-// Обновить количество записей
-function updateRowCount(count) {
-    document.getElementById("row-count").textContent = count;
 }
 
-// Фильтрация данных
 function filterSch() {
     const keyword = document.getElementById("keyword").value.toLowerCase();
     const date = document.getElementById("filter-date").value;
@@ -102,13 +86,12 @@ function filterSch() {
                 item.start_time.toLowerCase().includes(keyword) ||
                 item.room.toLowerCase().includes(keyword)) &&
             (!date || item.date === date) &&
-            (!course || item.course_id.course_name === course)
+            (!course || item.course_id.name === course)
         );
     });
     renderTable(filteredData);
 }
 
-// Сброс фильтров
 function resetFilters() {
     document.getElementById("keyword").value = "";
     document.getElementById("filter-date").value = "";
@@ -116,36 +99,34 @@ function resetFilters() {
     renderTable(scheduleData);
 }
 
-// Сортировка по дате
 function sortScheduleByDate() {
     const sorted = [...scheduleData].sort((a, b) => new Date(a.date) - new Date(b.date));
     renderTable(sorted);
 }
 
-// Сортировка по времени начала
 function sortScheduleByStartTime() {
     const sorted = [...scheduleData].sort((a, b) => a.start_time.localeCompare(b.start_time));
     renderTable(sorted);
 }
 
-// Сортировка по названию курса
 function sortScheduleByCourse() {
     const sorted = [...scheduleData].sort((a, b) => a.course_id.course_name.localeCompare(b.course_id.course_name));
     renderTable(sorted);
 }
 
-// Показ формы добавления
 function showAddForm() {
+    document.getElementById("schedule-id").value = "";
+    document.getElementById("date-sch").value = "";
+    document.getElementById("start_time").value = "";
+    document.getElementById("end_time").value = "";
+    document.getElementById("room").value = "";
+
+    loadCourse("course-id");
+
     document.getElementById("modal_add").style.display = "block";
-    fetchSchedule(); // Запрос списка курсов
+    fetchSchedule();
 }
 
-// Закрыть форму добавления
-function closeModal() {
-    document.getElementById("modal_add").style.display = "none";
-}
-
-// Сохранение нового расписания
 function saveSchedule() {
     const newSchedule = {
         course_id: { id: document.getElementById("course-id").value },
@@ -163,7 +144,7 @@ function saveSchedule() {
         .then(response => response.json())
         .then(() => {
             alert("Расписание добавлено!");
-            closeModal();
+            closeModal("modal_add");
             fetchSchedule();
         })
         .catch(error => console.error("Ошибка добавления:", error));
@@ -175,7 +156,7 @@ function openEditModal(id) {
     if (!schedule) return;
 
     document.getElementById("edit-schedule-id").value = schedule.id;
-    document.getElementById("edit-course-id").value = schedule.course_id.id;
+    loadCourse("edit-course-id", schedule.course_id.id);
     document.getElementById("edit-date-sch").value = schedule.date;
     document.getElementById("edit-start_time").value = schedule.start_time;
     document.getElementById("edit-end_time").value = schedule.end_time;
@@ -184,12 +165,6 @@ function openEditModal(id) {
     document.getElementById("edit-modal").style.display = "block";
 }
 
-// Закрыть форму редактирования
-function closeEditModal() {
-    document.getElementById("edit-modal").style.display = "none";
-}
-
-// Сохранить изменения расписания
 function saveEditedSchedule() {
     const id = document.getElementById("edit-schedule-id").value;
 
@@ -208,43 +183,21 @@ function saveEditedSchedule() {
     })
         .then(() => {
             alert("Расписание обновлено!");
-            closeEditModal();
+            closeModal("edit-modal");
             fetchSchedule();
         })
         .catch(error => console.error("Ошибка обновления расписания:", error));
 }
 
-// Удалить расписание
-function deleteSchedule(id) {
-    if (!confirm("Удалить запись?")) return;
 
-    fetch(`${apiUrl}/${id}`, {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-    })
-        .then(() => {
-            alert("Запись удалена!");
-            fetchSchedule();
-        })
-        .catch(error => console.error("Ошибка удаления расписания:", error));
+function deleteSchedule(id) {
+    deleteRecord(id, apiUrl, fetchSchedule);
 }
 
-// Запрос списка курсов для формы добавления
-// function fetchCourses() {
-//     // Замените путь на ваш API для получения курсов
-//     fetch("http://localhost:8086/courses",
-//         { headers: getAuthHeaders()})
-//         .then(response => response.json())
-//         .then(courses => {
-//             const courseSelect = document.getElementById("course-id");
-//             courseSelect.innerHTML = '<option value="">Выберите курс</option>';
-//             courses.forEach(course => {
-//                 courseSelect.innerHTML += `<option value="${course.id}">${course.course_name}</option>`;
-//             });
-//         });
-// }
+document.addEventListener("DOMContentLoaded", () => {
+    loadCourse("filter-course");
+});
 
-// Инициализация
 document.addEventListener("DOMContentLoaded", () => {
     fetchSchedule();
 });

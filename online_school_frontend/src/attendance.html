@@ -10,12 +10,13 @@
 
 <h1>Посещаемость</h1>
 
-<a href="/attendance">Attendance</a></p>
-<a href="/schedule">Schedule</a></p>
-<a href="/admin/users">Users</a></p>
-<a href="/courses">Courses</a></p>
-<a href="/grades">Grades</a></p>
-<a href="/materials">Materials</a></p>
+<a href="/attendance">Посещения</a></p>
+<a href="/schedule">Расписание</a></p>
+<a href="/admin/users">Пользователи</a></p>
+<a href="/courses">Курсы</a></p>
+<a href="/grades">Оценки</a></p>
+<a href="/materials">Материалы</a></p>
+<a href="/about">Об авторе</a></p>
 
 <div style="margin-top: 10px;">
     <button onclick="sortAttendanceByDate()">Сортировать по дате</button>
@@ -87,7 +88,7 @@
         </label>
         <br><br>
         <button type="button" onclick="saveAttendance()">Сохранить</button>
-        <button type="button" onclick="closeModal()">Отменить</button>
+        <button type="button" onclick="closeModal('modal_add')">Отменить</button>
     </form>
 </div>
 
@@ -98,12 +99,16 @@
         <input type="hidden" id="edit-attendance-id">
         <label>
             Student ID:
-            <input type="number" id="edit-student-id" required>
+            <select id="edit-student-id" required>
+                <option value=""></option>
+            </select>
         </label>
         <br><br>
         <label>
             Schedule ID:
-            <input type="number" id="edit-schedule-id" required>
+            <select id="edit-schedule-id" required>
+                <option value=""></option>
+            </select>
         </label>
         <br><br>
         <label>
@@ -115,18 +120,11 @@
         </label>
         <br><br>
         <button type="button" onclick="saveEditedAttendance()">Сохранить</button>
-        <button type="button" onclick="closeEditModal()">Отменить</button>
+        <button type="button" onclick="closeModal('edit-modal')">Отменить</button>
     </form>
 </div>
 
-
 <script type="module" src="../src/att/attendance.js" defer></script>
-<script type="module" src="../src/att/modal_add.js" defer></script>
-<script type="module" src="../src/att/modal_edit.js" defer></script>
+
 </body>
 </html>
-
-
-<!-- role parsing-->
-<!-- check all the possible bags and mistakes-->
-<!-- modals for all the mistakes-->

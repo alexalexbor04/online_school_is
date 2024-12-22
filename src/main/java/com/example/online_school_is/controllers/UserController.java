@@ -4,6 +4,7 @@ import com.example.online_school_is.entity.Roles;
 import com.example.online_school_is.entity.Users;
 import com.example.online_school_is.repos.RoleRepository;
 import com.example.online_school_is.repos.UserRepository;
+import com.example.online_school_is.services.UserServicesDet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -16,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/admin")
-@PreAuthorize("hasRole('admin')") // Применяется ко всем методам
 public class UserController {
 
     @Autowired
@@ -27,7 +26,8 @@ public class UserController {
     private RoleRepository roleRepository;
 
     // Получение списка пользователей
-    @GetMapping("/users")
+    @PreAuthorize("hasRole('admin')")
+    @GetMapping("/admin/users")
     public ResponseEntity<List<Users>> listUsers(@Param("keyword") String keyword) {
         List<Users> users;
         if (keyword != null) {
@@ -39,7 +39,8 @@ public class UserController {
     }
 
     // Изменение роли пользователя
-    @PutMapping("/users/{id}/changeRole")
+    @PreAuthorize("hasRole('admin')")
+    @PutMapping("/admin/users/{id}/changeRole")
     public ResponseEntity<String> changeRole(@PathVariable("id") Long id, @RequestBody Map<String, String> body) {
         String roleName = body.get("role");
         Users user = userRepository.findById(id)
@@ -52,8 +53,8 @@ public class UserController {
 
         return ResponseEntity.ok("Роль пользователя успешно изменена");
     }
-
-    @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasRole('admin')")
+    @DeleteMapping("/admin/users/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
         Users user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Пользователь с ID " + id + " не найден"));
@@ -62,4 +63,17 @@ public class UserController {
 
         return ResponseEntity.ok("Пользователь с ID " + id + " успешно удалён");
     }
+
+    @GetMapping("/students")
+    public ResponseEntity<List<Users>> getAllStudents() {
+        List<Users> students = userRepository.findByRoleName("student");
+        return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/teachers")
+    public ResponseEntity<List<Users>> getAllTeachers() {
+        List<Users> students = userRepository.findByRoleName("teacher");
+        return ResponseEntity.ok(students);
+    }
+
 }

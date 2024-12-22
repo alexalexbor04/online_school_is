@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 // import {patch} from "axios";
 
+
 export default defineConfig({
   server: {
     port: 3000,
@@ -39,6 +40,11 @@ export default defineConfig({
         target: 'http://localhost:3000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/materials$/, '/src/materials.html'),
+      },
+      '/about': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/about$/, '/src/about.html'),
       }
     },
   },

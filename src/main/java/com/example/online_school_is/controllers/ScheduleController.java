@@ -23,13 +23,16 @@ public class ScheduleController {
     private ScheduleRepository repo;
 
     @GetMapping("/")
-    public ResponseEntity<List<Schedule>> viewSchedule(@Param("keyword") String keyword) {
+    public ResponseEntity<List<Schedule>> viewSchedule() {
         List<Schedule> listSch;
-        if (keyword != null) {
-            listSch = service.listAll(keyword);
-        } else {
-            listSch = service.listAll(null);
-        }
+        listSch = repo.findAll();
+        return ResponseEntity.ok(listSch);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Schedule>> loadSchedule() {
+        List<Schedule> listSch;
+        listSch = repo.findAll();
         return ResponseEntity.ok(listSch);
     }
 

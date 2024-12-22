@@ -33,6 +33,13 @@ public class CoursesController {
         return ResponseEntity.ok(listCourses);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Courses>> loadCourses() {
+        List<Courses> listCourses;
+        listCourses = repo.findAll();
+        return ResponseEntity.ok(listCourses);
+    }
+
     @PreAuthorize("hasRole('admin')")
     @PostMapping("/new")
     public ResponseEntity<Courses> newCourse(@RequestBody Courses courses) {

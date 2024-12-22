@@ -1,32 +1,23 @@
+import {getAuthHeaders, loadCourse, updateRowCount, closeModal, deleteRecord} from "../app_funcs.js"
+
 const apiUrl = "http://localhost:8086/materials";
 
 export { getAuthHeaders, fetchMat, filterMat, resetFilters, showAddForm, saveMat, openEditModal,
-    saveEditedMat, closeEditModal, sortMatByTitle, sortMatByCourse, deleteMat};
+    saveEditedMat, sortMatByTitle, sortMatByCourse, deleteMat};
 
-window.getAuthHeaders = getAuthHeaders;
 window.fetchMat= fetchMat;
 window.filterMat = filterMat;
 window.resetFilters = resetFilters;
 window.saveMat = saveMat;
 window.showAddForm = showAddForm;
-window.closeModal = closeModal;
 window.openEditModal = openEditModal;
 window.saveEditedMat = saveEditedMat;
-window.closeEditModal = closeEditModal;
 window.deleteMat = deleteMat;
 window.sortMatByTitle = sortMatByTitle;
 window.sortMatByCourse = sortMatByCourse;
 
 
 let matData = [];
-
-function getAuthHeaders() {
-    const token = localStorage.getItem("token");
-    return {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-    };
-}
 
 function fetchMat() {
     fetch(apiUrl + "/", { headers: getAuthHeaders() })
@@ -75,10 +66,6 @@ function renderTable(data) {
     updateRowCount(data.length);
 }
 
-function updateRowCount(count) {
-    document.getElementById("row-count").textContent = count;
-}
-
 function filterMat() {
     const keyword = document.getElementById("keyword").value.toLowerCase();
     const course = document.getElementById("filter-course-mat").value;
@@ -112,15 +99,13 @@ function sortMatByCourse() {
     renderTable(sorted);
 }
 
-// Показ формы добавления
 function showAddForm() {
+    document.getElementById("mat-id").value = "";
+    document.getElementById("file-path").value = "";
+    document.getElementById("title-id").value = "";
     document.getElementById("modal_add").style.display = "block";
-    fetchMat(); // Запрос списка курсов
-}
-
-// Закрыть форму добавления
-function closeModal() {
-    document.getElementById("modal_add").style.display = "none";
+    loadCourse("course-id");
+    fetchMat();
 }
 
 // Сохранение нового расписания
@@ -139,26 +124,24 @@ function saveMat() {
         .then(response => response.json())
         .then(() => {
             alert("Материал добавлен!");
-            closeModal();
+            closeModal("modal_add");
             fetchMat();
         })
         .catch(error => console.error("Ошибка добавления:", error));
 }
 
-// Открыть форму редактирования
 function openEditModal(id) {
     const mat = matData.find(mt => mt.id === id);
     if (!mat) return;
 
     document.getElementById("edit-mat-id").value = mat.id;
-    document.getElementById("edit-course-id").value = mat.course_id.id;
     document.getElementById("edit-title").value = mat.title;
     document.getElementById("edit-file-path").value = mat.date;
+    loadCourse("edit-course-id", mat.course_id.id);
 
     document.getElementById("edit-modal").style.display = "block";
 }
 
-// Сохранить изменения курса
 function saveEditedMat() {
     const gardeId = document.getElementById("edit-mat-id").value;
 
@@ -178,7 +161,7 @@ function saveEditedMat() {
                 throw new Error("Ошибка обновления материала");
             }
             alert("Материал успешно обновлена!");
-            closeEditModal();
+            closeModal("edit-modal");
             fetchMat();
         })
         .catch((error) => {
@@ -187,28 +170,8 @@ function saveEditedMat() {
         });
 }
 
-function closeEditModal() {
-    document.getElementById("edit-modal").style.display = "none";
-}
-
-function deleteMat(matID) {
-    const confirmDelete = confirm("Вы уверены, что хотите удалить этот курс?");
-    if (!confirmDelete) return;
-
-    fetch(`${apiUrl}/${matID}`, {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Ошибка удаления оценки");
-            }
-            fetchMat();
-        })
-        .catch((error) => {
-            console.error("Ошибка удаления материала", error);
-            alert("Ошибка при удалении материала.");
-        });
+function deleteMat(id) {
+    deleteRecord(id, apiUrl, fetchMat)
 }
 
 document.addEventListener("DOMContentLoaded", () => {
