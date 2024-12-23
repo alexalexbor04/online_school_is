@@ -1,5 +1,5 @@
 import {getAuthHeaders, updateRowCount, deleteRecord, loadStudents, loadSchedules,
-    closeModal, getUserRole, configureUIBasedOnRoleAtt} from "../app_funcs.js";
+    closeModal, getUserRole, configureAttGradesByRole} from "../app_funcs.js";
 
 const apiUrl = "http://localhost:8086/attendance";
 
@@ -49,7 +49,7 @@ function fetchAttendance() {
                 attendanceData = data;
             }
             renderTable(attendanceData);
-            configureUIBasedOnRoleAtt();
+            configureAttGradesByRole();
         })
         .catch(error => {
             console.error("Error fetching attendance data:", error);
@@ -277,7 +277,7 @@ function deleteAttendance(id) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    configureUIBasedOnRoleAtt();
+    configureAttGradesByRole();
     fetchAttendance();
     loadCourse("filter-course");
 });

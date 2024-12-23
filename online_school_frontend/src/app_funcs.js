@@ -1,5 +1,5 @@
 export {getAuthHeaders, loadStudents, loadSchedules, updateRowCount, closeModal,
-    deleteRecord, loadCourse, loadTeacher, getUserRole, configureUIBasedOnRoleAtt, configureSchCourByRole}
+    deleteRecord, loadCourse, loadTeacher, getUserRole, configureAttGradesByRole, configureSchCourByRole}
 
 window.getAuthHeaders = getAuthHeaders;
 window.loadStudents = loadStudents;
@@ -10,7 +10,7 @@ window.deleteRecord = deleteRecord;
 window.loadCourse = loadCourse;
 window.loadTeacher = loadTeacher;
 window.getUserRole = getUserRole;
-window.configureUIBasedOnRoleAtt = configureUIBasedOnRoleAtt;
+window.configureAttGradesByRole = configureAttGradesByRole;
 window.configureSchCourByRole = configureSchCourByRole;
 
 
@@ -30,7 +30,7 @@ function getUserRole() {
     return payload.roles.name;
 }
 
-function configureUIBasedOnRoleAtt() {
+function configureAttGradesByRole() {
     const userRole = getUserRole();
 
     const addButton = document.querySelector(".can-add");
