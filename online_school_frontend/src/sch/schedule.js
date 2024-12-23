@@ -25,6 +25,7 @@ window.deleteSchedule = deleteSchedule;
 let scheduleData = [];
 
 function fetchSchedule() {
+    // отладка временно юзеррол тут не нужен
     const userRole = getUserRole();
     console.log(userRole);
 
@@ -225,7 +226,10 @@ function saveEditedSchedule() {
                 closeModal("edit-modal");
                 fetchSchedule();
             })
-            .catch(error => console.error("Ошибка обновления расписания:", error));
+            .catch(error => {
+                console.error("Ошибка обновления расписания:", error);
+                alert("Ошибка сохранения изменений.");
+            });
     }
 }
 
