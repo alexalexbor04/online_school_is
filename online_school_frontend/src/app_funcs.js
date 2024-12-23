@@ -1,5 +1,5 @@
 export {getAuthHeaders, loadStudents, loadSchedules, updateRowCount, closeModal,
-    deleteRecord, loadCourse, loadTeacher}
+    deleteRecord, loadCourse, loadTeacher, getUserRole, configureUIBasedOnRoleAtt, configureSchCourByRole}
 
 window.getAuthHeaders = getAuthHeaders;
 window.loadStudents = loadStudents;
@@ -9,6 +9,9 @@ window.closeModal = closeModal;
 window.deleteRecord = deleteRecord;
 window.loadCourse = loadCourse;
 window.loadTeacher = loadTeacher;
+window.getUserRole = getUserRole;
+window.configureUIBasedOnRoleAtt = configureUIBasedOnRoleAtt;
+window.configureSchCourByRole = configureSchCourByRole;
 
 
 function getAuthHeaders() {
@@ -18,6 +21,55 @@ function getAuthHeaders() {
         "Authorization": `Bearer ${token}`,
     };
 }
+
+function getUserRole() {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+    const payload = JSON.parse(atob(token.split(".")[1]));
+
+    return payload.roles.name;
+}
+
+function configureUIBasedOnRoleAtt() {
+    const userRole = getUserRole();
+
+    const addButton = document.querySelector(".can-add");
+    const editLinks = document.querySelectorAll(".can-edit");
+    const deleteLinks = document.querySelectorAll(".can-delete");
+
+    if (userRole === "admin") {
+        if (addButton) addButton.style.display = "none";
+        editLinks.forEach(link => (link.style.display = "inline"));
+        deleteLinks.forEach(link => (link.style.display = "inline"));
+    } else if (userRole === "teacher") {
+        if (addButton) addButton.style.display = "block";
+        editLinks.forEach(link => (link.style.display = "inline"));
+        deleteLinks.forEach(link => (link.style.display = "inline"));
+    } else if (userRole === "student") {
+        if (addButton) addButton.style.display = "none";
+        editLinks.forEach(link => (link.style.display = "none"));
+        deleteLinks.forEach(link => (link.style.display = "none"));
+    }
+}
+
+function configureSchCourByRole() {
+    const userRole = getUserRole();
+
+    const addButton = document.querySelector(".can-add");
+    const editLinks = document.querySelectorAll(".can-edit");
+    const deleteLinks = document.querySelectorAll(".can-delete");
+
+    if (userRole === "admin") {
+        if (addButton) addButton.style.display = "block";
+        editLinks.forEach(link => (link.style.display = "inline"));
+        deleteLinks.forEach(link => (link.style.display = "inline"));
+    } else if (userRole === "teacher" || userRole === "student") {
+        if (addButton) addButton.style.display = "none";
+        editLinks.forEach(link => (link.style.display = "none"));
+        deleteLinks.forEach(link => (link.style.display = "none"));
+    }
+}
+
 
 function loadStudents(studentSelectId, selectedStudentId = null) {
     const studentSelect = document.getElementById(studentSelectId);

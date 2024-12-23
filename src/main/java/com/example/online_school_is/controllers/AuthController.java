@@ -33,7 +33,6 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Регистрация пользователя
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody Users user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
@@ -66,6 +65,7 @@ public class AuthController {
         if (passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
             String token = Jwts.builder()
                     .setSubject(existingUser.getUsername())
+                    .claim("roles", existingUser.getRoles())
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1 час
                     .signWith(SignatureAlgorithm.HS512, "secretKeySecretKey12345678secretKeySecretKey12345678" +

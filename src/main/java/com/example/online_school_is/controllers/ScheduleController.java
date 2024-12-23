@@ -47,7 +47,7 @@ public class ScheduleController {
         }
     }
 
-    @PreAuthorize("hasRole('admin, teacher')")
+    @PreAuthorize("hasRole('admin')")
     @GetMapping("/edit/{id}")
     public ResponseEntity<Schedule> editSchedule(@PathVariable Long id) {
         Schedule schedule = service.get(id);
@@ -56,7 +56,7 @@ public class ScheduleController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @PreAuthorize("hasRole('admin, teacher')")
+    @PreAuthorize("hasRole('admin')")
     @PutMapping("/edit/{id}")
     public ResponseEntity<Schedule> updateSchedule(@PathVariable Long id, @RequestBody Schedule schedule) {
         try {

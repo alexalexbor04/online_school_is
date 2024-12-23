@@ -1,4 +1,5 @@
-import {getAuthHeaders, updateRowCount, deleteRecord, loadStudents, loadSchedules, closeModal} from "../app_funcs.js";
+import {getAuthHeaders, updateRowCount, deleteRecord, loadStudents, loadSchedules,
+    closeModal, getUserRole, configureUIBasedOnRoleAtt} from "../app_funcs.js";
 
 const apiUrl = "http://localhost:8086/attendance";
 
@@ -21,6 +22,9 @@ window.filterAndSortAttendance = filterAndSortAttendance;
 let attendanceData = [];
 
 function fetchAttendance() {
+    const userRole = getUserRole();
+    console.log(userRole);
+
     fetch(apiUrl, {
         method: "GET",
         headers: getAuthHeaders(),
@@ -32,8 +36,20 @@ function fetchAttendance() {
             return response.json();
         })
         .then(data => {
-            attendanceData = data;
-            renderTable(attendanceData)
+            if (userRole === "student") {
+                const userName = JSON.parse(atob(localStorage.getItem("token").split(".")[1])).sub;
+                // отладка временно
+                console.log(userName)
+                attendanceData = data.filter(item => item.student.username === userName);
+            } else {
+                // отладка временно
+                const userName = JSON.parse(atob(localStorage.getItem("token").split(".")[1])).sub;
+                // отладка временно
+                console.log(userName)
+                attendanceData = data;
+            }
+            renderTable(attendanceData);
+            configureUIBasedOnRoleAtt();
         })
         .catch(error => {
             console.error("Error fetching attendance data:", error);
@@ -61,8 +77,8 @@ function renderTable(data) {
                 <td>${item.schedule.date}</td>
                 <td>${item.status}</td>
                 <td>
-                    <a href="#" onclick="openEditModal(${item.id})">Редактировать</a>
-                    <a href="#" onclick="deleteAttendance(${item.id})">Удалить</a>
+                    <a href="#" class="can-edit" style="display: none;" onclick="openEditModal(${item.id})">Редактировать</a>
+                    <a href="#" class="can-delete" style="display: none;"  onclick="deleteAttendance(${item.id})">Удалить</a>
                 </td>
             </tr>
         `;
@@ -84,6 +100,11 @@ function filterAndSortAttendance(sortBy = null) {
     const status = document.getElementById("filter-status").value;
     const course = parseInt(document.getElementById("filter-course").value, 10);
 
+    const userRole = getUserRole();
+    const userName = userRole === "student"
+        ? JSON.parse(atob(localStorage.getItem("token").split(".")[1])).sub
+        : null;
+
     fetch(apiUrl, {
         method: "GET",
         headers: getAuthHeaders(),
@@ -92,13 +113,16 @@ function filterAndSortAttendance(sortBy = null) {
         .then(data => {
             let filteredData = data;
 
-            // Фильтрация
+            if (userRole === "student") {
+                filteredData = filteredData.filter(item => item.student.username === userName);
+            }
+
             if (keyword) {
                 filteredData = filteredData.filter(
                     item =>
                         item.student.full_name.toLowerCase().includes(keyword) ||
                         item.schedule.course_id.course_name.toLowerCase().includes(keyword) ||
-                        item.id.toLowerCase().includes(keyword)
+                        item.id.toString().includes(keyword)
                 );
             }
 
@@ -114,7 +138,6 @@ function filterAndSortAttendance(sortBy = null) {
                 filteredData = filteredData.filter(item => item.schedule.course_id.id === course);
             }
 
-            // Сортировка
             if (sortBy) {
                 switch (sortBy) {
                     case "date":
@@ -137,6 +160,7 @@ function filterAndSortAttendance(sortBy = null) {
 }
 
 
+
 function showAddForm() {
     document.getElementById("modal-title").textContent = "Добавить посещение";
     document.getElementById("attendance-id").value = ""; // Очистка поля ID
@@ -152,6 +176,12 @@ function showAddForm() {
 }
 
 function saveAttendance() {
+    const userRole = getUserRole();
+    if (userRole !== "teacher") {
+        alert("У вас нет прав на добавление посещений.");
+        return;
+    }
+
     const studentId = document.getElementById("student-id").value;
     const scheduleId = document.getElementById("schedule-id").value;
     const status = document.getElementById("status").value;
@@ -159,7 +189,7 @@ function saveAttendance() {
     const attendance = {
         student: { id: parseInt(studentId) },
         schedule: { id: parseInt(scheduleId) },
-        status: status // Статус
+        status: status
     };
 
     const url = `${apiUrl}/new`;
@@ -172,6 +202,7 @@ function saveAttendance() {
             if (!response.ok) {
                 return response.json().then(err => { throw new Error(err.message || "Ошибка сохранения"); });
             }
+            alert("Новая отметка о посещении добавлена!")
             fetchAttendance();
             closeModal("modal_add");
         })
@@ -181,24 +212,29 @@ function saveAttendance() {
 function openEditModal(id) {
     const url = `${apiUrl}/edit/${id}`;
 
-    fetch(url, {
-        method: "GET",
-        headers: getAuthHeaders(),
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Ошибка получения данных для редактирования");
-            }
-            return response.json();
+    const userRole = getUserRole();
+    if (userRole !== "admin" && userRole !== "teacher") {
+        alert("У вас нет прав на редактирование.");
+    } else {
+        fetch(url, {
+            method: "GET",
+            headers: getAuthHeaders(),
         })
-        .then(data => {
-            document.getElementById("edit-attendance-id").value = data.id || "";
-            loadStudents("edit-student-id", data.student?.id);
-            loadSchedules("edit-schedule-id", data.schedule?.id);
-            document.getElementById("edit-status").value = data.status || "Присутствовал";
-            document.getElementById("edit-modal").style.display = "block";
-        })
-        .catch(error => console.error("Error fetching attendance for edit:", error));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Ошибка получения данных для редактирования");
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("edit-attendance-id").value = data.id || "";
+                loadStudents("edit-student-id", data.student?.id);
+                loadSchedules("edit-schedule-id", data.schedule?.id);
+                document.getElementById("edit-status").value = data.status || "Присутствовал";
+                document.getElementById("edit-modal").style.display = "block";
+            })
+            .catch(error => console.error("Error fetching attendance for edit:", error));
+    }
 }
 
 function saveEditedAttendance() {
@@ -224,6 +260,7 @@ function saveEditedAttendance() {
             if (!response.ok) {
                 throw new Error("Ошибка сохранения изменений");
             }
+            alert("Отметка посещаемости обновлена!")
             fetchAttendance();
             closeModal("edit-modal");
         })
@@ -231,13 +268,17 @@ function saveEditedAttendance() {
 }
 
 function deleteAttendance(id) {
-    deleteRecord(id, apiUrl, fetchAttendance);
+    const userRole = getUserRole();
+    if (userRole !== "teacher" && userRole !== "admin") {
+        alert("У вас нет прав на удаление посещений.");
+        return;
+    }
+        deleteRecord(id, apiUrl, fetchAttendance);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    configureUIBasedOnRoleAtt();
+    fetchAttendance();
     loadCourse("filter-course");
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    fetchAttendance();
-});

@@ -1,6 +1,13 @@
 const apiUrl = "http://localhost:8086/schedule";
 
-import {getAuthHeaders, updateRowCount, closeModal, deleteRecord} from "../app_funcs.js";
+import {
+    getAuthHeaders,
+    updateRowCount,
+    closeModal,
+    deleteRecord,
+    configureSchCourByRole,
+    getUserRole
+} from "../app_funcs.js";
 
 export { fetchSchedule, renderTable, resetFilters, showAddForm, saveSchedule, openEditModal,
     saveEditedSchedule, deleteSchedule, filterAndSortSch
@@ -18,6 +25,9 @@ window.deleteSchedule = deleteSchedule;
 let scheduleData = [];
 
 function fetchSchedule() {
+    const userRole = getUserRole();
+    console.log(userRole);
+
     fetch(apiUrl + "/", { headers: getAuthHeaders() })
         .then(response => {
             if (!response.ok) {
@@ -28,6 +38,7 @@ function fetchSchedule() {
         .then(data => {
             scheduleData = data;
             renderTable(scheduleData);
+            configureSchCourByRole();
         })
         .catch(error => {
             console.error("Ошибка загрузки расписания:", error);
@@ -60,8 +71,8 @@ function renderTable(data) {
                 <td>${formatTime(item.end_time)}</td>
                 <td>${item.room}</td>
                 <td>
-                    <a href="#" onclick="openEditModal(${item.id})">Редактировать</a>
-                    <a href="#" onclick="deleteSchedule(${item.id})">Удалить</a>
+                    <a href="#" class="can-edit" style="display: none;" onclick="openEditModal(${item.id})">Редактировать</a>
+                    <a href="#" class="can-delete" style="display: none;" onclick="deleteSchedule(${item.id})">Удалить</a>
                 </td>
             </tr>
         `;
@@ -129,6 +140,12 @@ function showAddForm() {
 }
 
 function saveSchedule() {
+    const userRole = getUserRole();
+    if (userRole !== "admin") {
+        alert("У вас нет прав на добавление расписания.");
+        return;
+    }
+
     const newSchedule = {
         course_id: { id: document.getElementById("course-id").value },
         date: document.getElementById("date-sch").value,
@@ -152,20 +169,39 @@ function saveSchedule() {
 }
 
 function openEditModal(id) {
-    const schedule = scheduleData.find(sch => sch.id === id);
-    if (!schedule) return;
+    const url = `${apiUrl}/edit/${id}`;
 
-    document.getElementById("edit-schedule-id").value = schedule.id;
-    loadCourse("edit-course-id", schedule.course_id.id);
-    document.getElementById("edit-date-sch").value = schedule.date;
-    document.getElementById("edit-start_time").value = schedule.start_time;
-    document.getElementById("edit-end_time").value = schedule.end_time;
-    document.getElementById("edit-room").value = schedule.room;
+    const userRole = getUserRole();
+    if (userRole !== "admin") {
+        alert("У вас нет прав на редактирование.");
+    } else {
+        fetch(url, {
+            method: "GET",
+            headers: getAuthHeaders(),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Ошибка получения данных для редактирования");
+                }
+                return response.json();
+            })
+            .then(schedule => {
+                document.getElementById("edit-schedule-id").value = schedule.id;
+                loadCourse("edit-course-id", schedule.course_id.id);
+                document.getElementById("edit-date-sch").value = schedule.date;
+                document.getElementById("edit-start_time").value = schedule.start_time;
+                document.getElementById("edit-end_time").value = schedule.end_time;
+                document.getElementById("edit-room").value = schedule.room;
 
-    document.getElementById("edit-modal").style.display = "block";
+                document.getElementById("edit-modal").style.display = "block";
+            })
+            .catch(error => console.error("Ошибка редактирования расписания: ", error));
+    }
 }
 
 function saveEditedSchedule() {
+    const userRole = getUserRole();
+
     const id = document.getElementById("edit-schedule-id").value;
 
     const updatedSchedule = {
@@ -176,28 +212,35 @@ function saveEditedSchedule() {
         room: document.getElementById("edit-room").value,
     };
 
-    fetch(`${apiUrl}/edit/${id}`, {
-        method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(updatedSchedule),
-    })
-        .then(() => {
-            alert("Расписание обновлено!");
-            closeModal("edit-modal");
-            fetchSchedule();
+    if (userRole !== "admin") {
+        alert("У вас нет прав на редактирование.");
+    } else {
+        fetch(`${apiUrl}/edit/${id}`, {
+            method: "PUT",
+            headers: getAuthHeaders(),
+            body: JSON.stringify(updatedSchedule),
         })
-        .catch(error => console.error("Ошибка обновления расписания:", error));
+            .then(() => {
+                alert("Расписание обновлено!");
+                closeModal("edit-modal");
+                fetchSchedule();
+            })
+            .catch(error => console.error("Ошибка обновления расписания:", error));
+    }
 }
 
 
 function deleteSchedule(id) {
-    deleteRecord(id, apiUrl, fetchSchedule);
+    const userRole = getUserRole();
+    if (userRole !== "admin") {
+        alert("У вас нет прав на удаление расписания.");
+    } else {
+        deleteRecord(id, apiUrl, fetchSchedule);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadCourse("filter-course");
-});
-
-document.addEventListener("DOMContentLoaded", () => {
+    configureSchCourByRole();
     fetchSchedule();
+    loadCourse("filter-course");
 });
