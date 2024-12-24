@@ -22,6 +22,7 @@ public class GradesController {
     @Autowired
     private GradesRepository repo;
 
+    @PreAuthorize("hasAnyRole('student', 'teacher', 'admin')")
     @GetMapping("/")
     public ResponseEntity<List<Grades>> viewGrades(@Param("keyword") String keyword) {
         List<Grades> listGrades;

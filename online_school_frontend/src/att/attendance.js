@@ -85,6 +85,7 @@ function renderTable(data) {
         tableBody.innerHTML += row;
     });
     updateRowCount(data.length);
+    configureAttGradesByRole();
 }
 
 function resetFilters() {

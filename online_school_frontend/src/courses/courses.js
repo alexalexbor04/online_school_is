@@ -84,6 +84,7 @@ function renderTable(data) {
         tableBody.innerHTML += row;
     });
     updateRowCount(data.length);
+    configureSchCourByRole();
 }
 
 function filterAndSortCourses(sortBy = null) {

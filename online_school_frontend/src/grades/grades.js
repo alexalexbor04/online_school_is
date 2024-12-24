@@ -1,4 +1,5 @@
-import {loadStudents, closeModal, getAuthHeaders, loadCourse, updateRowCount, deleteRecord} from "../app_funcs.js";
+import {loadStudents, closeModal, getAuthHeaders,
+    loadCourse, updateRowCount, deleteRecord, configureAttGradesByRole} from "../app_funcs.js";
 
 const apiUrl = "http://localhost:8086/grades";
 
@@ -17,7 +18,14 @@ window.deleteGrade = deleteGrade;
 let gradesData = [];
 
 function fetchGrades() {
-    fetch(apiUrl + "/", { headers: getAuthHeaders() })
+    const userRole = getUserRole();
+    // отладка временно
+    console.log(userRole);
+
+    fetch(apiUrl + "/", {
+        method: "GET",
+        headers: getAuthHeaders(),
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Ошибка запроса: ${response.status}`);
@@ -25,13 +33,25 @@ function fetchGrades() {
             return response.json();
         })
         .then(data => {
-            gradesData = data;
+            if (userRole === "student") {
+                const userName = JSON.parse(atob(localStorage.getItem("token").split(".")[1])).sub;
+                // отладка временно
+                console.log(userName)
+                gradesData = data.filter(item => item.student_id.username === userName);
+            } else {
+                // отладка временно
+                const userName = JSON.parse(atob(localStorage.getItem("token").split(".")[1])).sub;
+                // отладка временно
+                console.log(userName)
+                gradesData = data;
+            }
             renderTable(gradesData);
+            configureAttGradesByRole();
         })
         .catch(error => {
             console.error("Ошибка загрузки курсов:", error);
             alert("Ошибка загрузки данных. Проверьте авторизацию.");
-            window.location.href = "/auth/login";
+            // window.location.href = "/auth/login";
         });
 }
 
@@ -55,8 +75,8 @@ function renderTable(data) {
         <td>${grade.student_id.full_name}</td>
         <td>${grade.comment}</td>
         <td>
-          <a href="#" onclick="openEditModal(${grade.id})">Редактировать</a>
-          <a href="#" onclick="deleteGrade(${grade.id})">Удалить</a>
+          <a href="#" class="can-edit" style="display: none;" onclick="openEditModal(${grade.id})">Редактировать</a>
+          <a href="#" class="can-delete" style="display: none;" onclick="deleteGrade(${grade.id})">Удалить</a>
         </td>
       </tr>
     `;
@@ -71,7 +91,17 @@ function filterAndSortGrades(sortBy = null) {
     const grade = document.getElementById("filter-grade").value;
     const course = parseInt(document.getElementById("filter-course").value, 10);
 
+    const userRole = getUserRole();
+
+    const userName = userRole === "student"
+        ? JSON.parse(atob(localStorage.getItem("token").split(".")[1])).sub
+        : null;
+
     let filteredData = gradesData;
+
+    if (userRole === "student") {
+        filteredData = filteredData.filter(item => item.student_id.username === userName);
+    }
 
     filteredData = filteredData.filter(item => {
         return (
@@ -106,6 +136,7 @@ function filterAndSortGrades(sortBy = null) {
     }
 
     renderTable(filteredData);
+    configureAttGradesByRole();
 }
 
 
@@ -129,6 +160,12 @@ function showAddForm() {
 }
 
 function saveGrade() {
+    const userRole = getUserRole();
+    if (userRole !== "teacher") {
+        alert("У вас нет прав на добавление оценок.");
+        return;
+    }
+
     const newGrade = {
         course_id: { id: document.getElementById("course-id").value },
         student_id: { id: document.getElementById("student-id").value },
@@ -152,18 +189,35 @@ function saveGrade() {
 }
 
 function openEditModal(id) {
-    const grade = gradesData.find(gr => gr.id === id);
-    if (!grade) return;
+    const url = `${apiUrl}/edit/${id}`;
 
-    document.getElementById("edit-grades-id").value = grade.id;
-    document.getElementById("edit-grade").value = grade.grade;
-    document.getElementById("edit-date-grade").value = grade.date;
-    document.getElementById("edit-comment").value = grade.comment;
+    const userRole = getUserRole();
+    if (userRole !== "admin" && userRole !== "teacher") {
+        alert("У вас нет прав на редактирование.");
+    } else {
+        fetch(url, {
+            method: "GET",
+            headers: getAuthHeaders(),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Ошибка получения данных для редактирования");
+                }
+                return response.json();
+            })
+            .then(grade => {
+                document.getElementById("edit-grades-id").value = grade.id;
+                document.getElementById("edit-grade").value = grade.grade;
+                document.getElementById("edit-date-grade").value = grade.date;
+                document.getElementById("edit-comment").value = grade.comment;
 
-    loadCourse("edit-course-id", grade.course_id.id);
-    loadStudents("edit-student-id", grade.student_id.id);
+                loadCourse("edit-course-id", grade.course_id.id);
+                loadStudents("edit-student-id", grade.student_id.id);
 
-    document.getElementById("edit-modal").style.display = "block";
+                document.getElementById("edit-modal").style.display = "block";
+            })
+            .catch(error => console.error("Error fetching grades for edit:", error))
+    }
 }
 
 function saveEditedGrade() {
@@ -177,35 +231,43 @@ function saveEditedGrade() {
         student_id: { id: document.getElementById("edit-student-id").value },
     };
 
-    fetch(`${apiUrl}/edit/${gardeId}`, {
-        method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(updatedGrade),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Ошибка обновления оценки");
-            }
-            alert("Оценка успешно обновлена!");
-            closeModal("edit-modal");
-            fetchGrades();
+    const userRole = getUserRole();
+    if (userRole !== "admin" && userRole !== "teacher") {
+        alert("У вас нет прав на редактирование.");
+    } else {
+        fetch(`${apiUrl}/edit/${gardeId}`, {
+            method: "PUT",
+            headers: getAuthHeaders(),
+            body: JSON.stringify(updatedGrade),
         })
-        .catch((error) => {
-            console.error("Ошибка обновления оценки:", error);
-            alert("Ошибка сохранения изменений.");
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Ошибка обновления оценки");
+                }
+                alert("Оценка успешно обновлена!");
+                closeModal("edit-modal");
+                fetchGrades();
+            })
+            .catch((error) => {
+                console.error("Ошибка обновления оценки:", error);
+                alert("Ошибка сохранения изменений.");
+            });
+    }
 }
 
 function deleteGrade(id) {
-    deleteRecord(id, apiUrl, fetchGrades);
+    const userRole = getUserRole();
+    if (userRole !== "teacher" && userRole !== "admin") {
+        alert("У вас нет прав на удаление посещений.");
+    } else {
+        deleteRecord(id, apiUrl, fetchGrades);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadCourse("filter-course");
-});
-
-document.addEventListener("DOMContentLoaded", () => {
+    configureAttGradesByRole();
     fetchGrades();
+    loadCourse("filter-course");
 });
 
 

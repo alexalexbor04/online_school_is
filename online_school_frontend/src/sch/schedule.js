@@ -80,6 +80,7 @@ function renderTable(data) {
         tableBody.innerHTML += row;
     });
     updateRowCount(data.length);
+    configureSchCourByRole();
 }
 
 function filterAndSortSch(sortBy = null) {
