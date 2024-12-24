@@ -49,6 +49,7 @@ public class WebSecurityConfig {
         http.cors().and().csrf().disable()
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register", "/auth/login").permitAll()
+//                        .requestMatchers("/admin/**").hasRole("admin")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

@@ -16,7 +16,7 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     @Query("select p from Users p where concat(p.id, '', p.username, '', p.role, '', " +
             "p.full_name, '', p.email, '', p.phone) like %?1%")
-    List<Users> searchUsers(String keyword);
+    List<Users> searchUsers();
 
     @Query("SELECT u FROM Users u WHERE u.role.name = :roleName")
     List<Users> findByRoleName(@Param("roleName") String roleName);

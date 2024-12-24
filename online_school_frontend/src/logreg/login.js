@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.getElementById("login-form");
 
     loginForm.addEventListener("submit", async (event) => {
-        event.preventDefault(); // Предотвращаем стандартное поведение формы
+        event.preventDefault();
         event.stopPropagation();
 
         const username = document.getElementById("username").value;
@@ -18,10 +18,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const errorMessage = document.getElementById("error-message");
 
             if (response.ok) {
-                const responseData = await response.json(); // Парсим JSON
+                const responseData = await response.json();
                 const token = responseData.token;
-                localStorage.setItem("token", token); // Сохраняем токен
-                alert(responseData.message); // Показываем сообщение
+                localStorage.setItem("token", token);
+                alert("Авторизация прошла успешно!");
                 window.location.href = "/attendance";
             } else if (response.status === 401) {
                 errorMessage.textContent = "Неправильное имя пользователя или пароль.";

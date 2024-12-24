@@ -4,10 +4,7 @@ import com.example.online_school_is.entity.Roles;
 import com.example.online_school_is.entity.Users;
 import com.example.online_school_is.repos.RoleRepository;
 import com.example.online_school_is.repos.UserRepository;
-import com.example.online_school_is.services.UserServicesDet;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -27,13 +24,9 @@ public class UserController {
 
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/admin/users")
-    public ResponseEntity<List<Users>> listUsers(@Param("keyword") String keyword) {
+    public ResponseEntity<List<Users>> listUsers() {
         List<Users> users;
-        if (keyword != null) {
-            users = userRepository.searchUsers(keyword);
-        } else {
-            users = userRepository.findAll();
-        }
+        users = userRepository.findAll();
         return ResponseEntity.ok(users);
     }
 
@@ -45,7 +38,7 @@ public class UserController {
                 .orElseThrow(() -> new IllegalArgumentException("Неправильный id"));
 
         Roles role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new IllegalArgumentException("Неверная роль"));
         user.setRoles(role);
         userRepository.save(user);
 
@@ -62,12 +55,13 @@ public class UserController {
         return ResponseEntity.ok("Пользователь с ID " + id + " удалён");
     }
 
+    @PreAuthorize("hasAnyRole('admin', 'teacher', 'student')")
     @GetMapping("/students")
     public ResponseEntity<List<Users>> getAllStudents() {
         List<Users> students = userRepository.findByRoleName("student");
         return ResponseEntity.ok(students);
     }
-
+    @PreAuthorize("hasAnyRole('admin', 'teacher', 'student')")
     @GetMapping("/teachers")
     public ResponseEntity<List<Users>> getAllTeachers() {
         List<Users> students = userRepository.findByRoleName("teacher");

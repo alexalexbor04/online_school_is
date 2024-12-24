@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/* ред, доб - УЧИТЕЛЬ
-удаление - учитель, админ
-* Просмотр - СТУДЕНТ, АДМИН, Учитель*/
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class AttendanceController {
