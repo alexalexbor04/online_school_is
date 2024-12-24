@@ -1,5 +1,6 @@
 export {getAuthHeaders, loadStudents, loadSchedules, updateRowCount, closeModal,
-    deleteRecord, loadCourse, loadTeacher, getUserRole, configureAttGradesByRole, configureSchCourByRole}
+    deleteRecord, loadCourse, loadTeacher, getUserRole, configureAttGradesByRole,
+    configureSchCourByRole, configureMatByRole}
 
 window.getAuthHeaders = getAuthHeaders;
 window.loadStudents = loadStudents;
@@ -12,6 +13,7 @@ window.loadTeacher = loadTeacher;
 window.getUserRole = getUserRole;
 window.configureAttGradesByRole = configureAttGradesByRole;
 window.configureSchCourByRole = configureSchCourByRole;
+window.configureMatByRole = configureMatByRole;
 
 
 function getAuthHeaders() {
@@ -51,6 +53,26 @@ function configureAttGradesByRole() {
         deleteLinks.forEach(link => (link.style.display = "none"));
     }
 }
+
+function configureMatByRole() {
+    const userRole = getUserRole();
+
+    const addButton = document.querySelector(".can-add");
+    const editLinks = document.querySelectorAll(".can-edit");
+    const deleteLinks = document.querySelectorAll(".can-delete");
+
+    if (userRole === "admin" || userRole == "teacher") {
+        if (addButton) addButton.style.display = "block";
+        editLinks.forEach(link => (link.style.display = "inline"));
+        deleteLinks.forEach(link => (link.style.display = "inline"));
+    } else if (userRole === "student") {
+        if (addButton) addButton.style.display = "none";
+        editLinks.forEach(link => (link.style.display = "none"));
+        deleteLinks.forEach(link => (link.style.display = "none"));
+    }
+}
+
+
 
 function configureSchCourByRole() {
     const userRole = getUserRole();

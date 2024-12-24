@@ -1,4 +1,4 @@
-import {getAuthHeaders, loadCourse, updateRowCount, closeModal, deleteRecord} from "../app_funcs.js"
+import {getAuthHeaders, loadCourse, updateRowCount, closeModal, deleteRecord, configureMatByRole} from "../app_funcs.js"
 
 const apiUrl = "http://localhost:8086/materials";
 
@@ -18,6 +18,10 @@ window.deleteMat = deleteMat;
 let matData = [];
 
 function fetchMat() {
+    const userRole = getUserRole();
+    // отладка временно
+    console.log(userRole);
+
     fetch(apiUrl + "/", { headers: getAuthHeaders() })
         .then(response => {
             if (!response.ok) {
@@ -28,6 +32,7 @@ function fetchMat() {
         .then(data => {
             matData = data;
             renderTable(matData);
+            configureMatByRole();
         })
         .catch(error => {
             console.error("Ошибка загрузки материалов:", error);
@@ -49,19 +54,20 @@ function renderTable(data) {
     data.forEach((mat) => {
         const row = `
       <tr>
-        <td>${mat.id}</td>
-        <td>${mat.course_id.course_name}</td>
-        <td>${mat.title}</td>
-        <td>${mat.file_path}</td>
+        <td>${mat.id || "Нет"}</td>
+        <td>${mat.course_id.course_name || "Нет"}</td>
+        <td>${mat.title || "Нет"}</td>
+        <td>${mat.file_path || "Нет"}</td>
         <td>
-          <a href="#" onclick="openEditModal(${mat.id})">Редактировать</a>
-          <a href="#" onclick="deleteMat(${mat.id})">Удалить</a>
+          <a href="#" class="can-edit" style="display: none;" onclick="openEditModal(${mat.id})">Редактировать</a>
+          <a href="#" class="can-delete" style="display: none;" onclick="deleteMat(${mat.id})">Удалить</a>
         </td>
       </tr>
     `;
         tableBody.innerHTML += row;
     });
     updateRowCount(data.length);
+    configureMatByRole();
 }
 
 function filterAndSortMat(sortBy = null) {
@@ -94,6 +100,7 @@ function filterAndSortMat(sortBy = null) {
     }
 
     renderTable(filteredData);
+    configureMatByRole();
 }
 
 function resetFilters() {
@@ -112,6 +119,13 @@ function showAddForm() {
 }
 
 function saveMat() {
+    const userRole = getUserRole();
+    if (userRole !== "teacher" && userRole !== "admin") {
+        alert("У вас нет прав на добавление материала.");
+        return;
+    }
+
+
     const newMat = {
         course_id: { id: document.getElementById("course-id").value },
         title: document.getElementById("title-id").value,
@@ -133,15 +147,33 @@ function saveMat() {
 }
 
 function openEditModal(id) {
-    const mat = matData.find(mt => mt.id === id);
-    if (!mat) return;
+    const url = `${apiUrl}/edit/${id}`;
 
-    document.getElementById("edit-mat-id").value = mat.id;
-    document.getElementById("edit-title").value = mat.title;
-    document.getElementById("edit-file-path").value = mat.date;
-    loadCourse("edit-course-id", mat.course_id.id);
+    const userRole = getUserRole();
+    if (userRole !== "admin" && userRole !== "teacher") {
+        alert("У вас нет прав на редактирование.");
+    } else {
+        fetch(url, {
+            method: "GET",
+            headers: getAuthHeaders(),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Ошибка получения данных для редактирования");
+                }
+                return response.json();
+            })
+            .then(mat => {
+                document.getElementById("edit-mat-id").value = mat.id;
+                document.getElementById("edit-title").value = mat.title;
+                document.getElementById("edit-file-path").value = mat.date;
+                loadCourse("edit-course-id", mat.course_id.id);
 
-    document.getElementById("edit-modal").style.display = "block";
+                document.getElementById("edit-modal").style.display = "block";
+            })
+            .catch(error => console.error("Error fetching materials for edit:", error))
+    }
+
 }
 
 function saveEditedMat() {
@@ -152,34 +184,41 @@ function saveEditedMat() {
         file_path: document.getElementById("edit-file-path").value,
         course_id: { id: document.getElementById("edit-course-id").value },
     };
-
-    fetch(`${apiUrl}/edit/${gardeId}`, {
-        method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(updatedMat),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Ошибка обновления материала");
-            }
-            alert("Материал успешно обновлена!");
-            closeModal("edit-modal");
-            fetchMat();
+    const userRole = getUserRole();
+    if (userRole !== "admin" && userRole !== "teacher") {
+        alert("У вас нет прав на редактирование.");
+    } else {
+        fetch(`${apiUrl}/edit/${gardeId}`, {
+            method: "PUT",
+            headers: getAuthHeaders(),
+            body: JSON.stringify(updatedMat),
         })
-        .catch((error) => {
-            console.error("Ошибка обновления материала:", error);
-            alert("Ошибка сохранения изменений.");
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Ошибка обновления материала");
+                }
+                alert("Материал успешно обновлена!");
+                closeModal("edit-modal");
+                fetchMat();
+            })
+            .catch((error) => {
+                console.error("Ошибка обновления материала:", error);
+                alert("Ошибка сохранения изменений.");
+            });
+    }
 }
 
 function deleteMat(id) {
-    deleteRecord(id, apiUrl, fetchMat)
+    const userRole = getUserRole();
+    if (userRole !== "teacher" && userRole !== "admin") {
+        alert("У вас нет прав на удаление посещений.");
+    } else {
+        deleteRecord(id, apiUrl, fetchMat);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadCourse("filter-course-mat");
-});
-
-document.addEventListener("DOMContentLoaded", () => {
+    configureMatByRole();
     fetchMat();
+    loadCourse("filter-course-mat");
 });

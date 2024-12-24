@@ -51,7 +51,7 @@ function fetchGrades() {
         .catch(error => {
             console.error("Ошибка загрузки курсов:", error);
             alert("Ошибка загрузки данных. Проверьте авторизацию.");
-            // window.location.href = "/auth/login";
+            window.location.href = "/auth/login";
         });
 }
 
@@ -68,12 +68,12 @@ function renderTable(data) {
     data.forEach((grade) => {
         const row = `
       <tr>
-        <td>${grade.id}</td>
-        <td>${grade.course_id.course_name}</td>
-        <td>${grade.grade}</td>
-        <td>${grade.date}</td>
-        <td>${grade.student_id.full_name}</td>
-        <td>${grade.comment}</td>
+        <td>${grade.id || "Нет"}</td>
+        <td>${grade.course_id.course_name || "Нет"}</td>
+        <td>${grade.grade || "Нет"}</td>
+        <td>${grade.date || "Нет"}</td>
+        <td>${grade.student_id.full_name || "Нет"}</td>
+        <td>${grade.comment || "Нет"}</td>
         <td>
           <a href="#" class="can-edit" style="display: none;" onclick="openEditModal(${grade.id})">Редактировать</a>
           <a href="#" class="can-delete" style="display: none;" onclick="deleteGrade(${grade.id})">Удалить</a>

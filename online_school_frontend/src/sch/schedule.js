@@ -25,7 +25,6 @@ window.deleteSchedule = deleteSchedule;
 let scheduleData = [];
 
 function fetchSchedule() {
-    // отладка временно юзеррол тут не нужен
     const userRole = getUserRole();
     console.log(userRole);
 
@@ -65,11 +64,11 @@ function renderTable(data) {
     data.forEach(item => {
         const row = `
             <tr>
-                <td>${item.id}</td>
-                <td>${item.course_id.course_name}</td>
-                <td>${item.date}</td>
-                <td>${formatTime(item.start_time)}</td>
-                <td>${formatTime(item.end_time)}</td>
+                <td>${item.id || "Нет"}</td>
+                <td>${item.course_id.course_name || "Нет"}</td>
+                <td>${item.date || "Нет"}</td>
+                <td>${formatTime(item.start_time) || "Нет"}</td>
+                <td>${formatTime(item.end_time) || "Нет"}</td>
                 <td>${item.room}</td>
                 <td>
                     <a href="#" class="can-edit" style="display: none;" onclick="openEditModal(${item.id})">Редактировать</a>

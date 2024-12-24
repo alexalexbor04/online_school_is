@@ -51,12 +51,12 @@ function renderTable(data) {
     data.forEach(item => {
         const row = `
             <tr>
-                <td>${item.id}</td>
-                <td>${item.username}</td>
-                <td>${item.roles.name}</td>
-                <td>${item.full_name}</td>
-                <td>${item.email}</td>
-                <td>${item.phone}</td>
+                <td>${item.id || "Нет"}</td>
+                <td>${item.username || "Нет"}</td>
+                <td>${item.roles.name || "Нет"}</td>
+                <td>${item.full_name || "Нет"}</td>
+                <td>${item.email || "Нет"}</td>
+                <td>${item.phone || "Нет"}</td>
                 <td>
                     <a href="#" onclick="openEditModal(${item.id})">Редактировать</a>
                     <a href="#" onclick="deleteUser(${item.id})">Удалить</a>

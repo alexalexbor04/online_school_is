@@ -71,10 +71,10 @@ function renderTable(data) {
     data.forEach((course) => {
         const row = `
       <tr>
-        <td>${course.id}</td>
-        <td>${course.course_name}</td>
-        <td>${course.description}</td>
-        <td>${course.teacher_id.full_name}</td>
+        <td>${course.id || "Нет"}</td>
+        <td>${course.course_name || "Нет"}</td>
+        <td>${course.description || "Нет"}</td>
+        <td>${course.teacher_id.full_name || "Нет"}</td>
         <td>
           <a href="#" class="can-edit" style="display: none;" onclick="openEditModal(${course.id})">Редактировать</a>
           <a href="#" class="can-delete" style="display: none;" onclick="deleteCourse(${course.id})">Удалить</a>
