@@ -5,7 +5,7 @@ import {
     deleteRecord,
     updateRowCount,
     configureSchCourByRole,
-    getUserRole
+    getUserRole, configUserLink
 } from "../app_funcs.js"
 
 const apiUrl = "http://localhost:8086/courses";
@@ -239,5 +239,6 @@ function deleteCourse(id) {
 document.addEventListener("DOMContentLoaded", () => {
     configureSchCourByRole();
     fetchCourses();
+    configUserLink();
 });
 

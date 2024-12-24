@@ -6,7 +6,8 @@ import {
     closeModal,
     deleteRecord,
     configureSchCourByRole,
-    getUserRole
+    getUserRole,
+    configUserLink
 } from "../app_funcs.js";
 
 export { fetchSchedule, renderTable, resetFilters, showAddForm, saveSchedule, openEditModal,
@@ -247,4 +248,5 @@ document.addEventListener("DOMContentLoaded", () => {
     configureSchCourByRole();
     fetchSchedule();
     loadCourse("filter-course");
+    configUserLink();
 });

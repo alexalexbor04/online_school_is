@@ -1,6 +1,6 @@
 export {getAuthHeaders, loadStudents, loadSchedules, updateRowCount, closeModal,
     deleteRecord, loadCourse, loadTeacher, getUserRole, configureAttGradesByRole,
-    configureSchCourByRole, configureMatByRole}
+    configureSchCourByRole, configureMatByRole, configUserLink}
 
 window.getAuthHeaders = getAuthHeaders;
 window.loadStudents = loadStudents;
@@ -14,6 +14,7 @@ window.getUserRole = getUserRole;
 window.configureAttGradesByRole = configureAttGradesByRole;
 window.configureSchCourByRole = configureSchCourByRole;
 window.configureMatByRole = configureMatByRole;
+window.configUserLink = configUserLink;
 
 
 function getAuthHeaders() {
@@ -248,6 +249,18 @@ function deleteRecord(id, apiUrl, fetchCallback) {
         .catch(error => console.error("Ошибка удаления:", error));
 }
 
+function configUserLink () {
+    const userRole = getUserRole(); // Функция, которая возвращает роль пользователя
+    console.log("User role:", userRole); // Для отладки
+
+    const adminUsersLink = document.getElementById("admin-users-link");
+
+    if (userRole === "admin") {
+        adminUsersLink.style.display = "inline"; // Показываем ссылку для администратора
+    } else {
+        adminUsersLink.style.display = "none"; // Скрываем ссылку для других ролей
+    }
+}
 
 function updateRowCount(count) {
     document.getElementById("row-count").textContent = count;

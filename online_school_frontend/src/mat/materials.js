@@ -1,4 +1,12 @@
-import {getAuthHeaders, loadCourse, updateRowCount, closeModal, deleteRecord, configureMatByRole} from "../app_funcs.js"
+import {
+    getAuthHeaders,
+    loadCourse,
+    updateRowCount,
+    closeModal,
+    deleteRecord,
+    configureMatByRole,
+    configUserLink
+} from "../app_funcs.js"
 
 const apiUrl = "http://localhost:8086/materials";
 
@@ -221,4 +229,5 @@ document.addEventListener("DOMContentLoaded", () => {
     configureMatByRole();
     fetchMat();
     loadCourse("filter-course-mat");
+    configUserLink();
 });

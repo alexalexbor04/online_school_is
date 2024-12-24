@@ -1,5 +1,7 @@
-import {loadStudents, closeModal, getAuthHeaders,
-    loadCourse, updateRowCount, deleteRecord, configureAttGradesByRole} from "../app_funcs.js";
+import {
+    loadStudents, closeModal, getAuthHeaders,
+    loadCourse, updateRowCount, deleteRecord, configureAttGradesByRole, configUserLink
+} from "../app_funcs.js";
 
 const apiUrl = "http://localhost:8086/grades";
 
@@ -268,6 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
     configureAttGradesByRole();
     fetchGrades();
     loadCourse("filter-course");
+    configUserLink();
 });
 
 

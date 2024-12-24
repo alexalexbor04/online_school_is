@@ -1,4 +1,4 @@
-import {getAuthHeaders, deleteRecord, updateRowCount, closeModal} from "../app_funcs.js"
+import {getAuthHeaders, deleteRecord, updateRowCount, closeModal, configUserLink} from "../app_funcs.js"
 
 const apiUrl = "http://localhost:8086/admin/users";
 
@@ -17,25 +17,32 @@ window.filterAndSortUsers = filterAndSortUsers;
 let usersData = [];
 
 function fetchUsers() {
-    fetch(apiUrl, {
-        method: "GET",
-        headers: getAuthHeaders(),
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Ошибка запроса: ${response.status}`);
-            }
-            return response.json();
+    const userRole = getUserRole();
+    if (userRole !== "admin") {
+        alert("Страница недоступна.")
+        window.location.href = "/schedule";
+    } else {
+        fetch(apiUrl, {
+            method: "GET",
+            headers: getAuthHeaders(),
         })
-        .then(data => {
-            usersData = data;
-            renderTable(usersData)
-        })
-        .catch(error => {
-            console.error("Ошибка загрузки данных юзеров", error);
-            alert("Ошибка загрузки данных. Пожалуйста, проверьте авторизацию.");
-            window.location.href = "/auth/login";
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Ошибка запроса: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                usersData = data;
+                renderTable(usersData)
+            })
+            .catch(error => {
+                console.error("Ошибка загрузки данных юзеров", error);
+                alert("Ошибка загрузки данных. Пожалуйста, проверьте авторизацию.");
+                window.location.href = "/auth/login";
+            });
+    }
+
 }
 
 function renderTable(data) {
@@ -68,45 +75,72 @@ function renderTable(data) {
     updateRowCount(data.length);
 }
 
-function openEditModal(userId) {
-    const user = usersData.find(u => u.id === userId);
-    if (!user) {
-        alert("Пользователь не найден!");
-        return;
+function openEditModal(id) {
+    const url = `${apiUrl}/edit/${id}`;
+
+    const userRole = getUserRole();
+    if (userRole !== "admin") {
+        alert("У вас нет прав на редактирование.");
+    } else {
+        fetch(url, {
+            method: "GET",
+            headers: getAuthHeaders(),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Ошибка получения данных для редактирования");
+                }
+                return response.json();
+            })
+            .then(user => {
+                document.getElementById("edit-user-id").value = user.id;
+                document.getElementById("edit-username").value = user.username;
+                document.getElementById("edit-role").value = user.roles.name;
+
+                document.getElementById("edit-modal-users").style.display = "block";
+            })
+            .catch(error => {
+                console.error("Error fetching users for edit:", error);
+                alert("Ошибка запроса на редактирование.")
+            });
     }
-
-    document.getElementById("edit-user-id").value = user.id;
-    document.getElementById("edit-username").value = user.username;
-    document.getElementById("edit-role").value = user.roles.name;
-
-    document.getElementById("edit-modal-users").style.display = "block";
 }
 
 function saveUserRole() {
     const userId = document.getElementById("edit-user-id").value;
     const newRole = document.getElementById("edit-role").value;
 
-    fetch(`${apiUrl}/${userId}/changeRole`, {
-        method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ role: newRole })
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Ошибка при обновлении роли пользователя.");
-            }
-            alert("Роль пользователя обновлена.");
-            closeModal("edit-modal-users");
-            fetchAttendance();
+    const userRole = getUserRole();
+    if (userRole !== "admin" && userRole !== "teacher") {
+        alert("У вас нет прав на редактирование.");
+    } else {
+        fetch(`${apiUrl}/${userId}/changeRole`, {
+            method: "PUT",
+            headers: getAuthHeaders(),
+            body: JSON.stringify({role: newRole})
         })
-        .catch(error => {
-            console.error("Ошибка сохранения роли пользователя:", error);
-            alert("Ошибка сохранения изменений.");
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Ошибка при обновлении роли пользователя.");
+                }
+                alert("Роль пользователя обновлена.");
+                closeModal("edit-modal-users");
+                fetchAttendance();
+            })
+            .catch(error => {
+                console.error("Ошибка сохранения роли пользователя:", error);
+                alert("Ошибка сохранения изменений.");
+            });
+    }
 }
 
 function deleteUser(userId) {
-    deleteRecord(userId, apiUrl, fetchUsers);
+    const userRole = getUserRole();
+    if (userRole !== "admin") {
+        alert("У вас нет прав на удаление пользователей.");
+    } else {
+        deleteRecord(userId, apiUrl, fetchUsers);
+    }
 }
 
 function filterAndSortUsers(sortBy = null) {
@@ -150,4 +184,5 @@ function resetFilters() {
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchUsers();
+    configUserLink();
 });

@@ -79,7 +79,6 @@ public class AuthController {
         }
     }
 
-    // Заглушка для GET-запроса на страницу логина
     @GetMapping("/login")
     public ResponseEntity<Void> loginPage() {
         return ResponseEntity.status(HttpStatus.OK).build();

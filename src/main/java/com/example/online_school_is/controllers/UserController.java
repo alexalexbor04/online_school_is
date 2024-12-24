@@ -25,7 +25,6 @@ public class UserController {
     @Autowired
     private RoleRepository roleRepository;
 
-    // Получение списка пользователей
     @PreAuthorize("hasRole('admin')")
     @GetMapping("/admin/users")
     public ResponseEntity<List<Users>> listUsers(@Param("keyword") String keyword) {
@@ -38,20 +37,19 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    // Изменение роли пользователя
     @PreAuthorize("hasRole('admin')")
     @PutMapping("/admin/users/{id}/changeRole")
     public ResponseEntity<String> changeRole(@PathVariable("id") Long id, @RequestBody Map<String, String> body) {
         String roleName = body.get("role");
         Users user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Пользователь с ID " + id + " не найден"));
+                .orElseThrow(() -> new IllegalArgumentException("Неправильный id"));
 
         Roles role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new IllegalArgumentException("Роль с названием " + roleName + " не найдена"));
+                .orElseThrow(() -> new IllegalArgumentException());
         user.setRoles(role);
         userRepository.save(user);
 
-        return ResponseEntity.ok("Роль пользователя успешно изменена");
+        return ResponseEntity.ok("Роль пользователя изменена");
     }
     @PreAuthorize("hasRole('admin')")
     @DeleteMapping("/admin/users/{id}")
@@ -61,7 +59,7 @@ public class UserController {
 
         userRepository.delete(user);
 
-        return ResponseEntity.ok("Пользователь с ID " + id + " успешно удалён");
+        return ResponseEntity.ok("Пользователь с ID " + id + " удалён");
     }
 
     @GetMapping("/students")

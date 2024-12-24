@@ -1,5 +1,5 @@
 import {getAuthHeaders, updateRowCount, deleteRecord, loadStudents, loadSchedules,
-    closeModal, getUserRole, configureAttGradesByRole} from "../app_funcs.js";
+    closeModal, getUserRole, configureAttGradesByRole, configUserLink} from "../app_funcs.js";
 
 const apiUrl = "http://localhost:8086/attendance";
 
@@ -278,6 +278,7 @@ function deleteAttendance(id) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    configUserLink();
     configureAttGradesByRole();
     fetchAttendance();
     loadCourse("filter-course");
