@@ -104,7 +104,6 @@ public class Users implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Проверяем, есть ли роль, и возвращаем список с одной ролью
         return role != null ?
                 List.of(new SimpleGrantedAuthority(role.getName())) :
                 List.of();
