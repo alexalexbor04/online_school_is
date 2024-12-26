@@ -48,6 +48,7 @@ function fetchAttendance() {
                 console.log(userName)
                 attendanceData = data;
             }
+            console.log(attendanceData);    
             renderTable(attendanceData);
             configureAttGradesByRole();
         })

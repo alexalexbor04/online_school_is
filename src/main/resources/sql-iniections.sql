@@ -1,5 +1,5 @@
 ALTER TABLE courses
-    DROP FOREIGN KEY fk_courses_users; -- Заменить на реальное имя FK
+    DROP FOREIGN KEY fk_courses_users;
 ALTER TABLE courses
     ADD CONSTRAINT fk_courses_users
         FOREIGN KEY (teacher_id)

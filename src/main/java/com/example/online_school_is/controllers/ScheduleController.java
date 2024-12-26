@@ -4,7 +4,6 @@ import com.example.online_school_is.entity.Schedule;
 import com.example.online_school_is.repos.ScheduleRepository;
 import com.example.online_school_is.services.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
