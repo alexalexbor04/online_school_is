@@ -108,7 +108,6 @@ function filterAndSortMat(sortBy = null) {
     }
 
     renderTable(filteredData);
-    configureMatByRole();
 }
 
 function resetFilters() {

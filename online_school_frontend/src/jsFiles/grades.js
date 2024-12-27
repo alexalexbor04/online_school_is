@@ -85,6 +85,7 @@ function renderTable(data) {
         tableBody.innerHTML += row;
     });
     updateRowCount(data.length);
+    configureAttGradesByRole();
 }
 
 function filterAndSortGrades(sortBy = null) {
@@ -138,7 +139,6 @@ function filterAndSortGrades(sortBy = null) {
     }
 
     renderTable(filteredData);
-    configureAttGradesByRole();
 }
 
 

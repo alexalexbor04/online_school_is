@@ -4,131 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оценки</title>
+    <!-- Подключение Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
 </head>
-<body id = "body-id">
+<body class="bg-light">
+
+<div class="container mt-4">
+    <!-- Заголовок -->
+    <h1 class="mb-4 text-center">Оценки</h1>
+
+    <!-- Навигация -->
+    <nav class="mb-4">
+        <ul class="nav nav-pills justify-content-center">
+            <li class="nav-item"><a class="nav-link" href="/attendance">Посещения</a></li>
+            <li class="nav-item"><a class="nav-link" href="/schedule">Расписание</a></li>
+            <li class="nav-item"><a class="nav-link" id="admin-users-link" href="/admin/users">Пользователи</a></li>
+            <li class="nav-item"><a class="nav-link" href="/courses">Курсы</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/grades">Оценки</a></li>
+            <li class="nav-item"><a class="nav-link" href="/materials">Материалы</a></li>
+            <li class="nav-item"><a class="nav-link" href="/about">Об авторе</a></li>
+        </ul>
+    </nav>
+
+    <!-- Кнопки сортировки -->
+    <div class="d-flex justify-content-center mb-3">
+        <button class="btn btn-outline-primary me-2" onclick="filterAndSortGrades('date')">Сортировать по дате</button>
+        <button class="btn btn-outline-primary me-2" onclick="filterAndSortGrades('student')">Сортировать по имени студента</button>
+        <button class="btn btn-outline-primary me-2" onclick="filterAndSortGrades('course')">Сортировать по названию курса</button>
+        <button class="btn btn-outline-primary" onclick="filterAndSortGrades('grade')">Сортировать по оценке</button>
+    </div>
+
+    <!-- Фильтры -->
+    <div class="mb-4">
+        <form class="row g-3">
+            <div class="col-md-3">
+                <input type="text" id="keyword" class="form-control" placeholder="Поиск">
+            </div>
+            <div class="col-md-3">
+                <input type="date" id="filter-date" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <input type="number" id="filter-grade" class="form-control" placeholder="Оценка">
+            </div>
+            <div class="col-md-3">
+                <select id="filter-course" class="form-select">
+                    <option value="">Курс</option>
+                </select>
+            </div>
+            <div class="col-md-12 d-flex justify-content-center">
+                <button type="button" class="btn btn-primary me-2" onclick="filterAndSortGrades()">Найти</button>
+                <button type="button" class="btn btn-secondary" onclick="resetFilters()">Очистить</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Таблица -->
+    <div class="table-responsive">
+        <table id="grade-table" class="table table-striped table-bordered">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Курс</th>
+                <th>Оценка</th>
+                <th>Дата</th>
+                <th>Имя студента</th>
+                <th>Комментарий</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- модальное окно для добавления -->
+    <div id="modal_add" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
+        <h2 id="modal-title">Добавить оценку</h2>
+        <form id="grade-form">
+            <input type="hidden" id="grade-id">
+            <label>
+                <select id="student-id" required>
+                    <option value="">Выберите студента</option>
+                </select>
+            </label>
+            <br><br>
+            <label>
+                <select id="course-id" required>
+                    <option value=""></option>
+                </select>
+            </label>
+            <br><br>
+            <label>
+                <input type="number" id="grade" placeholder="Оценка" required>
+            </label>
+            <br><br>
+            <label>
+                <input type="date" id="date-grade" required>
+            </label>
+            <label>
+                <input type="text" id="comment" placeholder="Комментарий" required>
+            </label>
+            <br><br>
+            <button type="button" onclick="saveGrade()">Сохранить</button>
+            <button type="button" onclick="closeModal('modal_add')">Отменить</button>
+        </form>
+    </div>
+
+    <!-- Модальное окно для редактирования -->
+    <div id="edit-modal" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
+        <h2 id="edit-modal-title">Редактировать</h2>
+        <form id="edit-grades-form">
+            <input type="hidden" id="edit-grades-id">
+            <label>
+                <select id="edit-course-id" required>
+                    <option value=""></option>
+                </select>
+            </label>
+            <br><br>
+            <label>
+                <input type="number" id="edit-grade" placeholder="Оценка" required>
+            </label>
+            <br><br>
+            <label>
+                <input type="date" id="edit-date-grade" placeholder="Оценка" required>
+            </label>
+            <br><br>
+            <label>
+                <select id="edit-student-id" required>
+                    <option value="">Выберите студента</option>
+                </select>
+            </label>
+            <br><br>
+            <label>
+                <input type="text" id="edit-comment" placeholder="Комментарий" required>
+            </label>
+            <br><br>
+            <button type="button" onclick="saveEditedGrade()">Сохранить</button>
+            <button type="button" onclick="closeModal('edit-modal')">Отменить</button>
+        </form>
+    </div>
+
+    <div class="mt-3">
+        Всего записей: <span id="row-count">0</span>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-success can-add" style="display:none;" onclick="showAddForm()">Добавить</button>
+    </div>
+
+</div>
 
 <script type="module" src="../src/jsFiles/grades.js" defer></script>
-
-<h1>Оценки</h1>
-
-<a href="/attendance">Посещения</a></p>
-<a href="/schedule">Расписание</a></p>
-<a href="/admin/users" id="admin-users-link" style="display: none;">Пользователи</a>
-<a href="/courses">Курсы</a></p>
-<a href="/grades">Оценки</a></p>
-<a href="/materials">Материалы</a></p>
-<a href="/about">Об авторе</a></p>
-
-<div style="margin-top: 10px;">
-    <button onclick="filterAndSortGrades('date')">Сортировать по дате</button>
-    <button onclick="filterAndSortGrades('student')">Сортировать по имени студента</button>
-    <button onclick="filterAndSortGrades('course')">Сортировать по названию курса</button>
-    <button onclick="filterAndSortGrades('grade')">Сортировать по оценке</button>
-</div>
-
-
-
-<div class="filter-form">
-    <input type="text" id="keyword" placeholder="Поиск">
-    <input type="date" id="filter-date">
-    <input type="number" id="filter-grade" placeholder="Оценка">
-    <select id="filter-course">
-        <option value="">Курс</option>
-    </select>
-    <button onclick="filterAndSortGrades()">Найти</button>
-    <button onclick="resetFilters()">Очистить</button>
-</div>
-
-<table id="grade-table">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Курс</th>
-        <th>Оценка</th>
-        <th>Дата</th>
-        <th>Имя студента</th>
-        <th>Комментарий</th>
-        <th>Действия</th>
-    </tr>
-    </thead>
-    <tbody>
-
-    </tbody>
-</table>
-
-<div id="total-rows">
-    Всего записей: <span id="row-count">0</span>
-</div>
-
-
-<button class="can-add" style="display: none;" onclick="showAddForm()">Добавить</button>
-
-<!-- модальное окно для добавления -->
-<div id="modal_add" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
-    <h2 id="modal-title">Добавить оценку</h2>
-    <form id="grade-form">
-        <input type="hidden" id="grade-id">
-        <label>
-            <select id="student-id" required>
-                <option value="">Выберите студента</option>
-            </select>
-        </label>
-        <br><br>
-        <label>
-            <select id="course-id" required>
-                <option value=""></option>
-            </select>
-        </label>
-        <br><br>
-        <label>
-            <input type="number" id="grade" placeholder="Оценка" required>
-        </label>
-        <br><br>
-        <label>
-            <input type="date" id="date-grade" required>
-        </label>
-        <label>
-            <input type="text" id="comment" placeholder="Комментарий" required>
-        </label>
-        <br><br>
-        <button type="button" onclick="saveGrade()">Сохранить</button>
-        <button type="button" onclick="closeModal('modal_add')">Отменить</button>
-    </form>
-</div>
-
-<!-- Модальное окно для редактирования -->
-<div id="edit-modal" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
-    <h2 id="edit-modal-title">Редактировать</h2>
-    <form id="edit-grades-form">
-        <input type="hidden" id="edit-grades-id">
-        <label>
-            <select id="edit-course-id" required>
-                <option value=""></option>
-            </select>
-        </label>
-        <br><br>
-        <label>
-            <input type="number" id="edit-grade" placeholder="Оценка" required>
-        </label>
-        <br><br>
-        <label>
-            <input type="date" id="edit-date-grade" placeholder="Оценка" required>
-        </label>
-        <br><br>
-        <label>
-            <select id="edit-student-id" required>
-                <option value="">Выберите студента</option>
-            </select>
-        </label>
-        <br><br>
-        <label>
-            <input type="text" id="edit-comment" placeholder="Комментарий" required>
-        </label>
-        <br><br>
-        <button type="button" onclick="saveEditedGrade()">Сохранить</button>
-        <button type="button" onclick="closeModal('edit-modal')">Отменить</button>
-    </form>
-</div>
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+Y5/6qXmR+riXKtwvF5wB74PdF6F4"
+        crossorigin="anonymous">
 </body>
 </html>

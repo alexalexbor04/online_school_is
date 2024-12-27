@@ -76,33 +76,20 @@ function renderTable(data) {
 }
 
 function openEditModal(id) {
-    const url = `${apiUrl}/edit/${id}`;
-
     const userRole = getUserRole();
     if (userRole !== "admin") {
         alert("У вас нет прав на редактирование.");
     } else {
-        fetch(url, {
-            method: "GET",
-            headers: getAuthHeaders(),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Ошибка получения данных для редактирования");
-                }
-                return response.json();
-            })
-            .then(user => {
-                document.getElementById("edit-user-id").value = user.id;
-                document.getElementById("edit-username").value = user.username;
-                document.getElementById("edit-role").value = user.roles.name;
+        const user = usersData.find(u => u.id === id);
+        if (!user) {
+            alert("Пользователь не найден!");
+            return;
+        }
+        document.getElementById("edit-user-id").value = user.id;
+        document.getElementById("edit-username").value = user.username;
+        document.getElementById("edit-role").value = user.roles.name;
 
-                document.getElementById("edit-modal-users").style.display = "block";
-            })
-            .catch(error => {
-                console.error("Error fetching users for edit:", error);
-                alert("Ошибка запроса на редактирование.")
-            });
+        document.getElementById("edit-modal-users").style.display = "block";
     }
 }
 
@@ -123,7 +110,7 @@ function saveUserRole() {
                 if (!response.ok) {
                     throw new Error("Ошибка при обновлении роли пользователя.");
                 }
-                alert("Роль пользователя обновлена.");
+                alert("Роль пользователя обновлена!");
                 closeModal("edit-modal-users");
                 fetchAttendance();
             })
