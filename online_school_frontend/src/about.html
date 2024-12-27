@@ -9,6 +9,13 @@
           rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
           crossorigin="anonymous">
+    <style>
+        .logout-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    </style>
 </head>
 <body class="bg-light">
 <div class="container mt-4">
@@ -26,6 +33,9 @@
             <li class="nav-item"><a class="nav-link" href="/materials">Материалы</a></li>
             <li class="nav-item"><a class="nav-link active" href="/about">Об авторе</a></li>
         </ul>
+        <div class="logout-container ">
+            <button id="logout-button" class="btn btn-danger">Выйти</button>
+        </div>
     </nav>
 
     <!-- Контент -->

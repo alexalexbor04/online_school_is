@@ -1,4 +1,4 @@
-import {getAuthHeaders, deleteRecord, updateRowCount, closeModal, configUserLink} from "../app_funcs.js"
+import {getAuthHeaders, deleteRecord, updateRowCount, closeModal} from "../app_funcs.js"
 
 const apiUrl = "http://localhost:8086/admin/users";
 
@@ -171,5 +171,4 @@ function resetFilters() {
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchUsers();
-    configUserLink();
 });

@@ -250,17 +250,23 @@ function deleteRecord(id, apiUrl, fetchCallback) {
 }
 
 function configUserLink () {
-    const userRole = getUserRole(); // Функция, которая возвращает роль пользователя
+    const userRole = getUserRole();
     console.log("User role:", userRole); // Для отладки
 
     const adminUsersLink = document.getElementById("admin-users-link");
 
     if (userRole === "admin") {
-        adminUsersLink.style.display = "inline"; // Показываем ссылку для администратора
+        adminUsersLink.style.display = "inline";
     } else {
-        adminUsersLink.style.display = "none"; // Скрываем ссылку для других ролей
+        adminUsersLink.style.display = "none";
     }
 }
+
+document.getElementById("logout-button").addEventListener("click", () => {
+    localStorage.removeItem("token");
+    window.location.href = "/auth/login";
+});
+
 
 function updateRowCount(count) {
     document.getElementById("row-count").textContent = count;
