@@ -20,10 +20,8 @@
 <body class="bg-light">
 
 <div class="container mt-4">
-    <!-- Заголовок -->
     <h1 class="mb-4 text-center">Материалы</h1>
 
-    <!-- Навигация -->
     <nav class="mb-4">
         <ul class="nav nav-pills justify-content-center">
             <li class="nav-item"><a class="nav-link" href="/attendance">Посещения</a></li>
@@ -39,13 +37,11 @@
         </div>
     </nav>
 
-    <!-- Кнопки сортировки -->
     <div class="d-flex justify-content-center mb-3">
         <button class="btn btn-outline-primary me-2" onclick="filterAndSortMat('title')">Сортировать по названию</button>
         <button class="btn btn-outline-primary" onclick="filterAndSortMat('course')">Сортировать по курсу</button>
     </div>
 
-    <!-- Фильтры -->
     <div class="mb-4">
         <form class="row g-3">
             <div class="col-md-6">
@@ -63,7 +59,6 @@
         </form>
     </div>
 
-    <!-- Таблица -->
     <div class="table-responsive">
         <table id="mat-table" class="table table-striped table-bordered">
             <thead class="table-dark">
@@ -80,7 +75,6 @@
         </table>
     </div>
 
-    <!-- модальное окно для добавления -->
     <div id="modal_add" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
         <h2 id="modal-title">Добавить материал</h2>
         <form id="mat-form">
@@ -104,7 +98,6 @@
         </form>
     </div>
 
-    <!-- Модальное окно для редактирования -->
     <div id="edit-modal" style="display:none; position:fixed; top:20%; left:30%; background:white; padding:20px; border:1px solid black;">
         <h2 id="edit-modal-title">Редактировать</h2>
         <form id="edit-mat-form">

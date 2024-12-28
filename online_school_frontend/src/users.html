@@ -20,10 +20,8 @@
 <body class="bg-light">
 
 <div class="container mt-4">
-  <!-- Заголовок -->
   <h1 class="mb-4 text-center">Пользователи</h1>
 
-  <!-- Навигация -->
   <nav class="mb-4">
     <ul class="nav nav-pills justify-content-center">
       <li class="nav-item"><a class="nav-link" href="/attendance">Посещения</a></li>
@@ -39,13 +37,11 @@
     </div>
   </nav>
 
-  <!-- Кнопки сортировки -->
   <div class="d-flex justify-content-center mb-3">
     <button class="btn btn-outline-primary me-2" onclick="filterAndSortUsers('fullName')">Сортировать по имени</button>
     <button class="btn btn-outline-primary" onclick="filterAndSortUsers('role')">Сортировать по роли</button>
   </div>
 
-  <!-- Фильтры -->
   <div class="mb-4">
     <form class="row g-3">
       <div class="col-md-6">
@@ -66,7 +62,6 @@
     </form>
   </div>
 
-  <!-- Таблица -->
   <div class="table-responsive">
     <table id="users-table" class="table table-striped table-bordered">
       <thead class="table-dark">
