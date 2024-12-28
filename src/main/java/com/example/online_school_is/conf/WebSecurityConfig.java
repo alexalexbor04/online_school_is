@@ -37,7 +37,6 @@ public class WebSecurityConfig {
                 .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
-                        .logoutSuccessUrl("/auth/login")
                         .permitAll()
                 );
 
@@ -62,10 +61,10 @@ public class WebSecurityConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("*"); // Разрешить все источники
-        config.addAllowedHeader("*"); // Разрешить все заголовки
-        config.addAllowedMethod("*"); // Разрешить все методы (GET, POST и т.д.)
-        config.addExposedHeader("Authorization"); // Если требуется передать заголовок
+        config.addAllowedOriginPattern("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        config.addExposedHeader("Authorization");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

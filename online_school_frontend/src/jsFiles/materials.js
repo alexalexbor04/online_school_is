@@ -134,7 +134,7 @@ function saveMat() {
 
 
     const newMat = {
-        course_id: { id: document.getElementById("course-id").value },
+        course_id: {id: document.getElementById("course-id").value},
         title: document.getElementById("title-id").value,
         file_path: document.getElementById("file-path").value
     };
@@ -150,7 +150,10 @@ function saveMat() {
             closeModal("modal_add");
             fetchMat();
         })
-        .catch(error => console.error("Ошибка добавления:", error));
+        .catch(error => {
+            console.error("Ошибка добавления:", error);
+            alert("Неправильно введенные данные.");
+        });
 }
 
 function openEditModal(id) {

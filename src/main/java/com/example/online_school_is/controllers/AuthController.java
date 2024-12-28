@@ -82,4 +82,9 @@ public class AuthController {
     public ResponseEntity<Void> loginPage() {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+//    @GetMapping("/error")
+//    public ResponseEntity<Void> errorPage() {
+//        return ResponseEntity.status(HttpStatus.OK).build();
+//    }
 }

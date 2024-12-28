@@ -45,7 +45,12 @@ export default defineConfig({
         target: 'http://localhost:3000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/about$/, '/src/about.html'),
-      }
+      },
+      '/error': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/error$/, '/src/error.html'),
+      },
     },
   },
 });

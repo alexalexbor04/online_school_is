@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/materials")
@@ -40,7 +41,7 @@ public class MaterialsController {
             Materials createdMat = service.save(material);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdMat);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((Materials) Map.of("message", "Формат введенных данных некорректен"));
         }
     }
 

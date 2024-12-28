@@ -62,7 +62,7 @@ function configureMatByRole() {
     const editLinks = document.querySelectorAll(".can-edit");
     const deleteLinks = document.querySelectorAll(".can-delete");
 
-    if (userRole === "admin" || userRole == "teacher") {
+    if (userRole === "admin" || userRole === "teacher") {
         if (addButton) addButton.style.display = "block";
         editLinks.forEach(link => (link.style.display = "inline"));
         deleteLinks.forEach(link => (link.style.display = "inline"));
@@ -275,3 +275,13 @@ function updateRowCount(count) {
 function closeModal(modalId) {
     document.getElementById(modalId).style.display = "none";
 }
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     const validRoutes = ['/attendance', '/schedule', '/admin/users', '/courses', '/grades', '/materials', '/about'];
+//     const currentPath = window.location.pathname;
+//
+//     if (!validRoutes.includes(currentPath) && !currentPath.startsWith('/error')) {
+//         window.location.href = '/error';
+//     }
+// });
+
